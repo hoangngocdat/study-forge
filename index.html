@@ -3068,265 +3068,347 @@ audioPlayer.addEventListener(
 
     }
 );
-
-
 /* =====================================================
-   AI
+   AI STUDY ASSISTANT
 ===================================================== */
 
-function formatAI(text){
+const aiInput = document.getElementById("aiInput");
+const aiButton = document.getElementById("aiButton");
+const aiBox = document.getElementById("aiBox");
+const aiQuota = document.getElementById("aiQuota");
 
-    return String(text)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(
-            /^### (.*)$/gm,
-            "<h3>$1</h3>"
-        )
-        .replace(
-            /\*\*(.*?)\*\*/g,
-            "<strong>$1</strong>"
-        )
-        .replace(
-            /`([^`]+)`/g,
-            "<code>$1</code>"
-        )
-        .replace(
-            /\n/g,
-            "<br>"
-        );
+const AI_DAILY_LIMIT = 20;
 
+function getAIToday() {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Ho_Chi_Minh"
+    }).format(new Date());
 }
 
+let aiQuotaData = null;
 
-const aiInput =
-    document.getElementById(
-        "aiInput"
+try {
+    aiQuotaData = JSON.parse(
+        localStorage.getItem("studyforge_ai_quota")
     );
-
-const aiButton =
-    document.getElementById(
-        "aiButton"
-    );
-
-const aiBox =
-    document.getElementById(
-        "aiBox"
-    );
-
-const AI_DAILY_LIMIT =
-    20;
-
-const todayKey =
-    getToday();
-
-let aiQuotaData;
-
-try{
-
-    aiQuotaData =
-        JSON.parse(
-            localStorage.getItem(
-                "studyforge_ai_quota"
-            )
-        );
-
-}catch{
-
+} catch {
     aiQuotaData = null;
-
 }
 
-if(
+if (
     !aiQuotaData ||
-    aiQuotaData.date !== todayKey
-){
-
+    aiQuotaData.date !== getAIToday()
+) {
     aiQuotaData = {
-        date:todayKey,
-        used:0
+        date: getAIToday(),
+        used: 0
     };
 
     localStorage.setItem(
         "studyforge_ai_quota",
-        JSON.stringify(
-            aiQuotaData
-        )
+        JSON.stringify(aiQuotaData)
     );
-
 }
 
-const aiQuota =
-    document.getElementById(
-        "aiQuota"
+function updateAIQuota() {
+
+    const remaining = Math.max(
+        0,
+        AI_DAILY_LIMIT - aiQuotaData.used
     );
-
-
-function updateAIQuota(){
-
-    const remaining =
-        Math.max(
-            0,
-            AI_DAILY_LIMIT -
-            aiQuotaData.used
-        );
 
     aiQuota.textContent =
-        remaining === 0
-        ? "FREE · Đã hết lượt hôm nay"
-        : `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`;
-
+        remaining > 0
+            ? `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`
+            : "FREE · Đã hết lượt hôm nay";
 }
 
 
-function useAILimit(){
+/* =========================
+   HIỂN THỊ AI
+========================= */
 
-    if(
-        aiQuotaData.used >=
-        AI_DAILY_LIMIT
-    ){
+function escapeHTML(text) {
 
-        return false;
+    return String(text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
 
-    }
 
-    aiQuotaData.used++;
+function formatAI(text) {
 
-    localStorage.setItem(
-        "studyforge_ai_quota",
-        JSON.stringify(
-            aiQuotaData
-        )
+    let result = escapeHTML(text);
+
+    result = result.replace(
+        /^### (.*)$/gm,
+        "<h3>$1</h3>"
     );
 
-    updateAIQuota();
+    result = result.replace(
+        /\*\*(.*?)\*\*/g,
+        "<strong>$1</strong>"
+    );
 
-    return true;
+    result = result.replace(
+        /`([^`]+)`/g,
+        "<code>$1</code>"
+    );
 
+    result = result.replace(
+        /\n/g,
+        "<br>"
+    );
+
+    return result;
 }
 
 
-aiButton.onclick =
-    async () => {
+/* =========================
+   GỬI CÂU HỎI AI
+========================= */
 
-        const question =
-            aiInput.value.trim();
+async function askAI() {
 
-        if(!question){
+    const question = aiInput.value.trim();
 
-            aiBox.textContent =
-                "⚠️ Hãy nhập câu hỏi trước nhé!";
+    if (!question) {
 
-            return;
+        aiBox.innerHTML =
+            "⚠️ Hãy nhập câu hỏi trước nhé!";
+
+        return;
+    }
+
+    if (aiQuotaData.used >= AI_DAILY_LIMIT) {
+
+        aiBox.innerHTML =
+            "⛔ Bạn đã hết 20 lượt AI hôm nay.";
+
+        return;
+    }
+
+    aiButton.disabled = true;
+    aiButton.textContent = "⏳";
+
+    aiBox.innerHTML =
+        "🤖 <strong>StudyForge AI đang suy nghĩ...</strong>";
+
+    try {
+
+        const response = await fetch("/api/ask", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: question
+            })
+
+        });
+
+        let data;
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(
+                "Máy chủ AI trả về dữ liệu không hợp lệ."
+            );
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                data?.error ||
+                `Lỗi máy chủ: ${response.status}`
+            );
 
         }
 
-        if(
-            aiQuotaData.used >=
-            AI_DAILY_LIMIT
-        ){
+        if (!data?.reply) {
 
-            aiBox.textContent =
-                "⛔ Bạn đã dùng hết 20 lượt AI hôm nay.";
-
-            return;
+            throw new Error(
+                "AI không trả về câu trả lời."
+            );
 
         }
 
-        aiButton.disabled =
-            true;
+        /* Chỉ trừ lượt khi AI trả lời thành công */
 
-        aiButton.textContent =
-            "⏳";
+        aiQuotaData.used++;
 
-        aiBox.textContent =
-            "🤖 StudyForge AI đang suy nghĩ...";
+        localStorage.setItem(
+            "studyforge_ai_quota",
+            JSON.stringify(aiQuotaData)
+        );
 
-        try{
+        updateAIQuota();
 
-            const response =
-                await fetch(
-                    "/api/ask",
-                    {
-                        method:"POST",
+        aiBox.innerHTML =
+            "🤖 " + formatAI(data.reply);
 
-                        headers:{
-                            "Content-Type":
-                                "application/json"
-                        },
+        /* Render công thức toán */
 
-                        body:
-                            JSON.stringify({
-                                message:question
-                            })
-                    }
-                );
+        if (window.MathJax) {
 
-            const data =
-                await response.json();
+            try {
 
-            if(!response.ok){
+                await MathJax.typesetPromise([
+                    aiBox
+                ]);
 
-                throw new Error(
-                    data.error ||
-                    "AI không trả lời được."
+            } catch (error) {
+
+                console.warn(
+                    "MathJax:",
+                    error
                 );
 
             }
 
-            if(!useAILimit())
-                return;
-
-            aiBox.innerHTML =
-                "🤖 " +
-                formatAI(
-                    data.reply
-                );
-
-            if(window.MathJax){
-
-                MathJax.typesetPromise(
-                    [aiBox]
-                );
-
-            }
-
-        }catch(error){
-
-            console.error(error);
-
-            aiBox.textContent =
-                "❌ " +
-                (
-                    error.message ||
-                    "Có lỗi kết nối AI."
-                );
-
-        }finally{
-
-            aiButton.disabled =
-                false;
-
-            aiButton.textContent =
-                "Gửi";
-
         }
 
-    };
+    } catch (error) {
 
+        console.error(
+            "StudyForge AI:",
+            error
+        );
+
+        aiBox.innerHTML =
+            "❌ <strong>AI không kết nối được.</strong><br><br>" +
+            escapeHTML(
+                error.message ||
+                "Không xác định được lỗi."
+            );
+
+    } finally {
+
+        aiButton.disabled = false;
+        aiButton.textContent = "Gửi";
+
+    }
+}
+
+
+/* =========================
+   NÚT GỬI
+========================= */
+
+aiButton.onclick = askAI;
+
+
+/* =========================
+   ENTER ĐỂ GỬI
+========================= */
 
 aiInput.addEventListener(
     "keydown",
     event => {
 
-        if(event.key === "Enter")
-            aiButton.click();
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            askAI();
+
+        }
 
     }
 );
 
 
+/* =========================
+   VÍ DỤ BÀI TOÁN
+========================= */
+
+const aiExamples = [
+    "Giải phương trình: 2x + 5 = 17",
+    "Giải hệ phương trình: x + y = 10; 2x - y = 5",
+    "Phân tích đa thức: x² - 5x + 6",
+    "Tính: 25 × 16 - 120",
+    "Giải phương trình: x² - 5x + 6 = 0",
+    "Cho tam giác ABC vuông tại A, AB = 6cm, AC = 8cm. Tính BC."
+];
+
+
+function createAIExamples() {
+
+    const old =
+        document.getElementById(
+            "aiExamples"
+        );
+
+    if (old) {
+        old.remove();
+    }
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.id =
+        "aiExamples";
+
+    wrapper.style.cssText = `
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:12px;
+    `;
+
+    aiExamples.forEach(
+        example => {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.textContent =
+                "💡 " + example;
+
+            button.style.cssText = `
+                border:1px solid #263c55;
+                background:#10243a;
+                color:white;
+                padding:9px 11px;
+                border-radius:10px;
+                cursor:pointer;
+                text-align:left;
+            `;
+
+            button.onclick = () => {
+
+                aiInput.value =
+                    example;
+
+                aiInput.focus();
+
+            };
+
+            wrapper.appendChild(
+                button
+            );
+
+        }
+    );
+
+    aiInput.parentElement.after(
+        wrapper
+    );
+}
+
+
+createAIExamples();
+updateAIQuota();
 /* =====================================================
    SUPABASE AUTH
 ===================================================== */
