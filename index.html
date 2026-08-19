@@ -826,6 +826,124 @@ todoInput.addEventListener(
 );
 
 renderTasks();
+// ===============================
+// STUDY MUSIC - AUTO LOOP
+// ===============================
+
+const musicTracks = [
+    "music/chill1.mp3",
+    "music/chill2.mp3",
+    "music/chill3.mp3",
+    "music/chill4.mp3"
+];
+
+let musicIndex = 0;
+
+const audioPlayer = new Audio();
+
+audioPlayer.preload = "auto";
+
+const musicButtons =
+    document.querySelectorAll(".music .btn");
+
+function playMusic(index) {
+
+    const sameTrack =
+        musicIndex === index &&
+        audioPlayer.src.endsWith(
+            musicTracks[index]
+        );
+
+    musicIndex = index;
+
+    // Bấm lại bài đang phát → dừng
+    if (
+        sameTrack &&
+        !audioPlayer.paused
+    ) {
+
+        audioPlayer.pause();
+
+        musicButtons[index]
+            .textContent =
+            `▶ Chill ${index + 1}`;
+
+        return;
+    }
+
+    // Chọn bài mới hoặc phát lại
+    audioPlayer.src =
+        musicTracks[index];
+
+    audioPlayer.currentTime = 0;
+
+    audioPlayer.play();
+
+    musicButtons.forEach(
+        (button, i) => {
+            button.textContent =
+                `🎧 Chill ${i + 1}`;
+        }
+    );
+
+    musicButtons[index]
+        .textContent =
+        `⏸ Chill ${index + 1}`;
+}
+
+// Bấm Chill 1 → 4
+musicButtons.forEach(
+    (button, index) => {
+
+        button.onclick = () =>
+            playMusic(index);
+
+    }
+);
+
+// Hết bài → tự động lặp
+audioPlayer.addEventListener(
+    "ended",
+    () => {
+
+        audioPlayer.currentTime = 0;
+
+        audioPlayer.play();
+
+    }
+);
+
+// Nếu bài bị pause → đổi icon
+audioPlayer.addEventListener(
+    "pause",
+    () => {
+
+        if (
+            musicButtons[musicIndex]
+        ) {
+            musicButtons[musicIndex]
+                .textContent =
+                `▶ Chill ${musicIndex + 1}`;
+        }
+
+    }
+);
+
+// Nếu phát lại → đổi icon
+audioPlayer.addEventListener(
+    "play",
+    () => {
+
+        if (
+            musicButtons[musicIndex]
+        ) {
+            musicButtons[musicIndex]
+                .textContent =
+                `⏸ Chill ${musicIndex + 1}`;
+        }
+
+    }
+);
 </script>
 </body>
 </html>
