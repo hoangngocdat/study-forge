@@ -754,7 +754,21 @@ function renderAchievements() {
 /* =====================================================
    MUSIC
 ===================================================== */
-const musicTracks = Array.from({length:10}, (_,i) => `music/chill${i+1}.mp3`);
+
+// Danh sách nhạc được sắp xếp theo số trong tên file
+const musicTracks = [
+    "music/chill1.mp3",
+    "music/chill2.mp3",
+    "music/chill3.mp3",
+    "music/chill4.mp3",
+    "music/chill5.mp3",
+    "music/chill6.mp3",
+    "music/chill7.mp3",
+    "music/chill8.mp3",
+    "music/chill9.mp3",
+    "music/chill10.mp3"
+];
+
 let musicIndex = 0;
 let isPlaying = false;
 
@@ -775,8 +789,11 @@ function createMusicButtons() {
         button.textContent = `🎧 Chill ${index + 1}`;
 
         button.onclick = () => {
-            if (musicIndex === index && isPlaying) audioPlayer.pause();
-            else playMusic(index);
+            if (musicIndex === index && isPlaying) {
+                audioPlayer.pause();
+            } else {
+                playMusic(index);
+            }
         };
 
         musicList.appendChild(button);
@@ -786,35 +803,52 @@ function createMusicButtons() {
 function updateMusicUI() {
     document.querySelectorAll(".music-btn").forEach((button, index) => {
         const active = index === musicIndex && isPlaying;
+
         button.classList.toggle("active", active);
-        button.textContent = active ? `⏸ Chill ${index+1}` : `🎧 Chill ${index+1}`;
+
+        button.textContent = active
+            ? `⏸ Chill ${index + 1}`
+            : `🎧 Chill ${index + 1}`;
     });
 
-    playPauseButton.textContent = isPlaying ? "⏸ Tạm dừng" : "▶ Phát";
+    playPauseButton.textContent =
+        isPlaying ? "⏸ Tạm dừng" : "▶ Phát";
+
     nowPlaying.textContent = isPlaying
-        ? `🎵 Đang phát: Chill ${musicIndex+1}`
-        : `⏸ Đã dừng: Chill ${musicIndex+1}`;
+        ? `🎵 Đang phát: Chill ${musicIndex + 1}`
+        : `⏸ Đã dừng: Chill ${musicIndex + 1}`;
 }
 
 function playMusic(index) {
     if (index < 0 || index >= musicTracks.length) return;
 
     musicIndex = index;
+
     audioPlayer.pause();
-    audioPlayer.src = musicTracks[index];
+    audioPlayer.src = musicTracks[musicIndex];
     audioPlayer.currentTime = 0;
 
     audioPlayer.play().catch(() => {
         isPlaying = false;
         updateMusicUI();
-        alert(`⚠️ Không thể phát Chill ${index+1}.\n\nKiểm tra file: music/chill${index+1}.mp3`);
+
+        alert(
+            `⚠️ Không thể phát Chill ${musicIndex + 1}.\n\n` +
+            `Kiểm tra file: ${musicTracks[musicIndex]}`
+        );
     });
 }
 
 playPauseButton.onclick = () => {
-    if (isPlaying) audioPlayer.pause();
-    else if (!audioPlayer.src) playMusic(musicIndex);
-    else audioPlayer.play().catch(() => {});
+    if (isPlaying) {
+        audioPlayer.pause();
+    } else {
+        if (!audioPlayer.src) {
+            playMusic(musicIndex);
+        } else {
+            audioPlayer.play().catch(() => {});
+        }
+    }
 };
 
 nextButton.onclick = () => {
@@ -836,7 +870,6 @@ audioPlayer.addEventListener("play", () => {
     isPlaying = true;
     updateMusicUI();
 });
-
 /* =====================================================
    AI
 ===================================================== */
