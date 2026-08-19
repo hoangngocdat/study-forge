@@ -418,8 +418,7 @@ input {
     <h2>🤖 StudyForge AI</h2>
 
     <p class="small" style="margin-top:8px">
-        FREE · 20 lượt/ngày
-    </p>
+<span id="aiQuota">FREE · Còn 20/20 lượt hôm nay</span>    </p>
 
     <div class="ai-box">
 
@@ -1095,18 +1094,101 @@ const aiButton = document.querySelector(
 const aiBox = document.querySelector(
     '.ai-box'
 );
+// ===============================
+// AI DAILY QUOTA - 20 LƯỢT / NGÀY
+// ===============================
 
-aiButton.onclick = async () => {
+const AI_DAILY_LIMIT = 20;
 
-    const question =
-        aiInput.value.trim();
+const todayKey =
+    new Date().toISOString().slice(0, 10);
 
-    if (!question) {
-        aiBox.textContent =
-            "⚠️ Hãy nhập câu hỏi trước nhé!";
-        return;
+let aiQuotaData =
+    JSON.parse(
+        localStorage.getItem("studyforge_ai_quota")
+    ) || {
+        date: todayKey,
+        used: 0
+    };
+
+// Sang ngày mới → reset về 20
+if (aiQuotaData.date !== todayKey) {
+    aiQuotaData = {
+        date: todayKey,
+        used: 0
+    };
+
+    localStorage.setItem(
+        "studyforge_ai_quota",
+        JSON.stringify(aiQuotaData)
+    );
+}
+
+const aiQuota =
+    document.getElementById("aiQuota");
+
+function updateAIQuota() {
+
+    const remaining =
+        Math.max(
+            0,
+            AI_DAILY_LIMIT - aiQuotaData.used
+        );
+
+    aiQuota.textContent =
+        `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`;
+
+    if (remaining === 0) {
+        aiQuota.textContent =
+            "FREE · Đã hết lượt hôm nay";
+    }
+}
+
+function useAILimit() {
+
+    if (
+        aiQuotaData.used >=
+        AI_DAILY_LIMIT
+    ) {
+        return false;
     }
 
+    aiQuotaData.used++;
+
+    localStorage.setItem(
+        "studyforge_ai_quota",
+        JSON.stringify(aiQuotaData)
+    );
+
+    updateAIQuota();
+
+    return true;
+}
+
+updateAIQuota();
+aiButton.onclick = async () => {
+
+  const question =
+    aiInput.value.trim();
+
+if (!question) {
+    aiBox.textContent =
+        "⚠️ Hãy nhập câu hỏi trước nhé!";
+    return;
+}
+
+if (
+    aiQuotaData.used >=
+    AI_DAILY_LIMIT
+) {
+    aiBox.textContent =
+        "⛔ Bạn đã dùng hết 20 lượt AI hôm nay. Mai quay lại nhé!";
+    return;
+}
+
+if (!useAILimit()) {
+    return;
+}
     aiButton.disabled = true;
     aiButton.textContent = "⏳";
 
