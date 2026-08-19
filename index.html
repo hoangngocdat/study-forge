@@ -2356,11 +2356,242 @@ function playTimerSound(){
 
 }
 
-/* BẮT ĐẦU */
+/* =====================================================
+   ÂM THANH BÁO HẾT GIỜ
+===================================================== */
+
+let timerAudioContext = null;
+
+function initTimerSound(){
+
+    const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    if(!AudioContext) return;
+
+    if(!timerAudioContext){
+
+        timerAudioContext =
+            new AudioContext();
+
+    }
+
+    if(
+        timerAudioContext.state ===
+        "suspended"
+    ){
+
+        timerAudioContext.resume();
+
+    }
+
+}
+
+
+function playTimerSound(){
+
+    if(!timerAudioContext){
+
+        initTimerSound();
+
+    }
+
+    if(!timerAudioContext) return;
+
+    const ctx =
+        timerAudioContext;
+
+    if(ctx.state === "suspended"){
+
+        ctx.resume();
+
+    }
+
+
+    function beep(delay, frequency){
+
+        setTimeout(() => {
+
+            const oscillator =
+                ctx.createOscillator();
+
+            const gain =
+                ctx.createGain();
+
+
+            oscillator.type =
+                "sine";
+
+            oscillator.frequency.value =
+                frequency;
+
+
+            gain.gain.setValueAtTime(
+                0.001,
+                ctx.currentTime
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.35,
+                ctx.currentTime + 0.03
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                ctx.currentTime + 0.55
+            );
+
+
+            oscillator.connect(gain);
+
+            gain.connect(
+                ctx.destination
+            );
+
+
+            oscillator.start();
+
+            oscillator.stop(
+                ctx.currentTime + 0.55
+            );
+
+        }, delay);
+
+    }
+
+
+    // 🔔 3 tiếng reo
+    beep(0, 880);
+    beep(700, 880);
+    beep(1400, 1100);
+
+}
+
+
+/* =====================================================
+   ÂM THANH BÁO HẾT GIỜ
+===================================================== */
+
+let timerAudioContext = null;
+
+function initTimerSound(){
+
+    const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    if(!AudioContext) return;
+
+    if(!timerAudioContext){
+
+        timerAudioContext =
+            new AudioContext();
+
+    }
+
+    if(
+        timerAudioContext.state ===
+        "suspended"
+    ){
+
+        timerAudioContext.resume();
+
+    }
+
+}
+
+
+function playTimerSound(){
+
+    if(!timerAudioContext){
+
+        initTimerSound();
+
+    }
+
+    if(!timerAudioContext) return;
+
+    const ctx =
+        timerAudioContext;
+
+    if(ctx.state === "suspended"){
+
+        ctx.resume();
+
+    }
+
+
+    function beep(delay, frequency){
+
+        setTimeout(() => {
+
+            const oscillator =
+                ctx.createOscillator();
+
+            const gain =
+                ctx.createGain();
+
+
+            oscillator.type =
+                "sine";
+
+            oscillator.frequency.value =
+                frequency;
+
+
+            gain.gain.setValueAtTime(
+                0.001,
+                ctx.currentTime
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.35,
+                ctx.currentTime + 0.03
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                ctx.currentTime + 0.55
+            );
+
+
+            oscillator.connect(gain);
+
+            gain.connect(
+                ctx.destination
+            );
+
+
+            oscillator.start();
+
+            oscillator.stop(
+                ctx.currentTime + 0.55
+            );
+
+        }, delay);
+
+    }
+
+
+    // 🔔 3 tiếng reo
+    beep(0, 880);
+    beep(700, 880);
+    beep(1400, 1100);
+
+}
+
+
+/* =====================================================
+   BẮT ĐẦU
+===================================================== */
 
 function startFocus(){
 
     if(timerRunning) return;
+
+    // Kích hoạt âm thanh ngay khi người dùng bấm nút
+    initTimerSound();
 
     timerRunning = true;
 
@@ -2373,6 +2604,7 @@ function startFocus(){
         ? "📚 Đang tập trung học..."
         : "☕ Đang nghỉ...";
 
+
     timerInterval =
         setInterval(() => {
 
@@ -2380,47 +2612,74 @@ function startFocus(){
 
             updateTimerDisplay();
 
+
             if(timerSeconds <= 0){
 
-                clearInterval(timerInterval);
+                clearInterval(
+                    timerInterval
+                );
 
                 timerRunning = false;
 
-                startFocusButton.disabled = false;
+                startFocusButton.disabled =
+                    false;
 
-                /* HẾT GIỜ HỌC */
+
+                /* =========================
+                   HẾT GIỜ HỌC
+                ========================= */
 
                 if(timerMode === "study"){
 
-                    addStudyMinutes(studyMinutes);
+                    // 🔔 REO
+                    playTimerSound();
+
+
+                    addStudyMinutes(
+                        studyMinutes
+                    );
+
 
                     addExp(
                         studyMinutes === 25
                             ? 50
-                            : Math.round(studyMinutes * 2),
+                            : Math.round(
+                                studyMinutes * 2
+                            ),
                         `Hoàn thành ${studyMinutes} phút Focus`
                     );
 
+
                     checkAchievements();
+
 
                     alert(
                         `🎉 Hoàn thành ${studyMinutes} phút học!\n\n` +
                         `Giờ nghỉ ${breakMinutes} phút bắt đầu.`
                     );
 
+
                     timerMode = "break";
+
 
                     timerSeconds =
                         breakMinutes * 60;
 
+
                     updateTimerMode();
+
                     updateTimerDisplay();
 
-                    /* TỰ ĐỘNG BẮT ĐẦU NGHỈ */
+
+                    /* =========================
+                       TỰ ĐỘNG BẮT ĐẦU NGHỈ
+                    ========================= */
 
                     timerRunning = true;
 
-                    startFocusButton.disabled = true;
+                    startFocusButton.disabled =
+                        true;
+
 
                     timerInterval =
                         setInterval(() => {
@@ -2429,21 +2688,38 @@ function startFocus(){
 
                             updateTimerDisplay();
 
+
                             if(timerSeconds <= 0){
 
-                                clearInterval(timerInterval);
+                                clearInterval(
+                                    timerInterval
+                                );
 
-                                timerRunning = false;
 
-                                timerMode = "study";
+                                timerRunning =
+                                    false;
+
+
+                                // 🔔 REO KHI HẾT NGHỈ
+                                playTimerSound();
+
+
+                                timerMode =
+                                    "study";
+
 
                                 timerSeconds =
                                     studyMinutes * 60;
 
-                                startFocusButton.disabled = false;
+
+                                startFocusButton.disabled =
+                                    false;
+
 
                                 updateTimerMode();
+
                                 updateTimerDisplay();
+
 
                                 alert(
                                     "☕ Hết giờ nghỉ!\n\n" +
@@ -2463,7 +2739,9 @@ function startFocus(){
 }
 
 
-/* TẠM DỪNG */
+/* =====================================================
+   TẠM DỪNG
+===================================================== */
 
 function pauseFocus(){
 
@@ -2473,7 +2751,11 @@ function pauseFocus(){
 
     timerRunning = false;
 
-    startFocusButton.disabled = false;
+    startFocusButton.disabled =
+        false;
+
+    pauseFocusButton.disabled =
+        false;
 
     focusStatus.textContent =
         "⏸ Đã tạm dừng.";
@@ -2481,7 +2763,9 @@ function pauseFocus(){
 }
 
 
-/* RESET */
+/* =====================================================
+   RESET
+===================================================== */
 
 function resetFocus(){
 
@@ -2494,31 +2778,44 @@ function resetFocus(){
     timerSeconds =
         studyMinutes * 60;
 
-    startFocusButton.disabled = false;
+    startFocusButton.disabled =
+        false;
+
+    pauseFocusButton.disabled =
+        false;
 
     updateTimerMode();
+
     updateTimerDisplay();
 
 }
 
 
-/* GÁN NÚT */
+/* =====================================================
+   GÁN NÚT
+===================================================== */
 
 startFocusButton.onclick =
     startFocus;
 
+
 pauseFocusButton.onclick =
     pauseFocus;
+
 
 resetFocusButton.onclick =
     resetFocus;
 
 
-/* KHỞI TẠO */
+/* =====================================================
+   KHỞI TẠO
+===================================================== */
 
-pauseFocusButton.disabled = true;
+pauseFocusButton.disabled =
+    true;
 
 updateTimerMode();
+
 updateTimerDisplay();
 /* =====================================================
    TODO
