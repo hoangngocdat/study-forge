@@ -2082,153 +2082,384 @@ document.getElementById(
 
 
 /* =====================================================
-   POMODORO
+   POMODORO — HỌC & NGHỈ
 ===================================================== */
 
-let focusMinutes = 25;
-let focusSeconds = 25 * 60;
-let focusRunning = false;
-let focusInterval = null;
+let studyMinutes = 25;
+let breakMinutes = 5;
+
+let timerSeconds = studyMinutes * 60;
+let timerRunning = false;
+let timerMode = "study";
+let timerInterval = null;
 
 const timerDisplay =
-    document.querySelector(".timer-number");
+    document.getElementById("timerDisplay");
 
-const startButton =
-    document.getElementById(
-        "startFocusButton"
-    );
+const timerModeDisplay =
+    document.getElementById("timerMode");
+
+const focusStatus =
+    document.getElementById("focusStatus");
+
+const startFocusButton =
+    document.getElementById("startFocusButton");
+
+const pauseFocusButton =
+    document.getElementById("pauseFocusButton");
+
+const resetFocusButton =
+    document.getElementById("resetFocusButton");
+
+const customStudyMinutes =
+    document.getElementById("customStudyMinutes");
+
+const customStudyButton =
+    document.getElementById("customStudyButton");
+
+const customBreakMinutes =
+    document.getElementById("customBreakMinutes");
+
+const customBreakButton =
+    document.getElementById("customBreakButton");
 
 
-function updateTimer(){
+/* HIỂN THỊ THỜI GIAN */
 
-    const m =
-        Math.floor(
-            focusSeconds / 60
-        )
-        .toString()
-        .padStart(2,"0");
+function updateTimerDisplay(){
 
-    const s =
-        (focusSeconds % 60)
-        .toString()
-        .padStart(2,"0");
+    const totalSeconds =
+        Math.max(0, Number(timerSeconds) || 0);
+
+    const minutes =
+        Math.floor(totalSeconds / 60)
+            .toString()
+            .padStart(2, "0");
+
+    const seconds =
+        (totalSeconds % 60)
+            .toString()
+            .padStart(2, "0");
 
     timerDisplay.textContent =
-        `${m}:${s}`;
+        `${minutes}:${seconds}`;
 
 }
 
 
-document.querySelectorAll(
-    ".timer-settings button"
-).forEach(button => {
+/* CẬP NHẬT TRẠNG THÁI */
 
-    button.onclick = () => {
+function updateTimerMode(){
 
-        if(focusRunning) return;
+    if(timerMode === "study"){
 
-        focusMinutes =
-            Number(
-                button.dataset.minutes
-            );
+        timerModeDisplay.textContent =
+            "📚 ĐANG HỌC";
 
-        focusSeconds =
-            focusMinutes * 60;
+        focusStatus.textContent =
+            "Tập trung học nào! 💪";
 
-        updateTimer();
+    }else{
 
-    };
+        timerModeDisplay.textContent =
+            "☕ ĐANG NGHỈ";
 
-});
+        focusStatus.textContent =
+            "Nghỉ một chút rồi quay lại nhé! 😎";
 
+    }
+
+}
+
+
+/* CHỌN THỜI GIAN HỌC */
+
+document
+    .querySelectorAll(".timer-settings button[data-minutes]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            if(timerRunning) return;
+
+            const value =
+                Number(button.dataset.minutes);
+
+            if(!Number.isFinite(value) || value <= 0)
+                return;
+
+            studyMinutes = value;
+
+            timerMode = "study";
+
+            timerSeconds =
+                studyMinutes * 60;
+
+            updateTimerMode();
+            updateTimerDisplay();
+
+        });
+
+    });
+
+
+/* CHỌN THỜI GIAN NGHỈ */
+
+document
+    .querySelectorAll(".timer-settings button[data-break]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            if(timerRunning) return;
+
+            const value =
+                Number(button.dataset.break);
+
+            if(!Number.isFinite(value) || value <= 0)
+                return;
+
+            breakMinutes = value;
+
+            focusStatus.textContent =
+                `☕ Thời gian nghỉ đã đặt: ${breakMinutes} phút`;
+
+        });
+
+    });
+
+
+/* NHẬP THỜI GIAN HỌC */
+
+customStudyButton.onclick = () => {
+
+    const value =
+        Number(customStudyMinutes.value);
+
+    if(
+        !Number.isFinite(value) ||
+        value < 1 ||
+        value > 720
+    ){
+
+        alert("⚠️ Nhập từ 1 đến 720 phút.");
+
+        return;
+
+    }
+
+    if(timerRunning) return;
+
+    studyMinutes = Math.floor(value);
+
+    timerMode = "study";
+
+    timerSeconds =
+        studyMinutes * 60;
+
+    customStudyMinutes.value = "";
+
+    updateTimerMode();
+    updateTimerDisplay();
+
+};
+
+
+/* NHẬP THỜI GIAN NGHỈ */
+
+customBreakButton.onclick = () => {
+
+    const value =
+        Number(customBreakMinutes.value);
+
+    if(
+        !Number.isFinite(value) ||
+        value < 1 ||
+        value > 120
+    ){
+
+        alert("⚠️ Nhập từ 1 đến 120 phút.");
+
+        return;
+
+    }
+
+    if(timerRunning) return;
+
+    breakMinutes = Math.floor(value);
+
+    customBreakMinutes.value = "";
+
+    focusStatus.textContent =
+        `☕ Thời gian nghỉ đã đặt: ${breakMinutes} phút`;
+
+};
+
+
+/* BẮT ĐẦU */
 
 function startFocus(){
 
-    if(focusRunning) return;
+    if(timerRunning) return;
 
-    focusRunning = true;
+    timerRunning = true;
 
-    startButton.textContent =
-        "⏸ Đang học...";
+    startFocusButton.disabled = true;
 
-    focusInterval =
+    pauseFocusButton.disabled = false;
+
+    focusStatus.textContent =
+        timerMode === "study"
+        ? "📚 Đang tập trung học..."
+        : "☕ Đang nghỉ...";
+
+    timerInterval =
         setInterval(() => {
 
-            focusSeconds--;
+            timerSeconds--;
 
-            updateTimer();
+            updateTimerDisplay();
 
-            if(focusSeconds <= 0){
+            if(timerSeconds <= 0){
 
-                clearInterval(
-                    focusInterval
-                );
+                clearInterval(timerInterval);
 
-                focusRunning = false;
+                timerRunning = false;
 
-                startButton.textContent =
-                    "▶ Bắt đầu";
+                startFocusButton.disabled = false;
 
-                addStudyMinutes(
-                    focusMinutes
-                );
+                /* HẾT GIỜ HỌC */
 
-                addExp(
-                    focusMinutes === 25
-                    ? 50
-                    : Math.round(
-                        focusMinutes * 2
-                    ),
-                    `Hoàn thành ${focusMinutes} phút Focus`
-                );
+                if(timerMode === "study"){
 
-                checkAchievements();
+                    addStudyMinutes(studyMinutes);
 
-                focusSeconds =
-                    focusMinutes * 60;
+                    addExp(
+                        studyMinutes === 25
+                            ? 50
+                            : Math.round(studyMinutes * 2),
+                        `Hoàn thành ${studyMinutes} phút Focus`
+                    );
 
-                updateTimer();
+                    checkAchievements();
 
-                alert(
-                    `🎉 Hoàn thành ${focusMinutes} phút Focus!\n\nBạn nhận được EXP và thời gian học đã được cộng.`
-                );
+                    alert(
+                        `🎉 Hoàn thành ${studyMinutes} phút học!\n\n` +
+                        `Giờ nghỉ ${breakMinutes} phút bắt đầu.`
+                    );
+
+                    timerMode = "break";
+
+                    timerSeconds =
+                        breakMinutes * 60;
+
+                    updateTimerMode();
+                    updateTimerDisplay();
+
+                    /* TỰ ĐỘNG BẮT ĐẦU NGHỈ */
+
+                    timerRunning = true;
+
+                    startFocusButton.disabled = true;
+
+                    timerInterval =
+                        setInterval(() => {
+
+                            timerSeconds--;
+
+                            updateTimerDisplay();
+
+                            if(timerSeconds <= 0){
+
+                                clearInterval(timerInterval);
+
+                                timerRunning = false;
+
+                                timerMode = "study";
+
+                                timerSeconds =
+                                    studyMinutes * 60;
+
+                                startFocusButton.disabled = false;
+
+                                updateTimerMode();
+                                updateTimerDisplay();
+
+                                alert(
+                                    "☕ Hết giờ nghỉ!\n\n" +
+                                    "📚 Sẵn sàng học tiếp!"
+                                );
+
+                            }
+
+                        }, 1000);
+
+                }
 
             }
 
-        },1000);
+        }, 1000);
 
 }
 
+
+/* TẠM DỪNG */
+
+function pauseFocus(){
+
+    if(!timerRunning) return;
+
+    clearInterval(timerInterval);
+
+    timerRunning = false;
+
+    startFocusButton.disabled = false;
+
+    focusStatus.textContent =
+        "⏸ Đã tạm dừng.";
+
+}
+
+
+/* RESET */
 
 function resetFocus(){
 
-    clearInterval(
-        focusInterval
-    );
+    clearInterval(timerInterval);
 
-    focusRunning = false;
+    timerRunning = false;
 
-    focusSeconds =
-        focusMinutes * 60;
+    timerMode = "study";
 
-    startButton.textContent =
-        "▶ Bắt đầu";
+    timerSeconds =
+        studyMinutes * 60;
 
-    updateTimer();
+    startFocusButton.disabled = false;
+
+    updateTimerMode();
+    updateTimerDisplay();
 
 }
 
 
-startButton.onclick =
+/* GÁN NÚT */
+
+startFocusButton.onclick =
     startFocus;
 
+pauseFocusButton.onclick =
+    pauseFocus;
 
-document.getElementById(
-    "resetFocusButton"
-).onclick =
+resetFocusButton.onclick =
     resetFocus;
 
 
+/* KHỞI TẠO */
+
+pauseFocusButton.disabled = true;
+
+updateTimerMode();
+updateTimerDisplay();
 /* =====================================================
    TODO
 ===================================================== */
