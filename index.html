@@ -1059,6 +1059,101 @@ audioPlayer.addEventListener(
 
     }
 );
+// ===============================
+// STUDYFORGE AI
+// ===============================
+
+const aiInput = document.querySelector(
+    '.ai-box + .todo-add input'
+);
+
+const aiButton = document.querySelector(
+    '.ai-box + .todo-add .btn'
+);
+
+const aiBox = document.querySelector(
+    '.ai-box'
+);
+
+aiButton.onclick = async () => {
+
+    const question =
+        aiInput.value.trim();
+
+    if (!question) {
+        aiBox.textContent =
+            "⚠️ Hãy nhập câu hỏi trước nhé!";
+        return;
+    }
+
+    aiButton.disabled = true;
+    aiButton.textContent = "⏳";
+
+    aiBox.textContent =
+        "🤖 StudyForge AI đang suy nghĩ...";
+
+    try {
+
+        const response = await fetch(
+            "/api/ask",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: question
+                })
+            }
+        );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "AI không trả lời được."
+            );
+
+        }
+
+        aiBox.textContent =
+            "🤖 " + data.reply;
+
+    } catch (error) {
+
+        console.error(error);
+
+        aiBox.textContent =
+            "❌ " +
+            (error.message ||
+            "Có lỗi kết nối AI.");
+
+    } finally {
+
+        aiButton.disabled = false;
+        aiButton.textContent = "Gửi";
+
+    }
+};
+
+
+// Nhấn Enter để gửi
+aiInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+            aiButton.click();
+        }
+
+    }
+);    
 </script>
 </body>
 </html>
