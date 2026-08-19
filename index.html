@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>StudyForge</title>
 
 <script>
@@ -25,10 +24,9 @@ window.MathJax = {
     padding:0;
 }
 
-html,
-body{
+html,body{
     width:100%;
-    max-width:100%;
+    min-height:100%;
     overflow-x:hidden;
 }
 
@@ -39,8 +37,7 @@ body{
     min-height:100vh;
 }
 
-button,
-input{
+button,input{
     font-family:inherit;
 }
 
@@ -99,7 +96,8 @@ header{
     width:100%;
 }
 
-.hero{
+.hero,
+.ai-card{
     grid-column:1/-1;
 }
 
@@ -185,6 +183,7 @@ header{
     font-size:55px;
     font-weight:bold;
     margin:20px 0;
+    font-variant-numeric:tabular-nums;
 }
 
 .timer-settings{
@@ -292,11 +291,7 @@ input:focus{
 
 .motivation{
     margin-top:15px;
-    background:linear-gradient(
-        135deg,
-        #10243a,
-        #132d49
-    );
+    background:linear-gradient(135deg,#10243a,#132d49);
     border:1px solid #29445f;
     border-radius:15px;
     padding:17px;
@@ -387,12 +382,6 @@ input:focus{
     font-size:13px;
 }
 
-/* ================= AI ================= */
-
-.ai-card{
-    grid-column:1/-1;
-}
-
 .ai-box{
     margin-top:15px;
     background:#081522;
@@ -400,12 +389,11 @@ input:focus{
     border-radius:15px;
     padding:18px;
     line-height:1.7;
-
     min-height:260px;
     max-height:420px;
     overflow-y:auto;
-
     font-size:15px;
+    overflow-wrap:anywhere;
 }
 
 .ai-box h3{
@@ -441,8 +429,6 @@ input:focus{
     font-size:12px;
     margin-top:9px;
 }
-
-/* ================= AUTH ================= */
 
 .auth-overlay{
     position:fixed;
@@ -542,8 +528,6 @@ input:focus{
     z-index:4000;
 }
 
-/* ================= RESPONSIVE ================= */
-
 @media(max-width:800px){
 
     .app{
@@ -576,10 +560,7 @@ input:focus{
         grid-template-columns:repeat(7,minmax(0,1fr));
     }
 
-    .achievement-list{
-        grid-template-columns:1fr;
-    }
-
+    .achievement-list,
     .music-list{
         grid-template-columns:1fr;
     }
@@ -626,97 +607,47 @@ input:focus{
 <div class="app">
 
 <header>
-    <div class="logo">
-        ⚒️ Study<span>Forge</span>
-    </div>
-
-    <button class="login" id="loginButton">
-        👤 Đăng nhập
-    </button>
+    <div class="logo">⚒️ Study<span>Forge</span></div>
+    <button class="login" id="loginButton">👤 Đăng nhập</button>
 </header>
 
 <div class="grid">
 
-<!-- JOURNEY -->
-
 <section class="card hero">
+    <div class="small">HÀNH TRÌNH HỌC TẬP</div>
 
-    <div class="small">
-        HÀNH TRÌNH HỌC TẬP
-    </div>
-
-    <div class="day" id="dayText">
-        Ngày 1 / 300
-    </div>
+    <div class="day" id="dayText">Ngày 1 / 300</div>
 
     <div class="progress">
-        <div class="progress-bar"></div>
+        <div class="progress-bar" id="progressBar"></div>
     </div>
 
     <div class="stats">
-
-        <div class="stat">
-            🔥 Streak
-            <b id="streakValue">0 ngày</b>
-        </div>
-
-        <div class="stat">
-            ⏱️ Thời gian học
-            <b id="studyTimeValue">0 phút</b>
-        </div>
-
-        <div class="stat">
-            ⚡ Level
-            <b id="levelValue">1</b>
-        </div>
-
+        <div class="stat">🔥 Streak<b id="streakValue">0 ngày</b></div>
+        <div class="stat">⏱️ Thời gian học<b id="studyTimeValue">0 phút</b></div>
+        <div class="stat">⚡ Level<b id="levelValue">1</b></div>
     </div>
 
     <div class="actions">
-
-        <button class="btn" id="completeButton">
-            ✅ Hoàn thành hôm nay
-        </button>
-
-        <button class="btn secondary" id="goalButton">
-            🎯 Đổi mục tiêu
-        </button>
-
-        <button class="btn secondary" id="startDateButton">
-            📅 Ngày bắt đầu
-        </button>
-
+        <button class="btn" id="completeButton">✅ Hoàn thành hôm nay</button>
+        <button class="btn secondary" id="goalButton">🎯 Đổi mục tiêu</button>
+        <button class="btn secondary" id="startDateButton">📅 Ngày bắt đầu</button>
     </div>
 
     <div class="motivation">
-        <div class="motivation-title">
-            💡 ĐỘNG LỰC HÔM NAY
-        </div>
-
-        <div id="motivationText">
-            Mỗi ngày tiến một chút, bạn sẽ đi rất xa.
-        </div>
+        <div class="motivation-title">💡 ĐỘNG LỰC HÔM NAY</div>
+        <div id="motivationText">Mỗi ngày tiến một chút, bạn sẽ đi rất xa.</div>
     </div>
-
 </section>
-
-
-<!-- POMODORO -->
 
 <section class="card timer">
 
-    <div class="small">
-        FOCUS
-    </div>
-
+    <div class="small">FOCUS</div>
     <h2>🎯 Pomodoro</h2>
 
-    <div class="timer-number">
-        25:00
-    </div>
+    <div class="timer-number" id="timerDisplay">25:00</div>
 
     <div class="timer-settings">
-
         <button data-minutes="5">5p</button>
         <button data-minutes="15">15p</button>
         <button data-minutes="25" class="active">25p</button>
@@ -731,60 +662,33 @@ input:focus{
             max="180"
             placeholder="Tự chọn"
         >
-
     </div>
 
-    <button class="btn" id="startFocusButton">
-        ▶ Bắt đầu
-    </button>
-
-    <button class="btn secondary" id="resetFocusButton">
-        ↺ Reset
-    </button>
+    <button class="btn" id="startFocusButton">▶ Bắt đầu</button>
+    <button class="btn secondary" id="resetFocusButton">↺ Reset</button>
 
 </section>
 
-
-<!-- TODO -->
-
 <section class="card">
 
-    <div class="small">
-        TODO
-    </div>
-
+    <div class="small">TODO</div>
     <h2>📋 Việc hôm nay</h2>
 
     <div class="todo-add">
-
-        <input
-            id="todoInput"
-            type="text"
-            placeholder="Thêm việc cần học..."
-        >
-
-        <button class="btn" id="todoButton">
-            +
-        </button>
-
+        <input id="todoInput" type="text" placeholder="Thêm việc cần học...">
+        <button class="btn" id="todoButton">+</button>
     </div>
 
     <div id="taskList"></div>
 
 </section>
 
-
-<!-- JOURNEY DAYS -->
-
 <section class="card">
 
-    <div class="small">
-        JOURNEY
-    </div>
-
+    <div class="small">JOURNEY</div>
     <h2>📅 Hành trình 1 → 1000 ngày</h2>
 
-    <div class="days"></div>
+    <div class="days" id="days"></div>
 
     <p class="small" style="margin-top:15px">
         Mục tiêu hiện tại:
@@ -793,15 +697,9 @@ input:focus{
 
 </section>
 
-
-<!-- STATISTICS -->
-
 <section class="card">
 
-    <div class="small">
-        STATISTICS
-    </div>
-
+    <div class="small">STATISTICS</div>
     <h2>📊 Thống kê</h2>
 
     <div class="stats-big">
@@ -827,44 +725,30 @@ input:focus{
         </div>
 
     </div>
-
 </section>
-
-
-<!-- ACHIEVEMENTS -->
 
 <section class="card">
 
-    <div class="small">
-        ACHIEVEMENTS
-    </div>
-
+    <div class="small">ACHIEVEMENTS</div>
     <h2>🏆 Thành tích</h2>
 
     <div class="achievement-list" id="achievementList"></div>
 
 </section>
 
-
-<!-- AI -->
-
 <section class="card ai-card">
 
-    <div class="small">
-        AI STUDY ASSISTANT
-    </div>
+    <div class="small">AI STUDY ASSISTANT</div>
 
     <h2>🤖 StudyForge AI</h2>
 
     <p class="small" style="margin-top:8px">
-        <span id="aiQuota">
-            FREE · Còn 20/20 lượt hôm nay
-        </span>
+        <span id="aiQuota">FREE · Còn 20/20 lượt hôm nay</span>
     </p>
 
     <div class="ai-box" id="aiBox">
-        👋 Chào bạn! StudyForge AI sẽ giúp
-        bạn học tập, giải bài và tạo quiz.
+        👋 Chào bạn! StudyForge AI sẽ giúp bạn học tập,
+        giải bài và tạo quiz.
         <br><br>
         Hãy nhập câu hỏi bên dưới nhé!
     </div>
@@ -877,9 +761,7 @@ input:focus{
             placeholder="Hỏi bài, nhờ giải toán, tạo quiz..."
         >
 
-        <button class="btn" id="aiButton">
-            Gửi
-        </button>
+        <button class="btn" id="aiButton">Gửi</button>
 
     </div>
 
@@ -889,35 +771,16 @@ input:focus{
 
 </section>
 
-
-<!-- MUSIC -->
-
 <section class="card">
 
-    <div class="small">
-        MUSIC
-    </div>
-
+    <div class="small">MUSIC</div>
     <h2>🎧 Study Music</h2>
 
     <div class="music-list" id="musicList"></div>
 
     <div class="music-controls">
-
-        <button
-            class="btn"
-            id="playPauseButton"
-        >
-            ▶ Phát
-        </button>
-
-        <button
-            class="btn secondary"
-            id="nextButton"
-        >
-            ⏭ Tiếp
-        </button>
-
+        <button class="btn" id="playPauseButton">▶ Phát</button>
+        <button class="btn secondary" id="nextButton">⏭ Tiếp</button>
     </div>
 
     <div class="now-playing" id="nowPlaying">
@@ -929,16 +792,11 @@ input:focus{
 </div>
 </div>
 
-
-<!-- AUTH -->
-
 <div class="auth-overlay" id="authOverlay">
 
     <div class="auth-box">
 
-        <h2 id="authTitle">
-            👤 Đăng nhập
-        </h2>
+        <h2 id="authTitle">👤 Đăng nhập</h2>
 
         <p class="auth-subtitle">
             Đăng nhập hoặc tạo tài khoản StudyForge.
@@ -960,17 +818,11 @@ input:focus{
 
         <div class="auth-buttons">
 
-            <button
-                class="btn"
-                id="authSubmit"
-            >
+            <button class="btn" id="authSubmit">
                 Đăng nhập
             </button>
 
-            <button
-                class="btn secondary"
-                id="switchAuth"
-            >
+            <button class="btn secondary" id="switchAuth">
                 Đăng ký
             </button>
 
@@ -978,10 +830,7 @@ input:focus{
 
         <div class="auth-message" id="authMessage"></div>
 
-        <button
-            class="btn secondary auth-close"
-            id="closeAuth"
-        >
+        <button class="btn secondary auth-close" id="closeAuth">
             Đóng
         </button>
 
@@ -989,98 +838,109 @@ input:focus{
 
 </div>
 
-
-<!-- USER -->
-
 <div class="user-info" id="userInfo">
 
     <div class="user-email" id="userEmail"></div>
 
-    <button
-        class="btn secondary"
-        id="logoutButton"
-    >
+    <button class="btn secondary" id="logoutButton">
         🚪 Đăng xuất
     </button>
 
 </div>
 
-
 <div class="creator">
     Người tạo: <b>Hoàng Ngọc Đạt</b>
 </div>
 
-
 <script>
+"use strict";
 
 /* =====================================================
-   DATA
+   STORAGE
 ===================================================== */
 
 const STORAGE_KEY = "studyforge_data";
 
-let studyData;
+function loadData(){
 
-try{
-    studyData =
-        JSON.parse(
-            localStorage.getItem(STORAGE_KEY)
-        ) || {};
-}catch{
-    studyData = {};
+    try{
+
+        const raw = localStorage.getItem(STORAGE_KEY);
+
+        if(!raw) return {};
+
+        const parsed = JSON.parse(raw);
+
+        return parsed && typeof parsed === "object"
+            ? parsed
+            : {};
+
+    }catch(error){
+
+        console.error("Storage error:",error);
+        return {};
+
+    }
+
 }
 
-studyData.goal =
-    Number.isInteger(studyData.goal)
-    ? studyData.goal
-    : 300;
+let studyData = loadData();
+
+if(!Number.isInteger(studyData.goal) ||
+   studyData.goal < 1 ||
+   studyData.goal > 1000){
+
+    studyData.goal = 300;
+
+}
+
+if(!Number.isInteger(studyData.currentDay) ||
+   studyData.currentDay < 1){
+
+    studyData.currentDay = 1;
+
+}
 
 studyData.currentDay =
-    Number.isInteger(studyData.currentDay)
-    ? studyData.currentDay
-    : 1;
+    Math.min(studyData.currentDay,studyData.goal);
 
-studyData.completedDays =
-    Array.isArray(studyData.completedDays)
-    ? studyData.completedDays
-    : [];
+if(!Array.isArray(studyData.completedDays))
+    studyData.completedDays = [];
 
-studyData.streak =
-    Number.isInteger(studyData.streak)
-    ? studyData.streak
-    : 0;
+if(!Number.isInteger(studyData.streak))
+    studyData.streak = 0;
 
-studyData.tasks =
-    Array.isArray(studyData.tasks)
-    ? studyData.tasks
-    : [];
+if(!Array.isArray(studyData.tasks))
+    studyData.tasks = [];
 
-studyData.studyMinutes =
-    Number.isFinite(studyData.studyMinutes)
-    ? studyData.studyMinutes
-    : 0;
+if(!Number.isFinite(studyData.studyMinutes))
+    studyData.studyMinutes = 0;
 
-studyData.pomodoros =
-    Number.isInteger(studyData.pomodoros)
-    ? studyData.pomodoros
-    : 0;
+if(!Number.isInteger(studyData.pomodoros))
+    studyData.pomodoros = 0;
 
-studyData.startDate =
-    studyData.startDate || null;
+if(typeof studyData.startDate !== "string")
+    studyData.startDate = null;
 
-studyData.lastCompletedDate =
-    studyData.lastCompletedDate || null;
-
+if(typeof studyData.lastCompletedDate !== "string")
+    studyData.lastCompletedDate = null;
 
 function saveData(){
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(studyData)
-    );
+    try{
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(studyData)
+        );
+
+    }catch(error){
+
+        console.error("Không thể lưu dữ liệu:",error);
+
+    }
 
 }
-
 
 /* =====================================================
    DATE
@@ -1097,14 +957,10 @@ function getToday(){
 
 }
 
-
 function dateDiff(a,b){
 
-    const x =
-        new Date(a + "T00:00:00");
-
-    const y =
-        new Date(b + "T00:00:00");
+    const x = new Date(a + "T00:00:00+07:00");
+    const y = new Date(b + "T00:00:00+07:00");
 
     return Math.round(
         (y-x)/(1000*60*60*24)
@@ -1112,69 +968,47 @@ function dateDiff(a,b){
 
 }
 
-
 /* =====================================================
    MOTIVATION
 ===================================================== */
 
 const motivations = [
-
     "Mỗi ngày tiến một chút, bạn sẽ đi rất xa. 🚀",
-
     "Không cần hoàn hảo, chỉ cần không bỏ cuộc. 🔥",
-
     "Học hôm nay để ngày mai giỏi hơn chính mình hôm qua. 📚",
-
     "30 phút tập trung tốt hơn 3 giờ mất tập trung. 🎯",
-
     "Bạn không cần học thật nhiều, hãy học thật đều. ⚡",
-
     "Khó không có nghĩa là không thể. 💪",
-
     "Mỗi bài tập hoàn thành là một bước tiến. 🏆",
-
     "Tương lai của bạn được xây từ những việc bạn làm hôm nay. 🌟",
-
     "Đừng chờ có động lực. Hãy bắt đầu rồi động lực sẽ đến. 🚀",
-
     "Một ngày nữa, một bước nữa. 🔥",
-
     "Kiên trì hôm nay, tự hào ngày mai. 🏆",
-
     "Bạn đã bắt đầu rồi, vậy hãy đi tiếp. 💙",
-
     "Tập trung vào tiến bộ, không phải sự hoàn hảo.",
-
     "Học một chút mỗi ngày sẽ tạo nên khác biệt rất lớn.",
-
     "Đi chậm vẫn tốt hơn là đứng yên.",
-
     "Não cũng cần luyện tập giống như cơ bắp. 🧠",
-
     "Mỗi lần bạn ngồi xuống học là một lần bạn mạnh hơn.",
-
     "Đừng bỏ cuộc chỉ vì hôm nay khó.",
-
     "Bạn có thể làm được. Bắt đầu từ câu đầu tiên.",
-
     "🔥 StudyForge: Forge your future!"
 ];
 
 function updateMotivation(){
 
     const index =
-        Math.floor(
+        Math.max(
+            0,
             (studyData.currentDay - 1)
             % motivations.length
         );
 
     document.getElementById(
         "motivationText"
-    ).textContent =
-        motivations[index];
+    ).textContent = motivations[index];
 
 }
-
 
 /* =====================================================
    JOURNEY
@@ -1182,109 +1016,68 @@ function updateMotivation(){
 
 function updateJourney(){
 
-    document.querySelector(".day")
-        .textContent =
+    document.getElementById("dayText").textContent =
         `Ngày ${studyData.currentDay} / ${studyData.goal}`;
 
     const progress =
         Math.min(
             100,
-            (
-                (studyData.currentDay - 1) /
-                studyData.goal
-            ) * 100
+            ((studyData.currentDay - 1) /
+            Math.max(1,studyData.goal)) * 100
         );
 
-    document.querySelector(
-        ".progress-bar"
-    ).style.width =
+    document.getElementById("progressBar").style.width =
         progress + "%";
 
-    document.getElementById(
-        "streakValue"
-    ).textContent =
+    document.getElementById("streakValue").textContent =
         studyData.streak + " ngày";
 
-    document.getElementById(
-        "studyTimeValue"
-    ).textContent =
+    document.getElementById("studyTimeValue").textContent =
         studyData.studyMinutes + " phút";
 
-    const level =
+    document.getElementById("levelValue").textContent =
         Math.max(
             1,
-            Math.floor(
-                studyData.studyMinutes / 60
-            ) + 1
+            Math.floor(studyData.studyMinutes / 60) + 1
         );
 
-    document.getElementById(
-        "levelValue"
-    ).textContent =
-        level;
-
-    document.getElementById(
-        "goalDisplay"
-    ).textContent =
+    document.getElementById("goalDisplay").textContent =
         studyData.goal + " ngày";
 
-    document.getElementById(
-        "completedCount"
-    ).textContent =
+    document.getElementById("completedCount").textContent =
         studyData.completedDays.length;
 
-    document.getElementById(
-        "totalHours"
-    ).textContent =
-        (studyData.studyMinutes / 60)
-        .toFixed(1) + "h";
+    document.getElementById("totalHours").textContent =
+        (studyData.studyMinutes / 60).toFixed(1) + "h";
 
-    document.getElementById(
-        "pomodoroCount"
-    ).textContent =
+    document.getElementById("pomodoroCount").textContent =
         studyData.pomodoros;
 
     renderDays();
-    updateMotivation();
     renderAchievements();
+    updateMotivation();
 
 }
-
 
 function renderDays(){
 
     const container =
-        document.querySelector(".days");
+        document.getElementById("days");
 
     container.innerHTML = "";
 
-    for(
-        let i=1;
-        i<=1000;
-        i++
-    ){
+    for(let i=1;i<=1000;i++){
 
-        const box =
-            document.createElement("div");
+        const box = document.createElement("div");
 
-        box.className =
-            "day-box";
+        box.className = "day-box";
+        box.textContent = i;
 
-        box.textContent =
-            i;
-
-        if(
-            studyData.completedDays
-                .includes(i)
-        ){
+        if(studyData.completedDays.includes(i))
             box.classList.add("done");
-        }
 
-        if(
-            i === studyData.currentDay
-        ){
+        if(i === studyData.currentDay)
             box.classList.add("current");
-        }
 
         container.appendChild(box);
 
@@ -1292,38 +1085,23 @@ function renderDays(){
 
 }
 
-
 function completeToday(){
 
-    const today =
-        getToday();
+    const today = getToday();
 
-    if(
-        studyData.lastCompletedDate === today
-    ){
+    if(studyData.lastCompletedDate === today){
 
-        alert(
-            "✅ Hôm nay bạn đã hoàn thành rồi!"
-        );
-
+        alert("✅ Hôm nay bạn đã hoàn thành rồi!");
         return;
 
     }
 
-    const day =
-        studyData.currentDay;
+    const day = studyData.currentDay;
 
-    if(
-        !studyData.completedDays.includes(day)
-    ){
-
+    if(!studyData.completedDays.includes(day))
         studyData.completedDays.push(day);
 
-    }
-
-    if(
-        studyData.lastCompletedDate
-    ){
+    if(studyData.lastCompletedDate){
 
         const difference =
             dateDiff(
@@ -1335,7 +1113,7 @@ function completeToday(){
 
             studyData.streak++;
 
-        }else if(difference > 1){
+        }else{
 
             studyData.streak = 1;
 
@@ -1347,24 +1125,15 @@ function completeToday(){
 
     }
 
-    studyData.lastCompletedDate =
-        today;
+    studyData.lastCompletedDate = today;
 
-    if(
-        studyData.currentDay <
-        studyData.goal
-    ){
-
+    if(studyData.currentDay < studyData.goal)
         studyData.currentDay++;
-
-    }
 
     saveData();
     updateJourney();
 
-    if(
-        day === studyData.goal
-    ){
+    if(day === studyData.goal){
 
         alert(
             "🎉 CHÚC MỪNG!\n\n" +
@@ -1377,7 +1146,6 @@ function completeToday(){
 
 }
 
-
 function changeGoal(){
 
     const answer =
@@ -1386,11 +1154,9 @@ function changeGoal(){
             studyData.goal
         );
 
-    if(answer === null)
-        return;
+    if(answer === null) return;
 
-    const goal =
-        Number(answer);
+    const goal = Number(answer);
 
     if(
         !Number.isInteger(goal) ||
@@ -1398,131 +1164,94 @@ function changeGoal(){
         goal > 1000
     ){
 
-        alert(
-            "⚠️ Hãy nhập số từ 1 đến 1000."
-        );
-
+        alert("⚠️ Hãy nhập số từ 1 đến 1000.");
         return;
 
     }
 
-    studyData.goal =
-        goal;
+    studyData.goal = goal;
 
-    if(
-        studyData.currentDay > goal
-    ){
-
-        studyData.currentDay =
-            goal;
-
-    }
+    if(studyData.currentDay > goal)
+        studyData.currentDay = goal;
 
     saveData();
     updateJourney();
 
 }
 
-
 function changeStartDate(){
 
     const answer =
         prompt(
             "📅 Nhập ngày bắt đầu theo dạng YYYY-MM-DD:",
-            studyData.startDate ||
-            getToday()
+            studyData.startDate || getToday()
         );
 
-    if(answer === null)
-        return;
+    if(answer === null) return;
 
-    if(
-        !/^\d{4}-\d{2}-\d{2}$/.test(answer)
-    ){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(answer)){
 
-        alert(
-            "⚠️ Hãy nhập đúng dạng YYYY-MM-DD."
-        );
-
+        alert("⚠️ Hãy nhập đúng dạng YYYY-MM-DD.");
         return;
 
     }
 
-    studyData.startDate =
-        answer;
+    const date = new Date(answer + "T00:00:00");
+
+    if(Number.isNaN(date.getTime())){
+
+        alert("⚠️ Ngày không hợp lệ.");
+        return;
+
+    }
+
+    studyData.startDate = answer;
 
     saveData();
 
-    alert(
-        "✅ Đã cập nhật ngày bắt đầu!"
-    );
+    alert("✅ Đã cập nhật ngày bắt đầu!");
 
 }
 
-
-document.getElementById(
-    "completeButton"
-).onclick =
+document.getElementById("completeButton").onclick =
     completeToday;
 
-document.getElementById(
-    "goalButton"
-).onclick =
+document.getElementById("goalButton").onclick =
     changeGoal;
 
-document.getElementById(
-    "startDateButton"
-).onclick =
+document.getElementById("startDateButton").onclick =
     changeStartDate;
-
 
 /* =====================================================
    POMODORO
 ===================================================== */
 
 let focusMinutes = 25;
-
-let focusSeconds =
-    focusMinutes * 60;
-
+let focusSeconds = 25 * 60;
 let focusRunning = false;
-
 let focusInterval = null;
 
 const timerDisplay =
-    document.querySelector(
-        ".timer-number"
-    );
+    document.getElementById("timerDisplay");
 
 const startButton =
-    document.getElementById(
-        "startFocusButton"
-    );
+    document.getElementById("startFocusButton");
 
 const resetButton =
-    document.getElementById(
-        "resetFocusButton"
-    );
+    document.getElementById("resetFocusButton");
 
 const customTime =
-    document.getElementById(
-        "customTime"
-    );
-
+    document.getElementById("customTime");
 
 function updateTimer(){
 
     const minutes =
-        Math.floor(
-            focusSeconds / 60
-        )
+        Math.floor(focusSeconds / 60)
         .toString()
         .padStart(2,"0");
 
     const seconds =
-        (
-            focusSeconds % 60
-        )
+        Math.max(0,focusSeconds % 60)
         .toString()
         .padStart(2,"0");
 
@@ -1531,152 +1260,267 @@ function updateTimer(){
 
 }
 
-
 function setFocusTime(minutes){
 
-    if(focusRunning)
-        return;
+    if(focusRunning) return;
 
-    focusMinutes =
-        minutes;
+    minutes = Number(minutes);
 
-    focusSeconds =
-        minutes * 60;
+    if(
+        !Number.isInteger(minutes) ||
+        minutes < 1 ||
+        minutes > 180
+    ) return;
+
+    focusMinutes = minutes;
+    focusSeconds = minutes * 60;
 
     document
-        .querySelectorAll(
-            ".timer-settings button"
-        )
-        .forEach(
-            button => {
+        .querySelectorAll(".timer-settings button")
+        .forEach(button => {
 
-                button.classList.toggle(
-                    "active",
-                    Number(
-                        button.dataset.minutes
-                    ) === minutes
-                );
+            button.classList.toggle(
+                "active",
+                Number(button.dataset.minutes) === minutes
+            );
 
-            }
-        );
+        });
 
     updateTimer();
 
 }
 
-
 document
-    .querySelectorAll(
-        ".timer-settings button"
-    )
-    .forEach(
-        button => {
+    .querySelectorAll(".timer-settings button")
+    .forEach(button => {
 
-            button.onclick =
-                () => {
+        button.onclick = () => {
 
-                    setFocusTime(
-                        Number(
-                            button.dataset.minutes
-                        )
-                    );
-
-                };
-
-        }
-    );
-
-
-customTime.addEventListener(
-    "change",
-    () => {
-
-        const value =
-            Number(
-                customTime.value
+            setFocusTime(
+                Number(button.dataset.minutes)
             );
 
-        if(
-            Number.isInteger(value) &&
-            value >= 1 &&
-            value <= 180
-        ){
+        };
 
-            setFocusTime(value);
+    });
 
-        }
+customTime.addEventListener("change",() => {
+
+    const value = Number(customTime.value);
+
+    if(
+        Number.isInteger(value) &&
+        value >= 1 &&
+        value <= 180
+    ){
+
+        setFocusTime(value);
+
+    }else if(customTime.value !== ""){
+
+        alert("⚠️ Nhập thời gian từ 1 đến 180 phút.");
+        customTime.value = "";
 
     }
-);
 
+});
+
+/* ===== TIMER SOUND ===== */
+
+let audioContext = null;
+
+function playTimerSound(){
+
+    try{
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if(!AudioContext) return;
+
+        if(!audioContext)
+            audioContext = new AudioContext();
+
+        if(audioContext.state === "suspended")
+            audioContext.resume();
+
+        const beep = (delay,frequency) => {
+
+            setTimeout(() => {
+
+                try{
+
+                    const oscillator =
+                        audioContext.createOscillator();
+
+                    const gain =
+                        audioContext.createGain();
+
+                    oscillator.type = "sine";
+                    oscillator.frequency.value = frequency;
+
+                    gain.gain.setValueAtTime(
+                        0.0001,
+                        audioContext.currentTime
+                    );
+
+                    gain.gain.exponentialRampToValueAtTime(
+                        0.25,
+                        audioContext.currentTime + 0.02
+                    );
+
+                    gain.gain.exponentialRampToValueAtTime(
+                        0.0001,
+                        audioContext.currentTime + 0.35
+                    );
+
+                    oscillator.connect(gain);
+                    gain.connect(audioContext.destination);
+
+                    oscillator.start();
+                    oscillator.stop(
+                        audioContext.currentTime + 0.36
+                    );
+
+                }catch(error){
+
+                    console.error(
+                        "Timer sound error:",
+                        error
+                    );
+
+                }
+
+            },delay);
+
+        };
+
+        beep(0,880);
+        beep(450,880);
+        beep(900,1046);
+
+    }catch(error){
+
+        console.error(
+            "AudioContext error:",
+            error
+        );
+
+    }
+
+}
+
+function finishFocus(){
+
+    clearInterval(focusInterval);
+
+    focusInterval = null;
+    focusRunning = false;
+
+    studyData.studyMinutes += focusMinutes;
+    studyData.pomodoros++;
+
+    saveData();
+
+    playTimerSound();
+
+    focusSeconds = focusMinutes * 60;
+
+    startButton.textContent = "▶ Bắt đầu";
+
+    updateTimer();
+    updateJourney();
+
+    alert(
+        `🎉 Hoàn thành ${focusMinutes} phút Focus!`
+    );
+
+}
 
 function startFocus(){
 
-    if(focusRunning)
-        return;
+    if(focusRunning) return;
+
+    if(focusSeconds <= 0)
+        focusSeconds = focusMinutes * 60;
+
+    try{
+
+        if(!audioContext){
+
+            const AudioContext =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+            if(AudioContext)
+                audioContext = new AudioContext();
+
+        }
+
+        if(audioContext?.state === "suspended")
+            audioContext.resume();
+
+    }catch(error){
+
+        console.warn(error);
+
+    }
 
     focusRunning = true;
 
     startButton.textContent =
         "⏸ Đang học...";
 
+    const endTime =
+        Date.now() + focusSeconds * 1000;
+
+    clearInterval(focusInterval);
+
     focusInterval =
-        setInterval(
-            () => {
+        setInterval(() => {
 
-                focusSeconds--;
+            const remaining =
+                Math.max(
+                    0,
+                    Math.ceil(
+                        (endTime - Date.now()) / 1000
+                    )
+                );
 
-                updateTimer();
+            focusSeconds = remaining;
 
-                if(
-                    focusSeconds <= 0
-                ){
+            updateTimer();
 
-                    clearInterval(
-                        focusInterval
-                    );
+            if(remaining <= 0)
+                finishFocus();
 
-                    focusRunning = false;
-
-                    studyData.studyMinutes +=
-                        focusMinutes;
-
-                    studyData.pomodoros++;
-
-                    saveData();
-
-                    focusSeconds =
-                        focusMinutes * 60;
-
-                    startButton.textContent =
-                        "▶ Bắt đầu";
-
-                    updateTimer();
-                    updateJourney();
-
-                    alert(
-                        `🎉 Hoàn thành ${focusMinutes} phút Focus!`
-                    );
-
-                }
-
-            },
-            1000
-        );
+        },250);
 
 }
 
+function pauseFocus(){
+
+    if(!focusRunning) return;
+
+    clearInterval(focusInterval);
+
+    focusInterval = null;
+    focusRunning = false;
+
+    startButton.textContent =
+        "▶ Tiếp tục";
+
+}
 
 function resetFocus(){
 
-    clearInterval(
-        focusInterval
-    );
+    clearInterval(focusInterval);
 
+    focusInterval = null;
     focusRunning = false;
 
-    focusSeconds =
-        focusMinutes * 60;
+    focusSeconds = focusMinutes * 60;
 
     startButton.textContent =
         "▶ Bắt đầu";
@@ -1685,139 +1529,104 @@ function resetFocus(){
 
 }
 
+startButton.onclick = () => {
 
-startButton.onclick =
-    startFocus;
+    if(focusRunning)
+        pauseFocus();
+    else
+        startFocus();
+
+};
 
 resetButton.onclick =
     resetFocus;
-
 
 /* =====================================================
    TODO
 ===================================================== */
 
 const todoInput =
-    document.getElementById(
-        "todoInput"
-    );
+    document.getElementById("todoInput");
 
 const todoButton =
-    document.getElementById(
-        "todoButton"
-    );
+    document.getElementById("todoButton");
 
 const taskList =
-    document.getElementById(
-        "taskList"
-    );
-
+    document.getElementById("taskList");
 
 function renderTasks(){
 
     taskList.innerHTML = "";
 
-    studyData.tasks.forEach(
-        (task,index) => {
+    studyData.tasks.forEach((task,index) => {
 
-            const row =
-                document.createElement(
-                    "div"
-                );
+        const row =
+            document.createElement("div");
 
-            row.className =
-                "task" +
-                (
-                    task.done
-                    ? " done"
-                    : ""
-                );
+        row.className =
+            "task" + (task.done ? " done" : "");
 
-            const checkbox =
-                document.createElement(
-                    "input"
-                );
+        const checkbox =
+            document.createElement("input");
 
-            checkbox.type =
-                "checkbox";
+        checkbox.type = "checkbox";
+        checkbox.checked = Boolean(task.done);
 
-            checkbox.checked =
-                task.done;
+        const span =
+            document.createElement("span");
 
-            const span =
-                document.createElement(
-                    "span"
-                );
+        span.textContent =
+            task.text;
 
-            span.textContent =
-                task.text;
+        const deleteButton =
+            document.createElement("button");
 
-            const deleteButton =
-                document.createElement(
-                    "button"
-                );
+        deleteButton.className =
+            "delete-task";
 
-            deleteButton.className =
-                "delete-task";
+        deleteButton.textContent =
+            "✕";
 
-            deleteButton.textContent =
-                "✕";
+        checkbox.onchange = () => {
 
-            checkbox.onchange =
-                () => {
+            if(!studyData.tasks[index]) return;
 
-                    studyData.tasks[index]
-                        .done =
-                        checkbox.checked;
+            studyData.tasks[index].done =
+                checkbox.checked;
 
-                    saveData();
-                    renderTasks();
+            saveData();
+            renderTasks();
 
-                };
+        };
 
-            deleteButton.onclick =
-                () => {
+        deleteButton.onclick = () => {
 
-                    studyData.tasks
-                        .splice(index,1);
+            studyData.tasks.splice(index,1);
 
-                    saveData();
-                    renderTasks();
+            saveData();
+            renderTasks();
 
-                };
+        };
 
-            row.appendChild(
-                checkbox
-            );
+        row.appendChild(checkbox);
+        row.appendChild(span);
+        row.appendChild(deleteButton);
 
-            row.appendChild(
-                span
-            );
+        taskList.appendChild(row);
 
-            row.appendChild(
-                deleteButton
-            );
-
-            taskList.appendChild(
-                row
-            );
-
-        }
-    );
+    });
 
 }
-
 
 function addTask(){
 
     const text =
         todoInput.value.trim();
 
-    if(!text)
-        return;
+    if(!text) return;
 
     studyData.tasks.push({
-        text:text,
+        text,
         done:false
     });
 
@@ -1828,25 +1637,15 @@ function addTask(){
 
 }
 
-
 todoButton.onclick =
     addTask;
 
-todoInput.addEventListener(
-    "keydown",
-    event => {
+todoInput.addEventListener("keydown",event => {
 
-        if(
-            event.key === "Enter"
-        ){
+    if(event.key === "Enter")
+        addTask();
 
-            addTask();
-
-        }
-
-    }
-);
-
+});
 
 /* =====================================================
    ACHIEVEMENTS
@@ -1907,455 +1706,392 @@ const achievements = [
         name:"⚒️ StudyForge",
         desc:"Hoàn thành mục tiêu",
         check:() =>
-            studyData.completedDays.length >=
-            studyData.goal
+            studyData.completedDays.length >= studyData.goal
     }
 
 ];
 
-
 function renderAchievements(){
 
     const container =
-        document.getElementById(
-            "achievementList"
-        );
+        document.getElementById("achievementList");
 
     container.innerHTML = "";
 
     let unlocked = 0;
 
-    achievements.forEach(
-        achievement => {
+    achievements.forEach(achievement => {
 
-            const ok =
-                achievement.check();
+        let ok = false;
 
-            if(ok)
-                unlocked++;
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-            div.className =
-                "achievement" +
-                (
-                    ok
-                    ? " unlocked"
-                    : ""
-                );
-
-            div.innerHTML =
-                `<b>${achievement.name}</b>
-                 <span>${achievement.desc}</span>`;
-
-            container.appendChild(div);
-
+        try{
+            ok = Boolean(achievement.check());
+        }catch{
+            ok = false;
         }
-    );
+
+        if(ok) unlocked++;
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "achievement" +
+            (ok ? " unlocked" : "");
+
+        const title =
+            document.createElement("b");
+
+        title.textContent =
+            achievement.name;
+
+        const desc =
+            document.createElement("span");
+
+        desc.textContent =
+            achievement.desc;
+
+        div.appendChild(title);
+        div.appendChild(desc);
+
+        container.appendChild(div);
+
+    });
 
     document.getElementById(
         "achievementCount"
-    ).textContent =
-        unlocked;
+    ).textContent = unlocked;
 
 }
-
 
 /* =====================================================
-   MUSIC - 10 TRACKS
+   MUSIC
 ===================================================== */
 
-const musicTracks = [];
-
-for(
-    let i=1;
-    i<=10;
-    i++
-){
-
-    musicTracks.push(
-        `music/chill${i}.mp3`
+const musicTracks =
+    Array.from(
+        {length:10},
+        (_,i) => `music/chill${i+1}.mp3`
     );
 
-}
-
 let musicIndex = 0;
-
 let isPlaying = false;
 
 const audioPlayer =
     new Audio();
 
-audioPlayer.preload =
-    "auto";
+audioPlayer.preload = "auto";
 
 const musicList =
-    document.getElementById(
-        "musicList"
-    );
+    document.getElementById("musicList");
 
 const playPauseButton =
-    document.getElementById(
-        "playPauseButton"
-    );
+    document.getElementById("playPauseButton");
 
 const nextButton =
-    document.getElementById(
-        "nextButton"
-    );
+    document.getElementById("nextButton");
 
 const nowPlaying =
-    document.getElementById(
-        "nowPlaying"
-    );
-
+    document.getElementById("nowPlaying");
 
 function createMusicButtons(){
 
     musicList.innerHTML = "";
 
-    musicTracks.forEach(
-        (track,index) => {
+    musicTracks.forEach((track,index) => {
 
-            const button =
-                document.createElement(
-                    "button"
-                );
+        const button =
+            document.createElement("button");
 
-            button.className =
-                "music-btn";
+        button.className =
+            "music-btn";
 
-            button.textContent =
-                `🎧 Chill ${index+1}`;
+        button.textContent =
+            `🎧 Chill ${index+1}`;
 
-            button.onclick =
-                () => {
+        button.onclick = () => {
 
-                    if(
-                        musicIndex === index &&
-                        isPlaying
-                    ){
+            if(
+                musicIndex === index &&
+                isPlaying
+            ){
 
-                        audioPlayer.pause();
+                audioPlayer.pause();
 
-                    }else{
+            }else{
 
-                        playMusic(index);
+                playMusic(index);
 
-                    }
+            }
 
-                };
+        };
 
-            musicList.appendChild(
-                button
-            );
+        musicList.appendChild(button);
 
-        }
-    );
+    });
 
 }
-
 
 function updateMusicUI(){
 
     const buttons =
-        document.querySelectorAll(
-            ".music-btn"
+        document.querySelectorAll(".music-btn");
+
+    buttons.forEach((button,index) => {
+
+        const active =
+            index === musicIndex &&
+            isPlaying;
+
+        button.classList.toggle(
+            "active",
+            active
         );
 
-    buttons.forEach(
-        (button,index) => {
+        button.textContent =
+            active
+            ? `⏸ Chill ${index+1}`
+            : `🎧 Chill ${index+1}`;
 
-            button.classList.toggle(
-                "active",
-                index === musicIndex &&
-                isPlaying
-            );
-
-            button.textContent =
-                (
-                    index === musicIndex &&
-                    isPlaying
-                )
-                ? `⏸ Chill ${index+1}`
-                : `🎧 Chill ${index+1}`;
-
-        }
-    );
+    });
 
     playPauseButton.textContent =
         isPlaying
         ? "⏸ Tạm dừng"
         : "▶ Phát";
 
-    nowPlaying.textContent =
-        isPlaying
-        ? `🎵 Đang phát: Chill ${musicIndex+1}`
-        : `⏸ Đã dừng: Chill ${musicIndex+1}`;
+    if(isPlaying){
+
+        nowPlaying.textContent =
+            `🎵 Đang phát: Chill ${musicIndex+1}`;
+
+    }else{
+
+        nowPlaying.textContent =
+            `⏸ Đã dừng: Chill ${musicIndex+1}`;
+
+    }
 
 }
-
 
 function playMusic(index){
 
     if(
         index < 0 ||
         index >= musicTracks.length
-    )
-        return;
+    ) return;
 
-    musicIndex =
-        index;
+    musicIndex = index;
 
     audioPlayer.pause();
 
     audioPlayer.src =
         musicTracks[index];
 
-    audioPlayer.currentTime =
-        0;
+    audioPlayer.currentTime = 0;
 
     audioPlayer.play()
-        .then(
-            () => {
+        .then(() => {
 
-                isPlaying = true;
+            isPlaying = true;
+            updateMusicUI();
 
-                updateMusicUI();
+        })
+        .catch(error => {
 
-            }
-        )
-        .catch(
-            error => {
+            console.error(
+                "Music error:",
+                error
+            );
 
-                console.error(
-                    error
-                );
+            isPlaying = false;
+            updateMusicUI();
 
-                isPlaying = false;
+            alert(
+                `⚠️ Không thể phát Chill ${index+1}.\n\n` +
+                `Kiểm tra file:\n` +
+                `music/chill${index+1}.mp3`
+            );
 
-                updateMusicUI();
-
-                alert(
-                    `⚠️ Không thể phát Chill ${index+1}.\n\n` +
-                    `Kiểm tra file:\n` +
-                    `music/chill${index+1}.mp3`
-                );
-
-            }
-        );
+        });
 
 }
 
+playPauseButton.onclick = () => {
 
-playPauseButton.onclick =
-    () => {
+    if(isPlaying){
 
-        if(isPlaying){
+        audioPlayer.pause();
 
-            audioPlayer.pause();
+    }else{
+
+        if(!audioPlayer.src){
+
+            playMusic(musicIndex);
 
         }else{
 
-            if(!audioPlayer.src){
+            audioPlayer.play()
+                .catch(error => {
 
-                playMusic(
-                    musicIndex
-                );
+                    console.error(error);
 
-            }else{
-
-                audioPlayer.play()
-                    .catch(
-                        () => {}
-                    );
-
-            }
+                });
 
         }
 
-    };
-
-
-nextButton.onclick =
-    () => {
-
-        musicIndex++;
-
-        if(
-            musicIndex >=
-            musicTracks.length
-        ){
-
-            musicIndex = 0;
-
-        }
-
-        playMusic(
-            musicIndex
-        );
-
-    };
-
-
-audioPlayer.addEventListener(
-    "ended",
-    () => {
-
-        musicIndex++;
-
-        if(
-            musicIndex >=
-            musicTracks.length
-        ){
-
-            musicIndex = 0;
-
-        }
-
-        playMusic(
-            musicIndex
-        );
-
     }
-);
 
+};
 
-audioPlayer.addEventListener(
-    "pause",
-    () => {
+nextButton.onclick = () => {
 
-        isPlaying = false;
+    musicIndex =
+        (musicIndex + 1) %
+        musicTracks.length;
 
-        updateMusicUI();
+    playMusic(musicIndex);
 
-    }
-);
+};
 
+audioPlayer.addEventListener("ended",() => {
 
-audioPlayer.addEventListener(
-    "play",
-    () => {
+    musicIndex =
+        (musicIndex + 1) %
+        musicTracks.length;
 
-        isPlaying = true;
+    playMusic(musicIndex);
 
-        updateMusicUI();
+});
 
-    }
-);
+audioPlayer.addEventListener("play",() => {
 
+    isPlaying = true;
+    updateMusicUI();
+
+});
+
+audioPlayer.addEventListener("pause",() => {
+
+    isPlaying = false;
+    updateMusicUI();
+
+});
 
 /* =====================================================
    AI
 ===================================================== */
 
-function formatAI(text){
+function escapeHTML(text){
 
     return String(text)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
-        .replace(
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+function formatAI(text){
+
+    let safe =
+        escapeHTML(text);
+
+    safe =
+        safe.replace(
             /^### (.*)$/gm,
             "<h3>$1</h3>"
-        )
-        .replace(
+        );
+
+    safe =
+        safe.replace(
             /\*\*(.*?)\*\*/g,
             "<strong>$1</strong>"
-        )
-        .replace(
+        );
+
+    safe =
+        safe.replace(
             /`([^`]+)`/g,
             "<code>$1</code>"
-        )
-        .replace(
+        );
+
+    safe =
+        safe.replace(
             /\n/g,
             "<br>"
         );
 
-}
+    return safe;
 
+}
 
 const aiInput =
-    document.getElementById(
-        "aiInput"
-    );
+    document.getElementById("aiInput");
 
 const aiButton =
-    document.getElementById(
-        "aiButton"
-    );
+    document.getElementById("aiButton");
 
 const aiBox =
-    document.getElementById(
-        "aiBox"
-    );
+    document.getElementById("aiBox");
 
-const AI_DAILY_LIMIT =
-    20;
+const AI_DAILY_LIMIT = 20;
 
-const todayKey =
-    new Intl.DateTimeFormat(
-        "en-CA",
-        {
-            timeZone:
-                "Asia/Ho_Chi_Minh"
-        }
-    ).format(
-        new Date()
-    );
+function getQuota(){
 
-let aiQuotaData;
+    const today = getToday();
 
-try{
+    try{
 
-    aiQuotaData =
-        JSON.parse(
+        const raw =
             localStorage.getItem(
                 "studyforge_ai_quota"
-            )
-        );
+            );
 
-}catch{
+        const data =
+            raw ? JSON.parse(raw) : null;
 
-    aiQuotaData = null;
+        if(
+            data &&
+            data.date === today &&
+            Number.isInteger(data.used)
+        ){
 
-}
+            return data;
 
-if(
-    !aiQuotaData ||
-    aiQuotaData.date !== todayKey
-){
+        }
 
-    aiQuotaData = {
-        date:todayKey,
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    const fresh = {
+        date:today,
         used:0
     };
 
     localStorage.setItem(
         "studyforge_ai_quota",
-        JSON.stringify(
-            aiQuotaData
-        )
+        JSON.stringify(fresh)
     );
+
+    return fresh;
 
 }
 
-const aiQuota =
-    document.getElementById(
-        "aiQuota"
-    );
+let aiQuotaData = getQuota();
 
+const aiQuota =
+    document.getElementById("aiQuota");
 
 function updateAIQuota(){
 
     const remaining =
         Math.max(
             0,
-            AI_DAILY_LIMIT -
-            aiQuotaData.used
+            AI_DAILY_LIMIT - aiQuotaData.used
         );
 
     aiQuota.textContent =
@@ -2365,25 +2101,16 @@ function updateAIQuota(){
 
 }
 
-
 function useAILimit(){
 
-    if(
-        aiQuotaData.used >=
-        AI_DAILY_LIMIT
-    ){
-
+    if(aiQuotaData.used >= AI_DAILY_LIMIT)
         return false;
-
-    }
 
     aiQuotaData.used++;
 
     localStorage.setItem(
         "studyforge_ai_quota",
-        JSON.stringify(
-            aiQuotaData
-        )
+        JSON.stringify(aiQuotaData)
     );
 
     updateAIQuota();
@@ -2392,138 +2119,143 @@ function useAILimit(){
 
 }
 
+async function askAI(){
 
-aiButton.onclick =
-    async () => {
+    const question =
+        aiInput.value.trim();
 
-        const question =
-            aiInput.value.trim();
-
-        if(!question){
-
-            aiBox.textContent =
-                "⚠️ Hãy nhập câu hỏi trước nhé!";
-
-            return;
-
-        }
-
-        if(
-            aiQuotaData.used >=
-            AI_DAILY_LIMIT
-        ){
-
-            aiBox.textContent =
-                "⛔ Bạn đã dùng hết 20 lượt AI hôm nay.";
-
-            return;
-
-        }
-
-        aiButton.disabled = true;
-        aiButton.textContent = "⏳";
+    if(!question){
 
         aiBox.textContent =
-            "🤖 StudyForge AI đang suy nghĩ...";
+            "⚠️ Hãy nhập câu hỏi trước nhé!";
+
+        return;
+
+    }
+
+    if(aiQuotaData.used >= AI_DAILY_LIMIT){
+
+        aiBox.textContent =
+            "⛔ Bạn đã dùng hết 20 lượt AI hôm nay.";
+
+        return;
+
+    }
+
+    aiButton.disabled = true;
+    aiButton.textContent = "⏳";
+
+    aiBox.textContent =
+        "🤖 StudyForge AI đang suy nghĩ...";
+
+    try{
+
+        const response =
+            await fetch(
+                "/api/ask",
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:JSON.stringify({
+                        message:question
+                    })
+                }
+            );
+
+        let data;
 
         try{
 
-            const response =
-                await fetch(
-                    "/api/ask",
-                    {
-                        method:"POST",
+            data = await response.json();
 
-                        headers:{
-                            "Content-Type":
-                                "application/json"
-                        },
+        }catch{
 
-                        body:
-                            JSON.stringify({
-                                message:
-                                    question
-                            })
-                    }
-                );
+            throw new Error(
+                "API AI trả về dữ liệu không hợp lệ."
+            );
 
-            const data =
-                await response.json();
+        }
 
-            if(!response.ok){
+        if(!response.ok){
 
-                throw new Error(
-                    data.error ||
-                    "AI không trả lời được."
-                );
+            throw new Error(
+                data?.error ||
+                `AI lỗi HTTP ${response.status}`
+            );
 
-            }
+        }
 
-            if(
-                !useAILimit()
-            ){
+        if(
+            !data ||
+            typeof data.reply !== "string"
+        ){
 
-                return;
+            throw new Error(
+                "API không trả về nội dung AI."
+            );
 
-            }
+        }
 
-            aiBox.innerHTML =
-                "🤖 " +
-                formatAI(
-                    data.reply
-                );
+        useAILimit();
 
-            if(
-                window.MathJax
-            ){
+        aiBox.innerHTML =
+            "🤖 " +
+            formatAI(data.reply);
 
-                MathJax.typesetPromise(
+        if(window.MathJax){
+
+            try{
+
+                await MathJax.typesetPromise(
                     [aiBox]
                 );
 
-            }
+            }catch(error){
 
-        }catch(error){
-
-            console.error(
-                error
-            );
-
-            aiBox.textContent =
-                "❌ " +
-                (
-                    error.message ||
-                    "Có lỗi kết nối AI."
+                console.warn(
+                    "MathJax error:",
+                    error
                 );
 
-        }finally{
-
-            aiButton.disabled =
-                false;
-
-            aiButton.textContent =
-                "Gửi";
+            }
 
         }
 
-    };
+    }catch(error){
 
+        console.error(
+            "AI ERROR:",
+            error
+        );
 
-aiInput.addEventListener(
-    "keydown",
-    event => {
+        aiBox.textContent =
+            "❌ " +
+            (
+                error?.message ||
+                "Có lỗi kết nối AI."
+            );
 
-        if(
-            event.key === "Enter"
-        ){
+    }finally{
 
-            aiButton.click();
-
-        }
+        aiButton.disabled = false;
+        aiButton.textContent = "Gửi";
 
     }
-);
 
+}
+
+aiButton.onclick =
+    askAI;
+
+aiInput.addEventListener("keydown",event => {
+
+    if(event.key === "Enter")
+        askAI();
+
+});
 
 /* =====================================================
    SUPABASE AUTH
@@ -2535,85 +2267,73 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_j-wwTzYkJ43oQstFb4XmPA_E2BKL-Re";
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+let supabaseClient = null;
+
+try{
+
+    if(
+        window.supabase &&
+        typeof window.supabase.createClient === "function"
+    ){
+
+        supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+    }
+
+}catch(error){
+
+    console.error(
+        "Supabase init error:",
+        error
     );
 
+}
 
 const loginButton =
-    document.getElementById(
-        "loginButton"
-    );
+    document.getElementById("loginButton");
 
 const authOverlay =
-    document.getElementById(
-        "authOverlay"
-    );
+    document.getElementById("authOverlay");
 
 const authTitle =
-    document.getElementById(
-        "authTitle"
-    );
+    document.getElementById("authTitle");
 
 const authEmail =
-    document.getElementById(
-        "authEmail"
-    );
+    document.getElementById("authEmail");
 
 const authPassword =
-    document.getElementById(
-        "authPassword"
-    );
+    document.getElementById("authPassword");
 
 const authSubmit =
-    document.getElementById(
-        "authSubmit"
-    );
+    document.getElementById("authSubmit");
 
 const switchAuth =
-    document.getElementById(
-        "switchAuth"
-    );
+    document.getElementById("switchAuth");
 
 const closeAuth =
-    document.getElementById(
-        "closeAuth"
-    );
+    document.getElementById("closeAuth");
 
 const authMessage =
-    document.getElementById(
-        "authMessage"
-    );
+    document.getElementById("authMessage");
 
 const userInfo =
-    document.getElementById(
-        "userInfo"
-    );
+    document.getElementById("userInfo");
 
 const userEmail =
-    document.getElementById(
-        "userEmail"
-    );
+    document.getElementById("userEmail");
 
 const logoutButton =
-    document.getElementById(
-        "logoutButton"
-    );
+    document.getElementById("logoutButton");
 
 let isRegisterMode = false;
 
-
-/* =====================================================
-   AUTH UI
-===================================================== */
-
 function openAuth(){
 
-    authOverlay.classList.add(
-        "show"
-    );
+    authOverlay.classList.add("show");
 
     authMessage.textContent = "";
 
@@ -2624,341 +2344,291 @@ function openAuth(){
 
 }
 
-
 function closeAuthModal(){
 
-    authOverlay.classList.remove(
-        "show"
-    );
-
+    authOverlay.classList.remove("show");
     authMessage.textContent = "";
 
 }
 
+loginButton.onclick = async () => {
 
-loginButton.onclick =
-    async () => {
+    if(!supabaseClient){
+
+        authMessage.textContent =
+            "❌ Supabase chưa được tải. Hãy kiểm tra Internet.";
+
+        openAuth();
+
+        return;
+
+    }
+
+    try{
 
         const {
             data,
             error
         } =
-            await supabaseClient
-                .auth
-                .getSession();
+            await supabaseClient.auth.getSession();
 
-        if(error){
-
-            console.error(error);
-
-            openAuth();
-
-            return;
-
-        }
+        if(error)
+            throw error;
 
         if(data.session){
 
-            userInfo.classList.toggle(
-                "show"
-            );
+            userInfo.classList.toggle("show");
 
-            return;
+        }else{
+
+            openAuth();
 
         }
 
+    }catch(error){
+
+        console.error(error);
         openAuth();
 
-    };
+    }
 
+};
 
 closeAuth.onclick =
     closeAuthModal;
 
+authOverlay.addEventListener("click",event => {
 
-authOverlay.addEventListener(
-    "click",
-    event => {
+    if(event.target === authOverlay)
+        closeAuthModal();
 
-        if(
-            event.target ===
-            authOverlay
-        ){
+});
 
-            closeAuthModal();
+switchAuth.onclick = () => {
 
-        }
+    isRegisterMode =
+        !isRegisterMode;
+
+    authMessage.textContent = "";
+    authPassword.value = "";
+
+    if(isRegisterMode){
+
+        authTitle.textContent =
+            "📝 Đăng ký tài khoản";
+
+        authSubmit.textContent =
+            "Đăng ký";
+
+        switchAuth.textContent =
+            "Đăng nhập";
+
+    }else{
+
+        authTitle.textContent =
+            "👤 Đăng nhập";
+
+        authSubmit.textContent =
+            "Đăng nhập";
+
+        switchAuth.textContent =
+            "Đăng ký";
 
     }
-);
 
+};
 
-/* =====================================================
-   LOGIN REGISTER
-===================================================== */
+authSubmit.onclick = async () => {
 
-switchAuth.onclick =
-    () => {
+    if(!supabaseClient){
 
-        isRegisterMode =
-            !isRegisterMode;
+        authMessage.textContent =
+            "❌ Supabase chưa sẵn sàng.";
 
-        authMessage.textContent = "";
+        return;
 
-        authPassword.value = "";
+    }
+
+    const email =
+        authEmail.value.trim();
+
+    const password =
+        authPassword.value;
+
+    if(!email || !password){
+
+        authMessage.textContent =
+            "⚠️ Nhập đầy đủ email và mật khẩu.";
+
+        return;
+
+    }
+
+    if(password.length < 6){
+
+        authMessage.textContent =
+            "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
+
+        return;
+
+    }
+
+    authSubmit.disabled = true;
+
+    authMessage.textContent = "";
+
+    try{
 
         if(isRegisterMode){
 
-            authTitle.textContent =
-                "📝 Đăng ký tài khoản";
-
             authSubmit.textContent =
-                "Đăng ký";
+                "⏳ Đang tạo tài khoản...";
 
-            switchAuth.textContent =
-                "Đăng nhập";
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.signUp({
+                    email,
+                    password,
+                    options:{
+                        data:{
+                            name:
+                                email.split("@")[0]
+                        }
+                    }
+                });
 
-        }else{
+            if(error)
+                throw error;
 
-            authTitle.textContent =
-                "👤 Đăng nhập";
-
-            authSubmit.textContent =
-                "Đăng nhập";
-
-            switchAuth.textContent =
-                "Đăng ký";
-
-        }
-
-    };
-
-
-authSubmit.onclick =
-    async () => {
-
-        const email =
-            authEmail.value.trim();
-
-        const password =
-            authPassword.value;
-
-        if(
-            !email ||
-            !password
-        ){
-
-            authMessage.textContent =
-                "⚠️ Nhập đầy đủ email và mật khẩu.";
-
-            return;
-
-        }
-
-        if(
-            password.length < 6
-        ){
-
-            authMessage.textContent =
-                "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
-
-            return;
-
-        }
-
-        authSubmit.disabled = true;
-
-        authMessage.textContent = "";
-
-        try{
-
-            if(isRegisterMode){
-
-                authSubmit.textContent =
-                    "⏳ Đang tạo tài khoản...";
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signUp({
-                            email,
-                            password,
-                            options:{
-                                data:{
-                                    name:
-                                        email
-                                            .split("@")[0]
-                                }
-                            }
-                        });
-
-                if(error)
-                    throw error;
-
-                if(data.session){
-
-                    authMessage.textContent =
-                        "✅ Đăng ký thành công!";
-
-                    updateAuthUI(
-                        data.user
-                    );
-
-                    setTimeout(
-                        closeAuthModal,
-                        700
-                    );
-
-                }else{
-
-                    authMessage.textContent =
-                        "⚠️ Tài khoản đã tạo nhưng Supabase đang yêu cầu xác nhận email.";
-
-                }
-
-            }else{
-
-                authSubmit.textContent =
-                    "⏳ Đang đăng nhập...";
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signInWithPassword({
-                            email,
-                            password
-                        });
-
-                if(error)
-                    throw error;
+            if(data.session){
 
                 authMessage.textContent =
-                    "✅ Đăng nhập thành công!";
+                    "✅ Đăng ký thành công!";
 
-                updateAuthUI(
-                    data.user
-                );
+                updateAuthUI(data.user);
 
                 setTimeout(
                     closeAuthModal,
-                    500
+                    700
                 );
 
-            }
+            }else{
 
-        }catch(error){
-
-            console.error(
-                "AUTH ERROR:",
-                error
-            );
-
-            let message =
-                error.message ||
-                "Có lỗi xảy ra.";
-
-            if(
-                message
-                    .toLowerCase()
-                    .includes(
-                        "invalid login credentials"
-                    )
-            ){
-
-                message =
-                    "❌ Email hoặc mật khẩu không đúng.";
+                authMessage.textContent =
+                    "⚠️ Tài khoản đã tạo. Nếu Supabase đang bật xác nhận email, hãy xác nhận email trước khi đăng nhập.";
 
             }
 
-            if(
-                message
-                    .toLowerCase()
-                    .includes(
-                        "email not confirmed"
-                    )
-            ){
-
-                message =
-                    "❌ Email chưa được xác nhận.";
-
-            }
-
-            authMessage.textContent =
-                message;
-
-        }finally{
-
-            authSubmit.disabled = false;
+        }else{
 
             authSubmit.textContent =
-                isRegisterMode
-                ? "Đăng ký"
-                : "Đăng nhập";
+                "⏳ Đang đăng nhập...";
 
-        }
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
 
-    };
+            if(error)
+                throw error;
 
+            authMessage.textContent =
+                "✅ Đăng nhập thành công!";
 
-authPassword.addEventListener(
-    "keydown",
-    event => {
+            updateAuthUI(data.user);
 
-        if(
-            event.key === "Enter"
-        ){
-
-            authSubmit.click();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-logoutButton.onclick =
-    async () => {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .auth
-                .signOut();
-
-        if(error){
-
-            alert(
-                "❌ Không thể đăng xuất."
+            setTimeout(
+                closeAuthModal,
+                500
             );
 
-            return;
+        }
+
+    }catch(error){
+
+        console.error(
+            "AUTH ERROR:",
+            error
+        );
+
+        let message =
+            error?.message ||
+            "Có lỗi xảy ra.";
+
+        const lower =
+            message.toLowerCase();
+
+        if(
+            lower.includes("invalid login credentials")
+        ){
+
+            message =
+                "❌ Email hoặc mật khẩu không đúng.";
+
+        }else if(
+            lower.includes("email not confirmed")
+        ){
+
+            message =
+                "❌ Email chưa được xác nhận.";
+
+        }else if(
+            lower.includes("user already registered")
+        ){
+
+            message =
+                "⚠️ Email này đã được đăng ký.";
 
         }
 
-        userInfo.classList.remove(
-            "show"
-        );
+        authMessage.textContent =
+            message;
 
-        loginButton.textContent =
-            "👤 Đăng nhập";
+    }finally{
 
-    };
+        authSubmit.disabled = false;
 
+        authSubmit.textContent =
+            isRegisterMode
+            ? "Đăng ký"
+            : "Đăng nhập";
 
-/* =====================================================
-   AUTH UI UPDATE
-===================================================== */
+    }
+
+};
+
+authPassword.addEventListener("keydown",event => {
+
+    if(event.key === "Enter")
+        authSubmit.click();
+
+});
+
+logoutButton.onclick = async () => {
+
+    if(!supabaseClient) return;
+
+    const {
+        error
+    } =
+        await supabaseClient.auth.signOut();
+
+    if(error){
+
+        alert("❌ Không thể đăng xuất.");
+        return;
+
+    }
+
+    updateAuthUI(null);
+
+};
 
 function updateAuthUI(user){
 
@@ -2974,70 +2644,71 @@ function updateAuthUI(user){
             `👤 ${name}`;
 
         userEmail.textContent =
-            user.email ||
-            "Tài khoản";
+            user.email || "Tài khoản";
 
     }else{
 
         loginButton.textContent =
             "👤 Đăng nhập";
 
-        userEmail.textContent =
-            "";
+        userEmail.textContent = "";
 
-        userInfo.classList.remove(
-            "show"
-        );
+        userInfo.classList.remove("show");
 
     }
 
 }
 
-
-/* =====================================================
-   CHECK LOGIN
-===================================================== */
-
 async function checkLogin(){
 
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .auth
-            .getSession();
+    if(!supabaseClient){
 
-    if(error){
-
-        console.error(error);
-
+        updateAuthUI(null);
         return;
 
     }
 
-    updateAuthUI(
-        data.session?.user ||
-        null
-    );
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.getSession();
+
+        if(error)
+            throw error;
+
+        updateAuthUI(
+            data.session?.user || null
+        );
+
+    }catch(error){
+
+        console.error(
+            "Session error:",
+            error
+        );
+
+        updateAuthUI(null);
+
+    }
 
 }
 
+if(supabaseClient){
 
-supabaseClient.auth.onAuthStateChange(
-    (
-        event,
-        session
-    ) => {
+    supabaseClient.auth.onAuthStateChange(
+        (_event,session) => {
 
-        updateAuthUI(
-            session?.user ||
-            null
-        );
+            updateAuthUI(
+                session?.user || null
+            );
 
-    }
-);
+        }
+    );
 
+}
 
 /* =====================================================
    START
@@ -3053,17 +2724,11 @@ if(!studyData.startDate){
 }
 
 createMusicButtons();
-
 updateJourney();
-
 updateTimer();
-
 renderTasks();
-
 updateMusicUI();
-
 updateAIQuota();
-
 checkLogin();
 
 </script>
