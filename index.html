@@ -54,7 +54,37 @@ window.MathJax = {
 
 html,
 body{
-    width:100%;
+    width:100%;<!-- =====================================================
+     POMODORO / FOCUS
+===================================================== -->
+
+<section class="card timer">
+
+    <div class="small">
+        FOCUS
+    </div>
+
+    <h2>🎯 Học tập & Nghỉ ngơi</h2>
+
+    <div class="timer-mode" id="timerMode">
+        📚 ĐANG HỌC
+    </div>
+
+    <div class="timer-number" id="timerDisplay">
+        25:00
+    </div>
+
+    <div class="timer-settings">
+
+        <button type="button" data-minutes="7">
+            7 phút
+        </button>
+
+        <button type="button" data-minutes="8">
+            8 phút
+        </button>
+
+        <button type="button" data
     max-width:100%;
     overflow-x:hidden;
 }
@@ -1058,28 +1088,189 @@ input:focus{
         FOCUS
     </div>
 
-    <h2>🎯 Pomodoro</h2>
+    <h2>🎯 Học tập & Nghỉ ngơi</h2>
 
-    <div class="timer-number">
+    <div class="timer-mode" id="timerMode">
+        📚 ĐANG HỌC
+    </div>
+
+    <div class="timer-number" id="timerDisplay">
         25:00
+    </div>
+
+    <!-- THỜI GIAN HỌC NHANH -->
+
+    <div class="small">
+        Chọn thời gian học
     </div>
 
     <div class="timer-settings">
 
-        <button data-minutes="15">15 phút</button>
-        <button data-minutes="25">25 phút</button>
-        <button data-minutes="45">45 phút</button>
-        <button data-minutes="60">60 phút</button>
+        <button type="button" data-minutes="7">
+            7 phút
+        </button>
+
+        <button type="button" data-minutes="8">
+            8 phút
+        </button>
+
+        <button type="button" data-minutes="15">
+            15 phút
+        </button>
+
+        <button type="button" data-minutes="25">
+            25 phút
+        </button>
+
+        <button type="button" data-minutes="45">
+            45 phút
+        </button>
+
+        <button type="button" data-minutes="60">
+            60 phút
+        </button>
+
+        <button type="button" data-minutes="120">
+            120 phút
+        </button>
 
     </div>
 
-    <button class="btn" id="startFocusButton">
-        ▶ Bắt đầu
-    </button>
+    <!-- NHẬP THỜI GIAN HỌC -->
 
-    <button class="btn secondary" id="resetFocusButton">
-        ↺ Reset
-    </button>
+    <div style="
+        display:flex;
+        gap:8px;
+        margin-top:12px;
+    ">
+
+        <input
+            id="customStudyMinutes"
+            type="number"
+            min="1"
+            max="720"
+            placeholder="Nhập phút học..."
+            style="flex:1"
+        >
+
+        <button
+            class="btn"
+            id="customStudyButton"
+            type="button"
+            style="margin-top:0"
+        >
+            Áp dụng
+        </button>
+
+    </div>
+
+
+    <!-- THỜI GIAN NGHỈ -->
+
+    <div class="small" style="margin-top:18px">
+        ☕ Thời gian nghỉ
+    </div>
+
+    <div class="timer-settings">
+
+        <button type="button" data-break="5">
+            5 phút
+        </button>
+
+        <button type="button" data-break="10">
+            10 phút
+        </button>
+
+        <button type="button" data-break="15">
+            15 phút
+        </button>
+
+        <button type="button" data-break="20">
+            20 phút
+        </button>
+
+    </div>
+
+
+    <!-- NHẬP THỜI GIAN NGHỈ -->
+
+    <div style="
+        display:flex;
+        gap:8px;
+        margin-top:12px;
+    ">
+
+        <input
+            id="customBreakMinutes"
+            type="number"
+            min="1"
+            max="120"
+            placeholder="Nhập phút nghỉ..."
+            style="flex:1"
+        >
+
+        <button
+            class="btn"
+            id="customBreakButton"
+            type="button"
+            style="margin-top:0"
+        >
+            Áp dụng
+        </button>
+
+    </div>
+
+
+    <!-- TRẠNG THÁI -->
+
+    <div
+        id="focusStatus"
+        class="small"
+        style="
+            text-align:center;
+            margin-top:16px;
+            font-size:14px;
+        "
+    >
+        Sẵn sàng học 📚
+    </div>
+
+
+    <!-- NÚT ĐIỀU KHIỂN -->
+
+    <div
+        class="actions"
+        style="
+            justify-content:center;
+            margin-top:5px;
+        "
+    >
+
+        <button
+            class="btn"
+            id="startFocusButton"
+            type="button"
+        >
+            ▶ Bắt đầu
+        </button>
+
+        <button
+            class="btn secondary"
+            id="pauseFocusButton"
+            type="button"
+        >
+            ⏸ Tạm dừng
+        </button>
+
+        <button
+            class="btn secondary"
+            id="resetFocusButton"
+            type="button"
+        >
+            ↺ Reset
+        </button>
+
+    </div>
 
 </section>
 
