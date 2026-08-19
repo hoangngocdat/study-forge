@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
+<script>
+window.MathJax = {
+    tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+    }
+};
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1062,7 +1074,16 @@ audioPlayer.addEventListener(
 // ===============================
 // STUDYFORGE AI
 // ===============================
-
+function formatAI(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/^### (.*)$/gm, "<h3>$1</h3>")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\n/g, "<br>");
+}
 const aiInput = document.querySelector(
     '.ai-box + .todo-add input'
 );
@@ -1121,9 +1142,12 @@ aiButton.onclick = async () => {
             );
 
         }
+aiBox.innerHTML =
+    "🤖 " + formatAI(data.reply);
 
-        aiBox.textContent =
-            "🤖 " + data.reply;
+if (window.MathJax) {
+    MathJax.typesetPromise([aiBox]);
+}
 
     } catch (error) {
 
