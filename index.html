@@ -827,7 +827,7 @@ todoInput.addEventListener(
 
 renderTasks();
 // ===============================
-// STUDY MUSIC
+// STUDYFORGE MUSIC
 // ===============================
 
 const musicTracks = [
@@ -838,8 +838,9 @@ const musicTracks = [
 ];
 
 let musicIndex = 0;
-const audioPlayer = new Audio();
+let isPlaying = false;
 
+const audioPlayer = new Audio();
 audioPlayer.preload = "auto";
 
 const musicButtons =
@@ -851,34 +852,48 @@ const playPauseButton =
 const nextButton =
     document.querySelector(".music + .actions .btn.secondary");
 
+
+// ===============================
+// CẬP NHẬT NÚT
+// ===============================
+
 function updateMusicButtons() {
 
     musicButtons.forEach((button, index) => {
 
-        button.textContent =
-            index === musicIndex &&
-            !audioPlayer.paused
-                ? `⏸ Chill ${index + 1}`
-                : `🎧 Chill ${index + 1}`;
+        if (index === musicIndex && isPlaying) {
+
+            button.textContent =
+                `⏸ Chill ${index + 1}`;
+
+        } else {
+
+            button.textContent =
+                `🎧 Chill ${index + 1}`;
+
+        }
 
     });
+
 }
+
+
+// ===============================
+// PHÁT NHẠC
+// ===============================
 
 function playMusic(index) {
 
-    const sameTrack = musicIndex === index;
-
-    // Bấm lại bài đang phát → dừng
-    if (sameTrack && !audioPlayer.paused) {
-
-        audioPlayer.pause();
-
-        updateMusicButtons();
-
+    if (
+        index < 0 ||
+        index >= musicTracks.length
+    ) {
         return;
     }
 
     musicIndex = index;
+
+    audioPlayer.pause();
 
     audioPlayer.src =
         musicTracks[musicIndex];
@@ -887,66 +902,163 @@ function playMusic(index) {
 
     audioPlayer.play()
         .then(() => {
+
+            isPlaying = true;
+
             updateMusicButtons();
+
         })
         .catch(error => {
-            console.log("Không thể phát nhạc:", error);
+
+            console.log(
+                "Không thể phát nhạc:",
+                error
+            );
+
         });
 }
 
-// Chill 1 → Chill 4
-musicButtons.forEach((button, index) => {
 
-    button.onclick = () => {
-        playMusic(index);
-    };
+// ===============================
+// CHILL 1 → CHILL 4
+// ===============================
 
-});
+musicButtons.forEach(
+    (button, index) => {
 
+        button.onclick = () => {
+
+            // Bấm lại bài đang phát → DỪNG
+            if (
+                musicIndex === index &&
+                isPlaying
+            ) {
+
+                audioPlayer.pause();
+
+                isPlaying = false;
+
+                updateMusicButtons();
+
+                return;
+            }
+
+            // Phát đúng bài được chọn
+            playMusic(index);
+
+        };
+
+    }
+);
+
+
+// ===============================
 // ▶ / ⏸
+// ===============================
+
 playPauseButton.onclick = () => {
 
-    if (audioPlayer.paused) {
-
-        if (!audioPlayer.src) {
-            playMusic(musicIndex);
-        } else {
-            audioPlayer.play();
-        }
-
-    } else {
+    if (isPlaying) {
 
         audioPlayer.pause();
 
+        isPlaying = false;
+
+    } else {
+
+        audioPlayer.play()
+            .then(() => {
+
+                isPlaying = true;
+
+            });
+
     }
+
+    updateMusicButtons();
+
 };
 
-// ⏭ Tiếp
+
+// ===============================
+// ⏭ TIẾP
+// ===============================
+
 nextButton.onclick = () => {
 
-    musicIndex =
-        (musicIndex + 1) % musicTracks.length;
+    // Luôn tăng đúng 1 bài
+    musicIndex++;
+
+    // Chill 4 → quay lại Chill 1
+    if (
+        musicIndex >= musicTracks.length
+    ) {
+
+        musicIndex = 0;
+
+    }
 
     playMusic(musicIndex);
+
 };
 
-// Hết bài → tự động lặp
-audioPlayer.addEventListener("ended", () => {
 
-    audioPlayer.currentTime = 0;
+// ===============================
+// HẾT BÀI → LẶP LẠI
+// ===============================
 
-    audioPlayer.play();
+audioPlayer.addEventListener(
+    "ended",
+    () => {
 
-});
+        // Không chuyển bài
+        // Hết bài vẫn lặp chính bài đó
 
-// Cập nhật giao diện khi phát/dừng
-audioPlayer.addEventListener("play", () => {
-    updateMusicButtons();
-});
+        audioPlayer.currentTime = 0;
 
-audioPlayer.addEventListener("pause", () => {
-    updateMusicButtons();
-});
+        audioPlayer.play()
+            .then(() => {
+
+                isPlaying = true;
+
+                updateMusicButtons();
+
+            });
+
+    }
+);
+
+
+// ===============================
+// PAUSE
+// ===============================
+
+audioPlayer.addEventListener(
+    "pause",
+    () => {
+
+        isPlaying = false;
+
+        updateMusicButtons();
+
+    }
+);
+
+
+// ===============================
+// PLAY
+// ===============================
+
+audioPlayer.addEventListener(
+    "play",
+    () => {
+
+        isPlaying = true;
+
+        updateMusicButtons();
+
+    }
+);
 </script>
 </body>
 </html>
