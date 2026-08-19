@@ -479,6 +479,168 @@ input {
 </div>
 
 </div>
+<script>
+const STORAGE_KEY = "studyforge_data";
 
+let studyData = JSON.parse(
+    localStorage.getItem(STORAGE_KEY)
+) || {
+    goal: 300,
+    currentDay: 1,
+    completedDays: [],
+    streak: 0
+};
+
+function saveData() {
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(studyData)
+    );
+}
+
+function updateJourney() {
+
+    document.querySelector(".day").textContent =
+        `Ngày ${studyData.currentDay} / ${studyData.goal}`;
+
+    const progress =
+        (studyData.currentDay / studyData.goal) * 100;
+
+    document.querySelector(".progress-bar")
+        .style.width = progress + "%";
+
+    document.querySelector(".stat b")
+        .textContent =
+        studyData.streak + " ngày";
+
+    renderDays();
+}
+
+function renderDays() {
+
+    const container =
+        document.querySelector(".days");
+
+    container.innerHTML = "";
+
+    for (let i = 1; i <= 1000; i++) {
+
+        const box =
+            document.createElement("div");
+
+        box.className = "day-box";
+
+        box.textContent = i;
+
+        if (
+            studyData.completedDays
+                .includes(i)
+        ) {
+            box.classList.add("done");
+        }
+
+        if (
+            i === studyData.currentDay
+        ) {
+            box.classList.add("current");
+        }
+
+        container.appendChild(box);
+    }
+}
+
+function completeToday() {
+
+    const day =
+        studyData.currentDay;
+
+    if (
+        studyData.completedDays
+            .includes(day)
+    ) {
+        return;
+    }
+
+    studyData.completedDays.push(day);
+
+    studyData.streak++;
+
+    if (
+        studyData.currentDay <
+        studyData.goal
+    ) {
+        studyData.currentDay++;
+    }
+
+    saveData();
+
+    updateJourney();
+
+    if (
+        day === studyData.goal
+    ) {
+
+        alert(
+            "🎉 CHÚC MỪNG!\n\n" +
+            "Bạn đã hoàn thành mục tiêu " +
+            studyData.goal +
+            " ngày!"
+        );
+    }
+}
+
+function changeGoal() {
+
+    const newGoal =
+        prompt(
+            "🎯 Nhập mục tiêu từ 1 đến 1000 ngày:",
+            studyData.goal
+        );
+
+    const goal =
+        Number(newGoal);
+
+    if (
+        !Number.isInteger(goal) ||
+        goal < 1 ||
+        goal > 1000
+    ) {
+
+        alert(
+            "⚠️ Hãy nhập số từ 1 đến 1000."
+        );
+
+        return;
+    }
+
+    studyData.goal = goal;
+
+    if (
+        studyData.currentDay > goal
+    ) {
+        studyData.currentDay = goal;
+    }
+
+    saveData();
+
+    updateJourney();
+
+    alert(
+        "🎯 Đã lưu mục tiêu: " +
+        goal +
+        " ngày!"
+    );
+}
+
+document
+    .querySelectorAll(".btn")[0]
+    .onclick = completeToday;
+
+document
+    .querySelectorAll(".btn")[1]
+    .onclick = changeGoal;
+
+updateJourney();
+</script>
 </body>
 </html>
