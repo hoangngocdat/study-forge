@@ -1,5 +1,13 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>StudyForge</title>
+
 <script>
 window.MathJax = {
     tex: {
@@ -9,17 +17,11 @@ window.MathJax = {
 };
 </script>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-</script>
-<head>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>StudyForge</title>
 
 <style>
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -37,7 +39,7 @@ body {
     width: 92%;
     max-width: 1150px;
     margin: auto;
-    padding: 25px 0 50px;
+    padding: 25px 0 70px;
 }
 
 header {
@@ -45,6 +47,7 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+    gap: 15px;
 }
 
 .logo {
@@ -63,6 +66,10 @@ header {
     padding: 11px 16px;
     border-radius: 12px;
     cursor: pointer;
+}
+
+.login:hover {
+    background: #1a3048;
 }
 
 .grid {
@@ -105,6 +112,7 @@ header {
     height: 100%;
     width: 0%;
     background: #6ea8ff;
+    transition: width .3s;
 }
 
 .stats {
@@ -140,6 +148,10 @@ button {
     margin-top: 15px;
 }
 
+.btn:hover {
+    opacity: .9;
+}
+
 .btn.secondary {
     background: #1a3048;
     color: white;
@@ -168,6 +180,10 @@ input {
     padding: 12px;
     border-radius: 11px;
     outline: none;
+}
+
+input:focus {
+    border-color: #6ea8ff;
 }
 
 .todo-add {
@@ -233,7 +249,108 @@ input {
     padding: 15px;
 }
 
+/* =========================
+   LOGIN MODAL
+========================= */
+
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.auth-overlay.show {
+    display: flex;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 400px;
+    background: #0d1b2d;
+    border: 1px solid #263c55;
+    border-radius: 22px;
+    padding: 25px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+
+.auth-box h2 {
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    color: #91a4b9;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.auth-box input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.auth-buttons button {
+    flex: 1;
+}
+
+.auth-close {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.auth-message {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #91a4b9;
+}
+
+.user-info {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #10243a;
+    border: 1px solid #263c55;
+    border-radius: 14px;
+    padding: 12px;
+    z-index: 5000;
+}
+
+.user-info.show {
+    display: block;
+}
+
+.user-email {
+    font-size: 13px;
+    color: #91a4b9;
+    margin-bottom: 8px;
+}
+
+.creator {
+    position: fixed;
+    right: 18px;
+    bottom: 15px;
+    color: #91a4b9;
+    font-size: 13px;
+    background: rgba(13,27,45,.9);
+    border: 1px solid #1c3046;
+    padding: 8px 12px;
+    border-radius: 10px;
+    z-index: 4000;
+}
+
 @media(max-width: 800px) {
+
     .grid {
         grid-template-columns: 1fr;
     }
@@ -249,7 +366,21 @@ input {
     .days {
         grid-template-columns: repeat(7, 1fr);
     }
+
+    header {
+        align-items: flex-start;
+    }
+
+    .logo {
+        font-size: 23px;
+    }
+
+    .login {
+        padding: 9px 12px;
+        font-size: 12px;
+    }
 }
+
 </style>
 </head>
 
@@ -258,13 +389,15 @@ input {
 <div class="app">
 
 <header>
+
     <div class="logo">
         ⚒️ Study<span>Forge</span>
     </div>
 
-    <button class="login">
-        👤 Đăng nhập để đồng bộ
+    <button class="login" id="loginButton">
+        👤 Đăng nhập
     </button>
+
 </header>
 
 <div class="grid">
@@ -306,11 +439,11 @@ input {
 
     <div class="actions">
 
-        <button class="btn">
+        <button class="btn" id="completeButton">
             ✅ Hoàn thành hôm nay
         </button>
 
-        <button class="btn secondary">
+        <button class="btn secondary" id="goalButton">
             🎯 Đổi mục tiêu
         </button>
 
@@ -333,11 +466,11 @@ input {
         25:00
     </div>
 
-    <button class="btn">
+    <button class="btn" id="startFocusButton">
         ▶ Bắt đầu
     </button>
 
-    <button class="btn secondary">
+    <button class="btn secondary" id="resetFocusButton">
         ↺ Reset
     </button>
 
@@ -357,19 +490,15 @@ input {
     <div class="todo-add">
 
         <input
+            id="todoInput"
             type="text"
             placeholder="Thêm việc cần học..."
         >
 
-        <button class="btn">
+        <button class="btn" id="todoButton">
             +
         </button>
 
-    </div>
-
-    <div class="task">
-        <input type="checkbox">
-        <span>Ôn bài hôm nay</span>
     </div>
 
 </section>
@@ -385,21 +514,7 @@ input {
 
     <h2>📅 1 → 1000 ngày</h2>
 
-    <div class="days">
-
-        <div class="day-box done">1</div>
-        <div class="day-box current">2</div>
-
-        <div class="day-box">3</div>
-        <div class="day-box">4</div>
-        <div class="day-box">5</div>
-        <div class="day-box">6</div>
-        <div class="day-box">7</div>
-        <div class="day-box">8</div>
-        <div class="day-box">9</div>
-        <div class="day-box">10</div>
-
-    </div>
+    <div class="days"></div>
 
     <p class="small" style="margin-top:15px">
         Mỗi người có thể chọn mục tiêu từ 1 → 1000 ngày.
@@ -419,9 +534,12 @@ input {
     <h2>🤖 StudyForge AI</h2>
 
     <p class="small" style="margin-top:8px">
-<span id="aiQuota">FREE · Còn 20/20 lượt hôm nay</span>    </p>
+        <span id="aiQuota">
+            FREE · Còn 20/20 lượt hôm nay
+        </span>
+    </p>
 
-    <div class="ai-box">
+    <div class="ai-box" id="aiBox">
 
         👋 Chào bạn! StudyForge AI sẽ giúp
         bạn học tập, giải bài và tạo quiz.
@@ -431,11 +549,12 @@ input {
     <div class="todo-add">
 
         <input
+            id="aiInput"
             type="text"
             placeholder="Hỏi bài..."
         >
 
-        <button class="btn">
+        <button class="btn" id="aiButton">
             Gửi
         </button>
 
@@ -489,9 +608,103 @@ input {
 </section>
 
 </div>
+</div>
+
+
+<!-- =========================
+     LOGIN MODAL
+========================= -->
+
+<div class="auth-overlay" id="authOverlay">
+
+    <div class="auth-box">
+
+        <h2 id="authTitle">
+            👤 Đăng nhập
+        </h2>
+
+        <p class="auth-subtitle">
+            Đăng nhập để lưu tài khoản StudyForge.
+        </p>
+
+        <input
+            type="email"
+            id="authEmail"
+            placeholder="Email"
+            autocomplete="email"
+        >
+
+        <input
+            type="password"
+            id="authPassword"
+            placeholder="Mật khẩu"
+            autocomplete="current-password"
+        >
+
+        <div class="auth-buttons">
+
+            <button
+                class="btn"
+                id="authSubmit"
+            >
+                Đăng nhập
+            </button>
+
+            <button
+                class="btn secondary"
+                id="switchAuth"
+            >
+                Đăng ký
+            </button>
+
+        </div>
+
+        <div
+            class="auth-message"
+            id="authMessage"
+        ></div>
+
+        <button
+            class="btn secondary auth-close"
+            id="closeAuth"
+        >
+            Đóng
+        </button>
+
+    </div>
 
 </div>
+
+
+<!-- USER INFO -->
+
+<div class="user-info" id="userInfo">
+
+    <div class="user-email" id="userEmail"></div>
+
+    <button
+        class="btn secondary"
+        id="logoutButton"
+    >
+        🚪 Đăng xuất
+    </button>
+
+</div>
+
+
+<!-- NGƯỜI TẠO -->
+
+<div class="creator">
+    Người tạo: <b>Hoàng Ngọc Đạt</b>
+</div>
+
+
 <script>
+
+/* =========================================
+   STUDYFORGE DATA
+========================================= */
+
 const STORAGE_KEY = "studyforge_data";
 
 let studyData = JSON.parse(
@@ -500,15 +713,23 @@ let studyData = JSON.parse(
     goal: 300,
     currentDay: 1,
     completedDays: [],
-    streak: 0
+    streak: 0,
+    tasks: []
 };
 
 function saveData() {
+
     localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(studyData)
     );
+
 }
+
+
+/* =========================================
+   JOURNEY
+========================================= */
 
 function updateJourney() {
 
@@ -516,7 +737,11 @@ function updateJourney() {
         `Ngày ${studyData.currentDay} / ${studyData.goal}`;
 
     const progress =
-        (studyData.currentDay / studyData.goal) * 100;
+        Math.min(
+            100,
+            ((studyData.currentDay - 1) /
+            studyData.goal) * 100
+        );
 
     document.querySelector(".progress-bar")
         .style.width = progress + "%";
@@ -526,7 +751,9 @@ function updateJourney() {
         studyData.streak + " ngày";
 
     renderDays();
+
 }
+
 
 function renderDays() {
 
@@ -535,7 +762,11 @@ function renderDays() {
 
     container.innerHTML = "";
 
-    for (let i = 1; i <= 1000; i++) {
+    for (
+        let i = 1;
+        i <= 1000;
+        i++
+    ) {
 
         const box =
             document.createElement("div");
@@ -545,8 +776,7 @@ function renderDays() {
         box.textContent = i;
 
         if (
-            studyData.completedDays
-                .includes(i)
+            studyData.completedDays.includes(i)
         ) {
             box.classList.add("done");
         }
@@ -558,8 +788,11 @@ function renderDays() {
         }
 
         container.appendChild(box);
+
     }
+
 }
+
 
 function completeToday() {
 
@@ -567,8 +800,7 @@ function completeToday() {
         studyData.currentDay;
 
     if (
-        studyData.completedDays
-            .includes(day)
+        studyData.completedDays.includes(day)
     ) {
         return;
     }
@@ -581,7 +813,9 @@ function completeToday() {
         studyData.currentDay <
         studyData.goal
     ) {
+
         studyData.currentDay++;
+
     }
 
     saveData();
@@ -598,8 +832,11 @@ function completeToday() {
             studyData.goal +
             " ngày!"
         );
+
     }
+
 }
+
 
 function changeGoal() {
 
@@ -608,6 +845,8 @@ function changeGoal() {
             "🎯 Nhập mục tiêu từ 1 đến 1000 ngày:",
             studyData.goal
         );
+
+    if (newGoal === null) return;
 
     const goal =
         Number(newGoal);
@@ -623,6 +862,7 @@ function changeGoal() {
         );
 
         return;
+
     }
 
     studyData.goal = goal;
@@ -630,32 +870,30 @@ function changeGoal() {
     if (
         studyData.currentDay > goal
     ) {
+
         studyData.currentDay = goal;
+
     }
 
     saveData();
 
     updateJourney();
 
-    alert(
-        "🎯 Đã lưu mục tiêu: " +
-        goal +
-        " ngày!"
-    );
 }
 
+
 document
-    .querySelectorAll(".btn")[0]
+    .getElementById("completeButton")
     .onclick = completeToday;
 
 document
-    .querySelectorAll(".btn")[1]
+    .getElementById("goalButton")
     .onclick = changeGoal;
 
-updateJourney();
-// ===============================
-// FOCUS TIMER
-// ===============================
+
+/* =========================================
+   POMODORO
+========================================= */
 
 let focusSeconds = 25 * 60;
 let focusRunning = false;
@@ -665,26 +903,29 @@ const timerDisplay =
     document.querySelector(".timer-number");
 
 const startButton =
-    document.querySelector(".timer .btn");
+    document.getElementById("startFocusButton");
 
 const resetButton =
-    document.querySelector(".timer .btn.secondary");
+    document.getElementById("resetFocusButton");
+
 
 function updateTimer() {
 
     const minutes =
         Math.floor(focusSeconds / 60)
-            .toString()
-            .padStart(2, "0");
+        .toString()
+        .padStart(2, "0");
 
     const seconds =
         (focusSeconds % 60)
-            .toString()
-            .padStart(2, "0");
+        .toString()
+        .padStart(2, "0");
 
     timerDisplay.textContent =
         `${minutes}:${seconds}`;
+
 }
+
 
 function startFocus() {
 
@@ -695,43 +936,52 @@ function startFocus() {
     startButton.textContent =
         "⏸ Đang học...";
 
-    focusInterval = setInterval(() => {
+    focusInterval =
+        setInterval(() => {
 
-        focusSeconds--;
-
-        updateTimer();
-
-        if (focusSeconds <= 0) {
-
-            clearInterval(focusInterval);
-
-            focusRunning = false;
-
-            focusSeconds = 25 * 60;
-
-            startButton.textContent =
-                "▶ Bắt đầu";
+            focusSeconds--;
 
             updateTimer();
 
-            studyData.streak++;
+            if (
+                focusSeconds <= 0
+            ) {
 
-            saveData();
+                clearInterval(
+                    focusInterval
+                );
 
-            alert(
-                "🎉 Hoàn thành 25 phút Focus!\n\n" +
-                "Bạn đã có thêm một phiên học."
-            );
+                focusRunning = false;
 
-            updateJourney();
-        }
+                focusSeconds = 25 * 60;
 
-    }, 1000);
+                startButton.textContent =
+                    "▶ Bắt đầu";
+
+                updateTimer();
+
+                studyData.streak++;
+
+                saveData();
+
+                updateJourney();
+
+                alert(
+                    "🎉 Hoàn thành 25 phút Focus!"
+                );
+
+            }
+
+        }, 1000);
+
 }
+
 
 function resetFocus() {
 
-    clearInterval(focusInterval);
+    clearInterval(
+        focusInterval
+    );
 
     focusRunning = false;
 
@@ -741,20 +991,20 @@ function resetFocus() {
         "▶ Bắt đầu";
 
     updateTimer();
+
 }
 
-startButton.onclick = startFocus;
 
-resetButton.onclick = resetFocus;
+startButton.onclick =
+    startFocus;
 
-updateTimer();
-// ===============================
-// TODO SYSTEM
-// ===============================
+resetButton.onclick =
+    resetFocus;
 
-if (!studyData.tasks) {
-    studyData.tasks = [];
-}
+
+/* =========================================
+   TODO
+========================================= */
 
 function renderTasks() {
 
@@ -763,52 +1013,71 @@ function renderTasks() {
 
     todoCard
         .querySelectorAll(".task")
-        .forEach(task => task.remove());
+        .forEach(task =>
+            task.remove()
+        );
 
-    studyData.tasks.forEach((task, index) => {
+    studyData.tasks.forEach(
+        (task, index) => {
 
-        const row =
-            document.createElement("div");
+            const row =
+                document.createElement("div");
 
-        row.className =
-            "task" + (task.done ? " done" : "");
+            row.className =
+                "task" +
+                (task.done ? " done" : "");
 
-        row.innerHTML = `
-            <input type="checkbox"
-                   ${task.done ? "checked" : ""}>
-            <span>${escapeHTML(task.text)}</span>
-        `;
+            const checkbox =
+                document.createElement("input");
 
-        row.querySelector("input").onchange = () => {
+            checkbox.type = "checkbox";
 
-            studyData.tasks[index].done =
-                !studyData.tasks[index].done;
+            checkbox.checked =
+                task.done;
 
-            saveData();
-            renderTasks();
-        };
+            const span =
+                document.createElement("span");
 
-        todoCard.appendChild(row);
-    });
+            span.textContent =
+                task.text;
+
+            checkbox.onchange = () => {
+
+                studyData.tasks[index].done =
+                    checkbox.checked;
+
+                saveData();
+
+                renderTasks();
+
+            };
+
+            row.appendChild(
+                checkbox
+            );
+
+            row.appendChild(
+                span
+            );
+
+            todoCard.appendChild(
+                row
+            );
+
+        }
+    );
+
 }
 
-function escapeHTML(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-}
 
 const todoInput =
-    document.querySelector(".todo-add input");
+    document.getElementById("todoInput");
 
 const todoButton =
-    document.querySelector(".todo-add .btn");
+    document.getElementById("todoButton");
 
-todoButton.onclick = () => {
+
+function addTask() {
 
     const text =
         todoInput.value.trim();
@@ -823,24 +1092,34 @@ todoButton.onclick = () => {
     todoInput.value = "";
 
     saveData();
+
     renderTasks();
-};
+
+}
+
+
+todoButton.onclick =
+    addTask;
 
 todoInput.addEventListener(
     "keydown",
     event => {
 
-        if (event.key === "Enter") {
-            todoButton.click();
+        if (
+            event.key === "Enter"
+        ) {
+
+            addTask();
+
         }
 
     }
 );
 
-renderTasks();
-// ===============================
-// STUDYFORGE MUSIC
-// ===============================
+
+/* =========================================
+   MUSIC
+========================================= */
 
 const musicTracks = [
     "music/chill1.mp3",
@@ -852,56 +1131,51 @@ const musicTracks = [
 let musicIndex = 0;
 let isPlaying = false;
 
-const audioPlayer = new Audio();
-audioPlayer.preload = "auto";
+const audioPlayer =
+    new Audio();
+
+audioPlayer.preload =
+    "auto";
 
 const musicButtons =
-    document.querySelectorAll(".music .btn");
+    document.querySelectorAll(
+        ".music .btn"
+    );
 
 const playPauseButton =
-    document.querySelector(".music + .actions .btn");
+    document.querySelector(
+        ".music + .actions .btn"
+    );
 
 const nextButton =
-    document.querySelector(".music + .actions .btn.secondary");
+    document.querySelector(
+        ".music + .actions .btn.secondary"
+    );
 
-
-// ===============================
-// CẬP NHẬT NÚT
-// ===============================
 
 function updateMusicButtons() {
 
-    musicButtons.forEach((button, index) => {
-
-        if (index === musicIndex && isPlaying) {
-
-            button.textContent =
-                `⏸ Chill ${index + 1}`;
-
-        } else {
+    musicButtons.forEach(
+        (button, index) => {
 
             button.textContent =
-                `🎧 Chill ${index + 1}`;
+                index === musicIndex &&
+                isPlaying
+                ? `⏸ Chill ${index + 1}`
+                : `🎧 Chill ${index + 1}`;
 
         }
-
-    });
+    );
 
 }
 
-
-// ===============================
-// PHÁT NHẠC
-// ===============================
 
 function playMusic(index) {
 
     if (
         index < 0 ||
         index >= musicTracks.length
-    ) {
-        return;
-    }
+    ) return;
 
     musicIndex = index;
 
@@ -928,19 +1202,15 @@ function playMusic(index) {
             );
 
         });
+
 }
 
-
-// ===============================
-// CHILL 1 → CHILL 4
-// ===============================
 
 musicButtons.forEach(
     (button, index) => {
 
         button.onclick = () => {
 
-            // Bấm lại bài đang phát → DỪNG
             if (
                 musicIndex === index &&
                 isPlaying
@@ -953,9 +1223,9 @@ musicButtons.forEach(
                 updateMusicButtons();
 
                 return;
+
             }
 
-            // Phát đúng bài được chọn
             playMusic(index);
 
         };
@@ -964,46 +1234,29 @@ musicButtons.forEach(
 );
 
 
-// ===============================
-// ▶ / ⏸
-// ===============================
-
 playPauseButton.onclick = () => {
 
     if (isPlaying) {
 
         audioPlayer.pause();
 
-        isPlaying = false;
-
     } else {
 
         audioPlayer.play()
-            .then(() => {
-
-                isPlaying = true;
-
-            });
+            .catch(() => {});
 
     }
-
-    updateMusicButtons();
 
 };
 
 
-// ===============================
-// ⏭ TIẾP
-// ===============================
-
 nextButton.onclick = () => {
 
-    // Luôn tăng đúng 1 bài
     musicIndex++;
 
-    // Chill 4 → quay lại Chill 1
     if (
-        musicIndex >= musicTracks.length
+        musicIndex >=
+        musicTracks.length
     ) {
 
         musicIndex = 0;
@@ -1015,35 +1268,18 @@ nextButton.onclick = () => {
 };
 
 
-// ===============================
-// HẾT BÀI → LẶP LẠI
-// ===============================
-
 audioPlayer.addEventListener(
     "ended",
     () => {
 
-        // Không chuyển bài
-        // Hết bài vẫn lặp chính bài đó
-
         audioPlayer.currentTime = 0;
 
         audioPlayer.play()
-            .then(() => {
-
-                isPlaying = true;
-
-                updateMusicButtons();
-
-            });
+            .catch(() => {});
 
     }
 );
 
-
-// ===============================
-// PAUSE
-// ===============================
 
 audioPlayer.addEventListener(
     "pause",
@@ -1057,10 +1293,6 @@ audioPlayer.addEventListener(
 );
 
 
-// ===============================
-// PLAY
-// ===============================
-
 audioPlayer.addEventListener(
     "play",
     () => {
@@ -1071,52 +1303,81 @@ audioPlayer.addEventListener(
 
     }
 );
-// ===============================
-// STUDYFORGE AI
-// ===============================
+
+
+/* =========================================
+   AI
+========================================= */
+
 function formatAI(text) {
+
     return text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
-        .replace(/^### (.*)$/gm, "<h3>$1</h3>")
-        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\n/g, "<br>");
+        .replace(
+            /^### (.*)$/gm,
+            "<h3>$1</h3>"
+        )
+        .replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        )
+        .replace(
+            /`([^`]+)`/g,
+            "<code>$1</code>"
+        )
+        .replace(
+            /\n/g,
+            "<br>"
+        );
+
 }
-const aiInput = document.querySelector(
-    '.ai-box + .todo-add input'
-);
 
-const aiButton = document.querySelector(
-    '.ai-box + .todo-add .btn'
-);
 
-const aiBox = document.querySelector(
-    '.ai-box'
-);
-// ===============================
-// AI DAILY QUOTA - 20 LƯỢT / NGÀY
-// ===============================
+const aiInput =
+    document.getElementById(
+        "aiInput"
+    );
+
+const aiButton =
+    document.getElementById(
+        "aiButton"
+    );
+
+const aiBox =
+    document.getElementById(
+        "aiBox"
+    );
+
 
 const AI_DAILY_LIMIT = 20;
 
-const todayKey = new Intl.DateTimeFormat(
-    "en-CA",
-    {
-        timeZone: "Asia/Ho_Chi_Minh"
-    }
-).format(new Date());
+const todayKey =
+    new Intl.DateTimeFormat(
+        "en-CA",
+        {
+            timeZone:
+                "Asia/Ho_Chi_Minh"
+        }
+    ).format(new Date());
+
+
 let aiQuotaData =
     JSON.parse(
-        localStorage.getItem("studyforge_ai_quota")
+        localStorage.getItem(
+            "studyforge_ai_quota"
+        )
     ) || {
         date: todayKey,
         used: 0
     };
 
-// Sang ngày mới → reset về 20
-if (aiQuotaData.date !== todayKey) {
+
+if (
+    aiQuotaData.date !== todayKey
+) {
+
     aiQuotaData = {
         date: todayKey,
         used: 0
@@ -1124,29 +1385,36 @@ if (aiQuotaData.date !== todayKey) {
 
     localStorage.setItem(
         "studyforge_ai_quota",
-        JSON.stringify(aiQuotaData)
+        JSON.stringify(
+            aiQuotaData
+        )
     );
+
 }
 
+
 const aiQuota =
-    document.getElementById("aiQuota");
+    document.getElementById(
+        "aiQuota"
+    );
+
 
 function updateAIQuota() {
 
     const remaining =
         Math.max(
             0,
-            AI_DAILY_LIMIT - aiQuotaData.used
+            AI_DAILY_LIMIT -
+            aiQuotaData.used
         );
 
     aiQuota.textContent =
-        `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`;
+        remaining === 0
+        ? "FREE · Đã hết lượt hôm nay"
+        : `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`;
 
-    if (remaining === 0) {
-        aiQuota.textContent =
-            "FREE · Đã hết lượt hôm nay";
-    }
 }
+
 
 function useAILimit() {
 
@@ -1154,118 +1422,159 @@ function useAILimit() {
         aiQuotaData.used >=
         AI_DAILY_LIMIT
     ) {
+
         return false;
+
     }
 
     aiQuotaData.used++;
 
     localStorage.setItem(
         "studyforge_ai_quota",
-        JSON.stringify(aiQuotaData)
+        JSON.stringify(
+            aiQuotaData
+        )
     );
 
     updateAIQuota();
 
     return true;
+
 }
 
-updateAIQuota();
-aiButton.onclick = async () => {
 
-  const question =
-    aiInput.value.trim();
+aiButton.onclick =
+    async () => {
 
-if (!question) {
-    aiBox.textContent =
-        "⚠️ Hãy nhập câu hỏi trước nhé!";
-    return;
-}
+        const question =
+            aiInput.value.trim();
 
-if (
-    aiQuotaData.used >=
-    AI_DAILY_LIMIT
-) {
-    aiBox.textContent =
-        "⛔ Bạn đã dùng hết 20 lượt AI hôm nay. Mai quay lại nhé!";
-    return;
-}
-    aiButton.disabled = true;
-    aiButton.textContent = "⏳";
+        if (!question) {
 
-    aiBox.textContent =
-        "🤖 StudyForge AI đang suy nghĩ...";
+            aiBox.textContent =
+                "⚠️ Hãy nhập câu hỏi trước nhé!";
 
-    try {
-
-        const response = await fetch(
-            "/api/ask",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-                    message: question
-                })
-            }
-        );
-
-        const data =
-            await response.json();
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                "AI không trả lời được."
-            );
+            return;
 
         }
-        if (!useAILimit()) {
-    return;
-}
-aiBox.innerHTML =
-    "🤖 " + formatAI(data.reply);
 
-if (window.MathJax) {
-    MathJax.typesetPromise([aiBox]);
-}
+        if (
+            aiQuotaData.used >=
+            AI_DAILY_LIMIT
+        ) {
 
-    } catch (error) {
+            aiBox.textContent =
+                "⛔ Bạn đã dùng hết 20 lượt AI hôm nay.";
 
-        console.error(error);
+            return;
+
+        }
+
+        aiButton.disabled = true;
+
+        aiButton.textContent =
+            "⏳";
 
         aiBox.textContent =
-            "❌ " +
-            (error.message ||
-            "Có lỗi kết nối AI.");
+            "🤖 StudyForge AI đang suy nghĩ...";
 
-    } finally {
+        try {
 
-        aiButton.disabled = false;
-        aiButton.textContent = "Gửi";
+            const response =
+                await fetch(
+                    "/api/ask",
+                    {
+                        method: "POST",
 
-    }
-};
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                message:
+                                    question
+                            })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "AI không trả lời được."
+                );
+
+            }
+
+            if (
+                !useAILimit()
+            ) return;
+
+            aiBox.innerHTML =
+                "🤖 " +
+                formatAI(
+                    data.reply
+                );
+
+            if (
+                window.MathJax
+            ) {
+
+                MathJax.typesetPromise(
+                    [aiBox]
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            aiBox.textContent =
+                "❌ " +
+                (
+                    error.message ||
+                    "Có lỗi kết nối AI."
+                );
+
+        } finally {
+
+            aiButton.disabled =
+                false;
+
+            aiButton.textContent =
+                "Gửi";
+
+        }
+
+    };
 
 
-// Nhấn Enter để gửi
 aiInput.addEventListener(
     "keydown",
     event => {
 
-        if (event.key === "Enter") {
+        if (
+            event.key === "Enter"
+        ) {
+
             aiButton.click();
+
         }
 
     }
 );
-// ===============================
-// STUDYFORGE - GOOGLE LOGIN
-// ===============================
+
+
+/* =========================================
+   SUPABASE AUTH
+   EMAIL + PASSWORD
+========================================= */
 
 const SUPABASE_URL =
     "https://gucxknalotvyhjxqkbel.supabase.co";
@@ -1279,111 +1588,398 @@ const supabaseClient =
         SUPABASE_KEY
     );
 
+
 const loginButton =
-    document.querySelector(".login");
+    document.getElementById(
+        "loginButton"
+    );
+
+const authOverlay =
+    document.getElementById(
+        "authOverlay"
+    );
+
+const authTitle =
+    document.getElementById(
+        "authTitle"
+    );
+
+const authEmail =
+    document.getElementById(
+        "authEmail"
+    );
+
+const authPassword =
+    document.getElementById(
+        "authPassword"
+    );
+
+const authSubmit =
+    document.getElementById(
+        "authSubmit"
+    );
+
+const switchAuth =
+    document.getElementById(
+        "switchAuth"
+    );
+
+const closeAuth =
+    document.getElementById(
+        "closeAuth"
+    );
+
+const authMessage =
+    document.getElementById(
+        "authMessage"
+    );
+
+const userInfo =
+    document.getElementById(
+        "userInfo"
+    );
+
+const userEmail =
+    document.getElementById(
+        "userEmail"
+    );
+
+const logoutButton =
+    document.getElementById(
+        "logoutButton"
+    );
 
 
-// ===============================
-// KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP
-// ===============================
-
-async function checkLogin() {
-
-    const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
-
-    if (user) {
-
-        const name =
-            user.user_metadata?.full_name ||
-            user.user_metadata?.name ||
-            user.email ||
-            "Bạn";
-
-        loginButton.textContent =
-            `👤 ${name}`;
-
-    } else {
-
-        loginButton.textContent =
-            "👤 Đăng nhập Google";
-
-    }
-}
+let isRegisterMode = false;
 
 
-// ===============================
-// NÚT ĐĂNG NHẬP GOOGLE
-// ===============================
+/* MỞ CỬA SỔ */
 
 loginButton.onclick = async () => {
 
-    loginButton.disabled = true;
+    const {
+        data: {
+            session
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
 
-    loginButton.textContent =
-        "⏳ Đang mở Google...";
+    if (session) {
 
-    const { error } =
-        await supabaseClient.auth.signInWithOAuth({
-
-            provider: "google",
-
-            options: {
-
-                redirectTo:
-                    "https://study-forge-ten-olive.vercel.app"
-
-            }
-
-        });
-
-    if (error) {
-
-        console.error(error);
-
-        alert(
-            "❌ Đăng nhập lỗi:\n" +
-            error.message
+        userInfo.classList.toggle(
+            "show"
         );
 
-        loginButton.disabled = false;
+        return;
 
-        loginButton.textContent =
-            "👤 Đăng nhập Google";
     }
+
+    authOverlay.classList.add(
+        "show"
+    );
+
+    authEmail.focus();
+
 };
 
 
-// ===============================
-// CẬP NHẬT SAU KHI ĐĂNG NHẬP
-// ===============================
+/* ĐÓNG */
 
-supabaseClient.auth.onAuthStateChange(
-    (event, session) => {
+closeAuth.onclick = () => {
 
-        if (session?.user) {
+    authOverlay.classList.remove(
+        "show"
+    );
 
-            const name =
-                session.user.user_metadata?.full_name ||
-                session.user.user_metadata?.name ||
-                session.user.email ||
-                "Bạn";
+    authMessage.textContent =
+        "";
 
-            loginButton.textContent =
-                `👤 ${name}`;
+};
 
-        } else {
 
-            loginButton.textContent =
-                "👤 Đăng nhập Google";
+/* CHUYỂN ĐĂNG NHẬP / ĐĂNG KÝ */
+
+switchAuth.onclick = () => {
+
+    isRegisterMode =
+        !isRegisterMode;
+
+    if (
+        isRegisterMode
+    ) {
+
+        authTitle.textContent =
+            "📝 Đăng ký tài khoản";
+
+        authSubmit.textContent =
+            "Đăng ký";
+
+        switchAuth.textContent =
+            "Đăng nhập";
+
+    } else {
+
+        authTitle.textContent =
+            "👤 Đăng nhập";
+
+        authSubmit.textContent =
+            "Đăng nhập";
+
+        switchAuth.textContent =
+            "Đăng ký";
+
+    }
+
+    authMessage.textContent =
+        "";
+
+};
+
+
+/* ĐĂNG NHẬP / ĐĂNG KÝ */
+
+authSubmit.onclick =
+    async () => {
+
+        const email =
+            authEmail.value.trim();
+
+        const password =
+            authPassword.value;
+
+        if (!email || !password) {
+
+            authMessage.textContent =
+                "⚠️ Nhập đầy đủ email và mật khẩu.";
+
+            return;
+
+        }
+
+        if (password.length < 6) {
+
+            authMessage.textContent =
+                "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
+
+            return;
+
+        }
+
+        authSubmit.disabled =
+            true;
+
+        authSubmit.textContent =
+            "⏳ Đang xử lý...";
+
+        try {
+
+            if (
+                isRegisterMode
+            ) {
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signUp({
+                            email,
+                            password
+                        });
+
+                if (error)
+                    throw error;
+
+                if (
+                    data.session
+                ) {
+
+                    authMessage.textContent =
+                        "✅ Đăng ký thành công!";
+
+                } else {
+
+                    authMessage.textContent =
+                        "✅ Đăng ký thành công! Hãy kiểm tra email để xác nhận tài khoản.";
+
+                }
+
+            } else {
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signInWithPassword({
+                            email,
+                            password
+                        });
+
+                if (error)
+                    throw error;
+
+                authMessage.textContent =
+                    "✅ Đăng nhập thành công!";
+
+                setTimeout(
+                    () => {
+
+                        authOverlay.classList.remove(
+                            "show"
+                        );
+
+                    },
+                    500
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            authMessage.textContent =
+                "❌ " +
+                (
+                    error.message ||
+                    "Có lỗi xảy ra."
+                );
+
+        } finally {
+
+            authSubmit.disabled =
+                false;
+
+            authSubmit.textContent =
+                isRegisterMode
+                ? "Đăng ký"
+                : "Đăng nhập";
+
+        }
+
+    };
+
+
+/* ENTER ĐỂ ĐĂNG NHẬP */
+
+authPassword.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            authSubmit.click();
 
         }
 
     }
 );
 
+
+/* ĐĂNG XUẤT */
+
+logoutButton.onclick =
+    async () => {
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        userInfo.classList.remove(
+            "show"
+        );
+
+        loginButton.textContent =
+            "👤 Đăng nhập";
+
+    };
+
+
+/* CẬP NHẬT GIAO DIỆN USER */
+
+function updateAuthUI(
+    user
+) {
+
+    if (user) {
+
+        const email =
+            user.email ||
+            "Tài khoản";
+
+        loginButton.textContent =
+            "👤 Đã đăng nhập";
+
+        userEmail.textContent =
+            email;
+
+    } else {
+
+        loginButton.textContent =
+            "👤 Đăng nhập";
+
+        userInfo.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* KIỂM TRA SESSION */
+
+async function checkLogin() {
+
+    const {
+        data: {
+            session
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+    updateAuthUI(
+        session?.user || null
+    );
+
+}
+
+
+supabaseClient.auth.onAuthStateChange(
+    (event, session) => {
+
+        updateAuthUI(
+            session?.user || null
+        );
+
+    }
+);
+
+
+/* CHẠY BAN ĐẦU */
+
+updateJourney();
+
+updateTimer();
+
+renderTasks();
+
+updateMusicButtons();
+
+updateAIQuota();
+
 checkLogin();
+
 </script>
+
 </body>
 </html>
+```
