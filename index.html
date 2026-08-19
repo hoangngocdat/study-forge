@@ -394,6 +394,93 @@ input:focus {
         font-size: 11px;
     }
 }
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+* {
+    max-width: 100%;
+}
+
+.app {
+    width: 100%;
+    max-width: 1150px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.card {
+    min-width: 0;
+    width: 100%;
+}
+
+.todo-add {
+    width: 100%;
+    min-width: 0;
+}
+
+.todo-add input {
+    min-width: 0;
+    width: 100%;
+}
+
+.actions {
+    width: 100%;
+}
+
+.days {
+    width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 800px) {
+
+    .app {
+        width: 100%;
+        padding: 15px 10px 80px;
+    }
+
+    header {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .logo {
+        min-width: 0;
+        font-size: 22px;
+    }
+
+    .login {
+        flex-shrink: 0;
+    }
+
+    .todo-add {
+        flex-wrap: wrap;
+    }
+
+    .todo-add input {
+        flex: 1 1 0;
+    }
+
+    .days {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .day-box {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .creator {
+        right: 8px;
+        bottom: 8px;
+        max-width: calc(100vw - 16px);
+        font-size: 11px;
+    }
+}
 </style>
 </head>
 
