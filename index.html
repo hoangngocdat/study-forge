@@ -2892,7 +2892,6 @@ audioPlayer.addEventListener(
     }
 );
 
-audioPlayer.addEventListener(
 audioPlayer.addEventListener("ended", () => {
     audioPlayer.currentTime = 0;
     audioPlayer.play().catch(() => {});
