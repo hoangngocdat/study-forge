@@ -2893,22 +2893,10 @@ audioPlayer.addEventListener(
 );
 
 audioPlayer.addEventListener(
-    "ended",
-    () => {
-
-        musicIndex++;
-
-        if(
-            musicIndex >=
-            musicTracks.length
-        ){
-
-            musicIndex = 0;
-        }
-
-        playMusic(musicIndex);
-    }
-);
+audioPlayer.addEventListener("ended", () => {
+    audioPlayer.currentTime = 0;
+    audioPlayer.play().catch(() => {});
+});
 /* =====================================================
    AI — FORMAT AN TOÀN + MATHJAX
 ===================================================== */
