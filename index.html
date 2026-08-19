@@ -641,6 +641,101 @@ document
     .onclick = changeGoal;
 
 updateJourney();
+// ===============================
+// FOCUS TIMER
+// ===============================
+
+let focusSeconds = 25 * 60;
+let focusRunning = false;
+let focusInterval = null;
+
+const timerDisplay =
+    document.querySelector(".timer-number");
+
+const startButton =
+    document.querySelector(".timer .btn");
+
+const resetButton =
+    document.querySelector(".timer .btn.secondary");
+
+function updateTimer() {
+
+    const minutes =
+        Math.floor(focusSeconds / 60)
+            .toString()
+            .padStart(2, "0");
+
+    const seconds =
+        (focusSeconds % 60)
+            .toString()
+            .padStart(2, "0");
+
+    timerDisplay.textContent =
+        `${minutes}:${seconds}`;
+}
+
+function startFocus() {
+
+    if (focusRunning) return;
+
+    focusRunning = true;
+
+    startButton.textContent =
+        "⏸ Đang học...";
+
+    focusInterval = setInterval(() => {
+
+        focusSeconds--;
+
+        updateTimer();
+
+        if (focusSeconds <= 0) {
+
+            clearInterval(focusInterval);
+
+            focusRunning = false;
+
+            focusSeconds = 25 * 60;
+
+            startButton.textContent =
+                "▶ Bắt đầu";
+
+            updateTimer();
+
+            studyData.streak++;
+
+            saveData();
+
+            alert(
+                "🎉 Hoàn thành 25 phút Focus!\n\n" +
+                "Bạn đã có thêm một phiên học."
+            );
+
+            updateJourney();
+        }
+
+    }, 1000);
+}
+
+function resetFocus() {
+
+    clearInterval(focusInterval);
+
+    focusRunning = false;
+
+    focusSeconds = 25 * 60;
+
+    startButton.textContent =
+        "▶ Bắt đầu";
+
+    updateTimer();
+}
+
+startButton.onclick = startFocus;
+
+resetButton.onclick = resetFocus;
+
+updateTimer();
 </script>
 </body>
 </html>
