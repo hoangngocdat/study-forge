@@ -827,7 +827,7 @@ todoInput.addEventListener(
 
 renderTasks();
 // ===============================
-// STUDY MUSIC - AUTO LOOP
+// STUDY MUSIC
 // ===============================
 
 const musicTracks = [
@@ -838,7 +838,6 @@ const musicTracks = [
 ];
 
 let musicIndex = 0;
-
 const audioPlayer = new Audio();
 
 audioPlayer.preload = "auto";
@@ -846,104 +845,108 @@ audioPlayer.preload = "auto";
 const musicButtons =
     document.querySelectorAll(".music .btn");
 
+const playPauseButton =
+    document.querySelector(".music + .actions .btn");
+
+const nextButton =
+    document.querySelector(".music + .actions .btn.secondary");
+
+function updateMusicButtons() {
+
+    musicButtons.forEach((button, index) => {
+
+        button.textContent =
+            index === musicIndex &&
+            !audioPlayer.paused
+                ? `⏸ Chill ${index + 1}`
+                : `🎧 Chill ${index + 1}`;
+
+    });
+}
+
 function playMusic(index) {
 
-    const sameTrack =
-        musicIndex === index &&
-        audioPlayer.src.endsWith(
-            musicTracks[index]
-        );
-
-    musicIndex = index;
+    const sameTrack = musicIndex === index;
 
     // Bấm lại bài đang phát → dừng
-    if (
-        sameTrack &&
-        !audioPlayer.paused
-    ) {
+    if (sameTrack && !audioPlayer.paused) {
 
         audioPlayer.pause();
 
-        musicButtons[index]
-            .textContent =
-            `▶ Chill ${index + 1}`;
+        updateMusicButtons();
 
         return;
     }
 
-    // Chọn bài mới hoặc phát lại
+    musicIndex = index;
+
     audioPlayer.src =
-        musicTracks[index];
+        musicTracks[musicIndex];
+
+    audioPlayer.currentTime = 0;
+
+    audioPlayer.play()
+        .then(() => {
+            updateMusicButtons();
+        })
+        .catch(error => {
+            console.log("Không thể phát nhạc:", error);
+        });
+}
+
+// Chill 1 → Chill 4
+musicButtons.forEach((button, index) => {
+
+    button.onclick = () => {
+        playMusic(index);
+    };
+
+});
+
+// ▶ / ⏸
+playPauseButton.onclick = () => {
+
+    if (audioPlayer.paused) {
+
+        if (!audioPlayer.src) {
+            playMusic(musicIndex);
+        } else {
+            audioPlayer.play();
+        }
+
+    } else {
+
+        audioPlayer.pause();
+
+    }
+};
+
+// ⏭ Tiếp
+nextButton.onclick = () => {
+
+    musicIndex =
+        (musicIndex + 1) % musicTracks.length;
+
+    playMusic(musicIndex);
+};
+
+// Hết bài → tự động lặp
+audioPlayer.addEventListener("ended", () => {
 
     audioPlayer.currentTime = 0;
 
     audioPlayer.play();
 
-    musicButtons.forEach(
-        (button, i) => {
-            button.textContent =
-                `🎧 Chill ${i + 1}`;
-        }
-    );
+});
 
-    musicButtons[index]
-        .textContent =
-        `⏸ Chill ${index + 1}`;
-}
+// Cập nhật giao diện khi phát/dừng
+audioPlayer.addEventListener("play", () => {
+    updateMusicButtons();
+});
 
-// Bấm Chill 1 → 4
-musicButtons.forEach(
-    (button, index) => {
-
-        button.onclick = () =>
-            playMusic(index);
-
-    }
-);
-
-// Hết bài → tự động lặp
-audioPlayer.addEventListener(
-    "ended",
-    () => {
-
-        audioPlayer.currentTime = 0;
-
-        audioPlayer.play();
-
-    }
-);
-
-// Nếu bài bị pause → đổi icon
-audioPlayer.addEventListener(
-    "pause",
-    () => {
-
-        if (
-            musicButtons[musicIndex]
-        ) {
-            musicButtons[musicIndex]
-                .textContent =
-                `▶ Chill ${musicIndex + 1}`;
-        }
-
-    }
-);
-
-// Nếu phát lại → đổi icon
-audioPlayer.addEventListener(
-    "play",
-    () => {
-
-        if (
-            musicButtons[musicIndex]
-        ) {
-            musicButtons[musicIndex]
-                .textContent =
-                `⏸ Chill ${musicIndex + 1}`;
-        }
-
-    }
-);
+audioPlayer.addEventListener("pause", () => {
+    updateMusicButtons();
+});
 </script>
 </body>
 </html>
