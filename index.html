@@ -3,1577 +3,394 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>StudyForge</title>
 
 <script>
 window.MathJax = {
     tex: {
-        inlineMath: [['\\(', '\\)']],
-        displayMath: [['\\[', '\\]']]
+        inlineMath: [['\\(', '\\)'], ['$', '$']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+    },
+    options: {
+        skipHtmlTags: ['script','noscript','style','textarea','pre','code']
     }
 };
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-html,
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
 body{
-    width:100%;
-    max-width:100%;
-    overflow-x:hidden;
+    font-family:Arial,sans-serif;background:#07111f;color:#fff;
+    min-height:100vh
 }
-
-body{
-    font-family:Arial,sans-serif;
-    background:
-        radial-gradient(circle at top,#102a47 0%,#07111f 42%);
-    color:white;
-    min-height:100vh;
+button,input{font-family:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+.app{width:92%;max-width:1150px;margin:auto;padding:25px 0 90px}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px}
+.logo{font-size:28px;font-weight:bold}.logo span{color:#6ea8ff}
+.login,.timer-settings button{
+    background:#12253a;color:#fff;border:1px solid #263c55;
+    padding:11px 16px;border-radius:12px
 }
-
-button,
-input{
-    font-family:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-.app{
-    width:92%;
-    max-width:1150px;
-    margin:auto;
-    padding:25px 0 100px;
-}
-
-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    margin-bottom:25px;
-}
-
-.logo{
-    font-size:28px;
-    font-weight:bold;
-}
-
-.logo span{
-    color:#6ea8ff;
-}
-
-.login{
-    background:#12253a;
-    color:white;
-    border:1px solid #263c55;
-    padding:11px 16px;
-    border-radius:12px;
-}
-
-.login:hover{
-    background:#1a3048;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:1.3fr 1fr;
-    gap:18px;
-}
-
+.login:hover,.timer-settings button:hover{background:#1a3048}
+.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
 .card{
-    background:rgba(13,27,45,.96);
-    border:1px solid #1c3046;
-    border-radius:20px;
-    padding:22px;
-    min-width:0;
-    width:100%;
-    box-shadow:0 10px 35px rgba(0,0,0,.15);
+    background:#0d1b2d;border:1px solid #1c3046;border-radius:20px;
+    padding:22px;min-width:0;width:100%
 }
-
-.hero,
-.ai-card,
-.xp-card{
-    grid-column:1/-1;
-}
-
-.small{
-    color:#91a4b9;
-    font-size:13px;
-    margin-bottom:8px;
-}
-
-.day{
-    font-size:38px;
-    font-weight:bold;
-}
-
-.progress{
-    height:12px;
-    background:#182b40;
-    border-radius:20px;
-    overflow:hidden;
-    margin:15px 0;
-}
-
-.progress-bar{
-    height:100%;
-    width:0%;
-    background:linear-gradient(90deg,#6ea8ff,#49d17d);
-    transition:width .4s;
-}
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-}
-
-.stat{
-    background:#10243a;
-    padding:14px;
-    border-radius:14px;
-}
-
-.stat b{
-    display:block;
-    font-size:21px;
-    margin-top:5px;
-}
-
+.hero,.ai-card{grid-column:1/-1}
+.small{color:#91a4b9;font-size:13px;margin-bottom:8px}
+.day{font-size:38px;font-weight:bold}
+.progress{height:14px;background:#182b40;border-radius:20px;overflow:hidden;margin:15px 0 7px}
+.progress-bar{height:100%;width:0%;background:#6ea8ff;transition:width .35s}
+.exp-line{display:flex;justify-content:space-between;color:#91a4b9;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.stat{background:#10243a;padding:14px;border-radius:14px}.stat b{display:block;font-size:21px;margin-top:5px}
 .btn{
-    border:none;
-    padding:12px 17px;
-    border-radius:12px;
-    background:#6ea8ff;
-    color:#06101d;
-    font-weight:bold;
-    margin-top:15px;
-    transition:.2s;
+    border:none;padding:12px 17px;border-radius:12px;background:#6ea8ff;
+    color:#06101d;font-weight:bold;margin-top:15px
 }
-
-.btn:hover{
-    transform:translateY(-1px);
-    opacity:.9;
-}
-
-.btn:disabled{
-    opacity:.5;
-    cursor:not-allowed;
-}
-
-.btn.secondary{
-    background:#1a3048;
-    color:white;
-}
-
-.actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
-/* XP */
-
-.xp-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-}
-
-.level-badge{
-    background:#183a5b;
-    color:#6ea8ff;
-    border:1px solid #315d84;
-    padding:7px 12px;
-    border-radius:20px;
-    font-weight:bold;
-}
-
-.xp-text{
-    display:flex;
-    justify-content:space-between;
-    margin-top:8px;
-    font-size:13px;
-    color:#91a4b9;
-}
-
-.xp-progress{
-    height:18px;
-    background:#182b40;
-    border-radius:20px;
-    overflow:hidden;
-    margin-top:10px;
-}
-
-.xp-bar{
-    height:100%;
-    width:0%;
-    background:linear-gradient(90deg,#6ea8ff,#a970ff,#49d17d);
-    transition:width .4s;
-}
-
-.xp-tip{
-    margin-top:10px;
-    color:#91a4b9;
-    font-size:13px;
-}
-
-/* TIMER */
-
-.timer{
-    text-align:center;
-}
-
-.timer-number{
-    font-size:55px;
-    font-weight:bold;
-    margin:20px 0;
-}
-
-.timer-settings{
-    display:flex;
-    gap:7px;
-    flex-wrap:wrap;
-    justify-content:center;
-    margin-top:5px;
-}
-
-.timer-settings button{
-    border:1px solid #263c55;
-    background:#10243a;
-    color:white;
-    padding:8px 12px;
-    border-radius:9px;
-}
-
-.timer-settings button.active{
-    background:#6ea8ff;
-    color:#06101d;
-}
-
-.custom-time{
-    width:90px;
-    background:#081522;
-    color:white;
-    border:1px solid #263c55;
-    padding:8px;
-    border-radius:9px;
-}
-
-input{
-    background:#081522;
-    color:white;
-    border:1px solid #263c55;
-    padding:12px;
-    border-radius:11px;
-    outline:none;
-}
-
-input:focus{
-    border-color:#6ea8ff;
-}
-
-/* TODO */
-
-.todo-add{
-    display:flex;
-    gap:8px;
-    margin-top:15px;
-    width:100%;
-}
-
-.todo-add input{
-    flex:1;
-    min-width:0;
-}
-
-.task{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:11px 0;
-    border-bottom:1px solid #1c3046;
-}
-
-.task.done span{
-    text-decoration:line-through;
-    color:#7d8ea1;
-}
-
-.delete-task{
-    margin-left:auto;
-    border:none;
-    background:#301b25;
-    color:#ff8e9d;
-    border-radius:8px;
-    padding:6px 9px;
-}
-
-/* DAYS */
-
-.days{
-    display:grid;
-    grid-template-columns:repeat(10,minmax(0,1fr));
-    gap:6px;
-    max-height:250px;
-    overflow-y:auto;
-    margin-top:15px;
-}
-
-.day-box{
-    text-align:center;
-    padding:8px 3px;
-    background:#14283c;
-    border-radius:8px;
-    font-size:12px;
-}
-
-.day-box.done{
-    background:#49d17d;
-    color:#06130b;
-}
-
-.day-box.current{
-    outline:2px solid #6ea8ff;
-}
-
-/* MOTIVATION */
-
+.btn:hover{opacity:.9}.btn.secondary{background:#1a3048;color:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
 .motivation{
-    margin-top:15px;
-    background:linear-gradient(135deg,#10243a,#132d49);
-    border:1px solid #29445f;
-    border-radius:15px;
-    padding:17px;
-    line-height:1.6;
-    min-height:75px;
+    margin-top:15px;background:linear-gradient(135deg,#10243a,#132d49);
+    border:1px solid #29445f;border-radius:15px;padding:17px;line-height:1.6;min-height:75px
 }
-
-.motivation-title{
-    color:#6ea8ff;
-    font-size:12px;
-    font-weight:bold;
-    margin-bottom:5px;
-}
-
-.quote-actions{
-    display:flex;
-    justify-content:flex-end;
-    margin-top:10px;
-}
-
-/* STATS */
-
-.stats-big{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    margin-top:15px;
-}
-
-.big-stat{
-    background:#10243a;
-    padding:15px;
-    border-radius:13px;
-}
-
-.big-stat strong{
-    display:block;
-    font-size:25px;
-    margin-top:4px;
-}
-
-/* ACHIEVEMENTS */
-
-.achievement-list{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:8px;
-    margin-top:15px;
-}
-
-.achievement{
-    background:#10243a;
-    border-radius:12px;
-    padding:12px;
-    opacity:.42;
-    border:1px solid transparent;
-}
-
-.achievement.unlocked{
-    opacity:1;
-    border-color:#49d17d;
-}
-
-.achievement b{
-    display:block;
-    margin-bottom:4px;
-}
-
-.achievement span{
-    color:#91a4b9;
-    font-size:13px;
-}
-
-/* QUESTS */
-
-.quest-list{
-    display:grid;
-    gap:10px;
-    margin-top:15px;
-}
-
-.quest{
-    background:#10243a;
-    border-radius:14px;
-    padding:14px;
-    border:1px solid transparent;
-}
-
-.quest.completed{
-    border-color:#49d17d;
-}
-
-.quest-top{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.quest-title{
-    font-weight:bold;
-}
-
-.quest-reward{
-    color:#6ea8ff;
-    font-weight:bold;
-    white-space:nowrap;
-}
-
-.quest-desc{
-    color:#91a4b9;
-    font-size:13px;
-    margin-top:6px;
-}
-
-.quest-progress{
-    height:7px;
-    background:#1a3048;
-    border-radius:20px;
-    overflow:hidden;
-    margin-top:10px;
-}
-
-.quest-progress div{
-    height:100%;
-    width:0;
-    background:#49d17d;
-}
-
-.quest-status{
-    color:#91a4b9;
-    font-size:12px;
-    margin-top:7px;
-}
-
-/* MUSIC */
-
-.music-list{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:8px;
-    margin-top:15px;
-}
-
-.music-btn{
-    border:1px solid #263c55;
-    background:#10243a;
-    color:white;
-    padding:11px;
-    border-radius:10px;
-    text-align:left;
-}
-
-.music-btn.active{
-    background:#183a5b;
-    border-color:#6ea8ff;
-}
-
-.music-controls{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
-.now-playing{
-    margin-top:13px;
-    color:#91a4b9;
-    font-size:13px;
-}
-
-/* AI */
-
+.motivation-title{color:#6ea8ff;font-size:12px;font-weight:bold;margin-bottom:5px}
+.quote-btn{margin-top:10px;padding:8px 12px;border:1px solid #31516f;background:#0d2034;color:#fff;border-radius:9px}
+.timer{text-align:center}.timer-number{font-size:55px;font-weight:bold;margin:20px 0}
+.timer-settings{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:5px}
+.timer-settings button.active{background:#6ea8ff;color:#06101d}
+.custom-time{width:90px;background:#081522;color:#fff;border:1px solid #263c55;padding:8px;border-radius:9px}
+input{background:#081522;color:#fff;border:1px solid #263c55;padding:12px;border-radius:11px;outline:none}
+input:focus{border-color:#6ea8ff}
+.todo-add{display:flex;gap:8px;margin-top:15px;width:100%}.todo-add input{flex:1;min-width:0}
+.task{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #1c3046}
+.task.done span{text-decoration:line-through;color:#7d8ea1}
+.delete-task{margin-left:auto;border:none;background:#301b25;color:#ff8e9d;border-radius:8px;padding:6px 9px}
+.days{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;max-height:250px;overflow-y:auto;margin-top:15px}
+.day-box{text-align:center;padding:8px 3px;background:#14283c;border-radius:8px;font-size:12px}
+.day-box.done{background:#49d17d;color:#06130b}.day-box.current{outline:2px solid #6ea8ff}
+.stats-big{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}
+.big-stat{background:#10243a;padding:15px;border-radius:13px}.big-stat strong{display:block;font-size:25px;margin-top:4px}
+.achievement-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:15px}
+.achievement{background:#10243a;border-radius:12px;padding:12px;opacity:.45}
+.achievement.unlocked{opacity:1;border:1px solid #49d17d}
+.achievement b{display:block;margin-bottom:4px}.achievement span{color:#b4c2d0;font-size:13px}
 .ai-box{
-    margin-top:15px;
-    background:#081522;
-    border:1px solid #172b40;
-    border-radius:15px;
-    padding:18px;
-    line-height:1.7;
-    min-height:260px;
-    max-height:420px;
-    overflow-y:auto;
-    font-size:15px;
+    margin-top:15px;background:#081522;border:1px solid #172b40;border-radius:15px;
+    padding:18px;line-height:1.8;min-height:260px;max-height:470px;overflow-y:auto;
+    font-size:15px;word-wrap:break-word;overflow-wrap:anywhere
 }
-
-.ai-box h3{
-    margin:8px 0;
-    color:#6ea8ff;
+.ai-box h3{margin:14px 0 8px;color:#6ea8ff}
+.ai-box code{background:#14283c;padding:2px 5px;border-radius:5px}
+.ai-box strong{font-weight:700}
+.ai-box mjx-container{max-width:100%}
+.ai-box mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:7px 0}
+.ai-input-area{display:flex;gap:10px;margin-top:12px}.ai-input-area input{flex:1;min-width:0;height:48px}
+.ai-input-area .btn{margin-top:0;min-width:75px}.ai-hint{color:#91a4b9;font-size:12px;margin-top:9px}
+.example-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.example-btn{border:1px solid #263c55;background:#10243a;color:#fff;padding:8px 10px;border-radius:9px;font-size:12px}
+.music-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:15px}
+.music-btn{border:1px solid #263c55;background:#10243a;color:#fff;padding:11px;border-radius:10px;text-align:left}
+.music-btn.active{background:#183a5b;border-color:#6ea8ff}
+.music-controls{display:flex;gap:8px;flex-wrap:wrap}.now-playing{margin-top:13px;color:#91a4b9;font-size:13px}
+.auth-overlay,.welcome-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;
+    justify-content:center;z-index:9999;padding:20px
 }
-
-.ai-box code{
-    background:#14283c;
-    padding:2px 5px;
-    border-radius:5px;
+.auth-overlay.show,.welcome-overlay.show{display:flex}
+.auth-box,.welcome-box{
+    width:100%;max-width:430px;background:#0d1b2d;border:1px solid #263c55;
+    border-radius:22px;padding:25px;box-shadow:0 20px 70px rgba(0,0,0,.45)
 }
-
-.ai-input-area{
-    display:flex;
-    gap:10px;
-    margin-top:12px;
-}
-
-.ai-input-area input{
-    flex:1;
-    min-width:0;
-    height:48px;
-}
-
-.ai-input-area .btn{
-    margin-top:0;
-    min-width:75px;
-}
-
-.ai-hint{
-    color:#91a4b9;
-    font-size:12px;
-    margin-top:9px;
-}
-
-/* AUTH */
-
-.auth-overlay,
-.welcome-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.78);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:9999;
-    padding:20px;
-}
-
-.auth-overlay.show,
-.welcome-overlay.show{
-    display:flex;
-}
-
-.auth-box,
-.welcome-box{
-    width:100%;
-    max-width:430px;
-    background:#0d1b2d;
-    border:1px solid #263c55;
-    border-radius:22px;
-    padding:25px;
-    box-shadow:0 20px 70px rgba(0,0,0,.45);
-}
-
-.welcome-box{
-    text-align:center;
-}
-
-.welcome-icon{
-    font-size:55px;
-    margin-bottom:10px;
-}
-
-.welcome-box h1{
-    font-size:28px;
-}
-
-.welcome-box h1 span{
-    color:#6ea8ff;
-}
-
-.welcome-box p{
-    color:#91a4b9;
-    line-height:1.6;
-    margin-top:12px;
-}
-
-.welcome-info{
-    margin-top:18px;
-    background:#10243a;
-    padding:13px;
-    border-radius:12px;
-    text-align:left;
-    font-size:13px;
-    line-height:1.7;
-}
-
-.welcome-box .btn{
-    width:100%;
-}
-
-.auth-box h2{
-    margin-bottom:8px;
-}
-
-.auth-subtitle{
-    color:#91a4b9;
-    font-size:14px;
-    margin-bottom:20px;
-}
-
-.auth-box input{
-    width:100%;
-    margin-bottom:10px;
-}
-
-.auth-buttons{
-    display:flex;
-    gap:8px;
-}
-
-.auth-buttons button{
-    flex:1;
-}
-
-.auth-close{
-    width:100%;
-    margin-top:10px;
-}
-
-.auth-message{
-    min-height:22px;
-    margin-top:12px;
-    font-size:14px;
-    color:#91a4b9;
-    line-height:1.5;
-}
-
-/* USER */
-
+.auth-box h2,.welcome-box h2{margin-bottom:8px}.auth-subtitle{color:#91a4b9;font-size:14px;margin-bottom:20px}
+.auth-box input{width:100%;margin-bottom:10px}.auth-buttons{display:flex;gap:8px}.auth-buttons button{flex:1}
+.auth-close{width:100%;margin-top:10px}.auth-message{min-height:22px;margin-top:12px;font-size:14px;color:#91a4b9;line-height:1.5}
 .user-info{
-    display:none;
-    position:fixed;
-    top:75px;
-    right:20px;
-    background:#10243a;
-    border:1px solid #263c55;
-    border-radius:14px;
-    padding:14px;
-    z-index:5000;
-    min-width:220px;
+    display:none;position:fixed;top:75px;right:20px;background:#10243a;
+    border:1px solid #263c55;border-radius:14px;padding:14px;z-index:5000;min-width:220px
 }
-
-.user-info.show{
-    display:block;
-}
-
-.user-email{
-    font-size:13px;
-    color:#91a4b9;
-    margin-bottom:8px;
-    word-break:break-all;
-}
-
+.user-info.show{display:block}.user-email{font-size:13px;color:#91a4b9;margin-bottom:8px;word-break:break-all}
 .creator{
-    position:fixed;
-    right:18px;
-    bottom:15px;
-    color:#91a4b9;
-    font-size:13px;
-    background:rgba(13,27,45,.94);
-    border:1px solid #1c3046;
-    padding:8px 12px;
-    border-radius:10px;
-    z-index:4000;
+    position:fixed;right:18px;bottom:15px;color:#91a4b9;font-size:13px;
+    background:rgba(13,27,45,.94);border:1px solid #1c3046;padding:8px 12px;border-radius:10px;z-index:4000
 }
-
-/* TOAST */
-
+.welcome-box{text-align:center}.welcome-icon{font-size:48px;margin-bottom:8px}
+.welcome-box p{color:#b8c5d2;line-height:1.6;margin:12px 0}.welcome-info{
+    text-align:left;background:#10243a;border-radius:13px;padding:14px;margin:12px 0
+}.welcome-info div{padding:5px 0}
 .toast{
-    position:fixed;
-    left:50%;
-    bottom:25px;
-    transform:translate(-50%,120px);
-    background:#10243a;
-    border:1px solid #315d84;
-    color:white;
-    padding:13px 18px;
-    border-radius:13px;
-    z-index:11000;
-    transition:.3s;
-    max-width:90%;
-    text-align:center;
+    position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;
+    background:#10243a;border:1px solid #31516f;color:#fff;padding:12px 16px;border-radius:12px;
+    z-index:11000;transition:.25s;pointer-events:none;max-width:90vw;text-align:center
 }
-
-.toast.show{
-    transform:translate(-50%,0);
-}
-
-/* RESPONSIVE */
-
+.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:800px){
-
-    .app{
-        width:100%;
-        padding:15px 10px 85px;
-    }
-
-    .grid{
-        grid-template-columns:1fr;
-    }
-
-    .hero,
-    .ai-card,
-    .xp-card{
-        grid-column:auto;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .day{
-        font-size:30px;
-    }
-
-    .timer-number{
-        font-size:48px;
-    }
-
-    .days{
-        grid-template-columns:repeat(7,minmax(0,1fr));
-    }
-
-    .achievement-list{
-        grid-template-columns:1fr;
-    }
-
-    .music-list{
-        grid-template-columns:1fr;
-    }
-
-    .ai-box{
-        min-height:300px;
-        max-height:450px;
-        font-size:14px;
-    }
-
-    .ai-input-area{
-        flex-direction:column;
-    }
-
-    .ai-input-area .btn{
-        width:100%;
-    }
-
-    header{
-        align-items:flex-start;
-    }
-
-    .logo{
-        font-size:22px;
-    }
-
-    .login{
-        padding:9px 12px;
-        font-size:12px;
-    }
-
-    .creator{
-        right:8px;
-        bottom:8px;
-        font-size:11px;
-    }
-
-    .stats-big{
-        grid-template-columns:1fr;
-    }
+    .app{width:100%;padding:15px 10px 85px}.grid{grid-template-columns:1fr}
+    .hero,.ai-card{grid-column:auto}.stats{grid-template-columns:1fr}.day{font-size:30px}
+    .timer-number{font-size:48px}.days{grid-template-columns:repeat(7,minmax(0,1fr))}
+    .achievement-list,.music-list{grid-template-columns:1fr}.ai-box{min-height:300px;max-height:450px;font-size:14px}
+    .ai-input-area{flex-direction:column}.ai-input-area .btn{width:100%}
+    header{align-items:flex-start}.logo{font-size:22px}.login{padding:9px 12px;font-size:12px}
+    .creator{right:8px;bottom:8px;font-size:11px;max-width:calc(100vw - 16px)}
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="app">
-
 <header>
-    <div class="logo">
-        ⚒️ Study<span>Forge</span>
-    </div>
-
-    <button class="login" id="loginButton">
-        👤 Đăng nhập
-    </button>
+    <div class="logo">⚒️ Study<span>Forge</span></div>
+    <button class="login" id="loginButton">👤 Đăng nhập</button>
 </header>
 
 <div class="grid">
 
-<!-- JOURNEY -->
-
 <section class="card hero">
+    <div class="small">HÀNH TRÌNH HỌC TẬP</div>
+    <div class="day" id="dayText">Ngày 1 / 300</div>
 
-    <div class="small">
-        HÀNH TRÌNH HỌC TẬP
-    </div>
-
-    <div class="day" id="dayText">
-        Ngày 1 / 300
-    </div>
-
-    <div class="progress">
-        <div class="progress-bar"></div>
-    </div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="exp-line"><span id="expText">0 / 100 EXP</span><span id="levelText">Level 1</span></div>
 
     <div class="stats">
-
-        <div class="stat">
-            🔥 Streak
-            <b id="streakValue">0 ngày</b>
-        </div>
-
-        <div class="stat">
-            ⏱️ Thời gian học
-            <b id="studyTimeValue">0 phút</b>
-        </div>
-
-        <div class="stat">
-            ⚡ Level
-            <b id="levelValue">1</b>
-        </div>
-
+        <div class="stat">🔥 Streak<b id="streakValue">0 ngày</b></div>
+        <div class="stat">⏱️ Thời gian học<b id="studyTimeValue">0 phút</b></div>
+        <div class="stat">⚡ Level<b id="levelValue">1</b></div>
     </div>
 
     <div class="actions">
-
-        <button class="btn" id="completeButton">
-            ✅ Hoàn thành hôm nay
-        </button>
-
-        <button class="btn secondary" id="goalButton">
-            🎯 Đổi mục tiêu
-        </button>
-
-        <button class="btn secondary" id="startDateButton">
-            📅 Ngày bắt đầu
-        </button>
-
+        <button class="btn" id="completeButton">✅ Hoàn thành hôm nay</button>
+        <button class="btn secondary" id="goalButton">🎯 Đổi mục tiêu</button>
+        <button class="btn secondary" id="startDateButton">📅 Ngày bắt đầu</button>
     </div>
 
     <div class="motivation">
-
-        <div class="motivation-title">
-            💡 CHÂM NGÔN HÔM NAY
-        </div>
-
-        <div id="motivationText">
-            Mỗi ngày tiến một chút, bạn sẽ đi rất xa. 🚀
-        </div>
-
-        <div class="quote-actions">
-            <button class="btn secondary" id="randomQuoteButton">
-                🎲 Random châm ngôn
-            </button>
-        </div>
-
+        <div class="motivation-title">💡 CHÂM NGÔN HÔM NAY</div>
+        <div id="motivationText">Mỗi ngày tiến một chút, bạn sẽ đi rất xa.</div>
+        <button class="quote-btn" id="randomQuoteButton">🎲 Random châm ngôn</button>
     </div>
-
 </section>
-
-
-<!-- XP -->
-
-<section class="card xp-card">
-
-    <div class="xp-header">
-
-        <div>
-            <div class="small">
-                EXPERIENCE
-            </div>
-
-            <h2>⚡ Kinh nghiệm</h2>
-        </div>
-
-        <div class="level-badge">
-            LV <span id="xpLevel">1</span>
-        </div>
-
-    </div>
-
-    <div class="xp-text">
-        <span id="xpCurrent">0 EXP</span>
-        <span id="xpNext">100 EXP</span>
-    </div>
-
-    <div class="xp-progress">
-        <div class="xp-bar" id="xpBar"></div>
-    </div>
-
-    <div class="xp-tip">
-        📚 Mỗi 1 phút học = <b>1 EXP</b>.
-        Ví dụ: học 180 phút = <b>180 EXP</b>.
-    </div>
-
-</section>
-
-
-<!-- QUEST -->
-
-<section class="card xp-card">
-
-    <div class="small">
-        DAILY QUESTS
-    </div>
-
-    <h2>🎯 Nhiệm vụ hôm nay</h2>
-
-    <div class="quest-list" id="questList"></div>
-
-</section>
-
-
-<!-- POMODORO -->
 
 <section class="card timer">
-
-    <div class="small">
-        FOCUS
-    </div>
-
+    <div class="small">FOCUS</div>
     <h2>🎯 Pomodoro</h2>
-
-    <div class="timer-number">
-        25:00
-    </div>
+    <div class="timer-number">25:00</div>
 
     <div class="timer-settings">
-
         <button data-minutes="5">5p</button>
         <button data-minutes="15">15p</button>
         <button data-minutes="25" class="active">25p</button>
         <button data-minutes="45">45p</button>
         <button data-minutes="60">60p</button>
-
-        <input
-            id="customTime"
-            class="custom-time"
-            type="number"
-            min="1"
-            max="180"
-            placeholder="Tự chọn"
-        >
-
+        <input id="customTime" class="custom-time" type="number" min="1" max="180" placeholder="Tự chọn">
     </div>
 
-    <button class="btn" id="startFocusButton">
-        ▶ Bắt đầu
-    </button>
-
-    <button class="btn secondary" id="resetFocusButton">
-        ↺ Reset
-    </button>
-
+    <button class="btn" id="startFocusButton">▶ Bắt đầu</button>
+    <button class="btn secondary" id="resetFocusButton">↺ Reset</button>
 </section>
 
-
-<!-- TODO -->
-
 <section class="card">
-
-    <div class="small">
-        TODO
-    </div>
-
-    <h2>📋 Việc hôm nay</h2>
-
+    <div class="small">TODO</div>
+    <h2>📋 Nhiệm vụ hôm nay</h2>
+    <p class="small" style="margin-top:8px">Hoàn thành nhiệm vụ để nhận EXP và lên Level.</p>
     <div class="todo-add">
-
-        <input
-            id="todoInput"
-            type="text"
-            placeholder="Thêm việc cần học..."
-        >
-
-        <button class="btn" id="todoButton">
-            +
-        </button>
-
+        <input id="todoInput" type="text" placeholder="Ví dụ: Làm 10 bài toán...">
+        <button class="btn" id="todoButton">+</button>
     </div>
-
     <div id="taskList"></div>
-
 </section>
 
-
-<!-- JOURNEY DAYS -->
-
 <section class="card">
-
-    <div class="small">
-        JOURNEY
-    </div>
-
+    <div class="small">JOURNEY</div>
     <h2>📅 Hành trình 1 → 1000 ngày</h2>
-
     <div class="days"></div>
-
-    <p class="small" style="margin-top:15px">
-        Mục tiêu hiện tại:
-        <b id="goalDisplay">300 ngày</b>
-    </p>
-
+    <p class="small" style="margin-top:15px">Mục tiêu hiện tại: <b id="goalDisplay">300 ngày</b></p>
 </section>
 
-
-<!-- STATISTICS -->
-
 <section class="card">
-
-    <div class="small">
-        STATISTICS
-    </div>
-
+    <div class="small">STATISTICS</div>
     <h2>📊 Thống kê</h2>
-
     <div class="stats-big">
-
-        <div class="big-stat">
-            📚 Ngày đã học
-            <strong id="completedCount">0</strong>
-        </div>
-
-        <div class="big-stat">
-            ⏱️ Tổng thời gian
-            <strong id="totalHours">0h</strong>
-        </div>
-
-        <div class="big-stat">
-            🍅 Pomodoro
-            <strong id="pomodoroCount">0</strong>
-        </div>
-
-        <div class="big-stat">
-            🏆 Thành tựu
-            <strong id="achievementCount">0</strong>
-        </div>
-
+        <div class="big-stat">📚 Ngày đã học<strong id="completedCount">0</strong></div>
+        <div class="big-stat">⏱️ Tổng thời gian<strong id="totalHours">0h</strong></div>
+        <div class="big-stat">🍅 Pomodoro<strong id="pomodoroCount">0</strong></div>
+        <div class="big-stat">🏆 Thành tựu<strong id="achievementCount">0</strong></div>
     </div>
-
 </section>
-
-
-<!-- ACHIEVEMENTS -->
 
 <section class="card">
-
-    <div class="small">
-        ACHIEVEMENTS
-    </div>
-
+    <div class="small">ACHIEVEMENTS</div>
     <h2>🏆 Thành tựu</h2>
-
     <div class="achievement-list" id="achievementList"></div>
-
 </section>
-
-
-<!-- AI -->
 
 <section class="card ai-card">
-
-    <div class="small">
-        AI STUDY ASSISTANT
-    </div>
-
+    <div class="small">AI STUDY ASSISTANT</div>
     <h2>🤖 StudyForge AI</h2>
-
-    <p class="small" style="margin-top:8px">
-        <span id="aiQuota">
-            FREE · Còn 20/20 lượt hôm nay
-        </span>
-    </p>
+    <p class="small" style="margin-top:8px"><span id="aiQuota">FREE · Còn 20/20 lượt hôm nay</span></p>
 
     <div class="ai-box" id="aiBox">
-        👋 Chào bạn! StudyForge AI sẽ giúp
-        bạn học tập, giải bài và tạo quiz.
-        <br><br>
-        Hãy nhập câu hỏi bên dưới nhé!
+        👋 Chào bạn! StudyForge AI sẽ giúp bạn học tập, giải bài và tạo quiz.
+        <br><br>Hãy nhập câu hỏi bên dưới nhé!
+    </div>
+
+    <div class="example-buttons">
+        <button class="example-btn" data-example="Giải phương trình 2x + 5 = 17 bằng cách trình bày từng bước.">📐 Ví dụ toán</button>
+        <button class="example-btn" data-example="Phân tích đa thức x^2 - 5x + 6 thành nhân tử và giải thích từng bước.">🧮 Phân tích đa thức</button>
+        <button class="example-btn" data-example="Tạo cho tôi 5 câu trắc nghiệm Toán lớp 9 về phương trình bậc hai.">📝 Tạo quiz</button>
     </div>
 
     <div class="ai-input-area">
-
-        <input
-            id="aiInput"
-            type="text"
-            placeholder="Hỏi bài, nhờ giải toán, tạo quiz..."
-        >
-
-        <button class="btn" id="aiButton">
-            Gửi
-        </button>
-
+        <input id="aiInput" type="text" placeholder="Hỏi bài, nhờ giải toán, tạo quiz...">
+        <button class="btn" id="aiButton">Gửi</button>
     </div>
-
-    <div class="ai-hint">
-        💡 AI hỗ trợ giải bài, giải thích kiến thức và tạo câu hỏi ôn tập.
-    </div>
-
+    <div class="ai-hint">💡 AI hỗ trợ giải bài, giải thích kiến thức và tạo câu hỏi ôn tập.</div>
 </section>
-
-
-<!-- MUSIC -->
 
 <section class="card">
-
-    <div class="small">
-        MUSIC
-    </div>
-
+    <div class="small">MUSIC</div>
     <h2>🎧 Study Music</h2>
-
     <div class="music-list" id="musicList"></div>
-
     <div class="music-controls">
-
-        <button class="btn" id="playPauseButton">
-            ▶ Phát
-        </button>
-
-        <button class="btn secondary" id="nextButton">
-            ⏭ Tiếp
-        </button>
-
+        <button class="btn" id="playPauseButton">▶ Phát</button>
+        <button class="btn secondary" id="nextButton">⏭ Tiếp</button>
     </div>
-
-    <div class="now-playing" id="nowPlaying">
-        Chưa phát bài nào
-    </div>
-
+    <div class="now-playing" id="nowPlaying">Chưa phát bài nào</div>
 </section>
 
 </div>
 </div>
 
-
-<!-- WELCOME -->
-
-<div class="welcome-overlay" id="welcomeOverlay">
-
-    <div class="welcome-box">
-
-        <div class="welcome-icon">
-            ⚒️
-        </div>
-
-        <h1>
-            Chào mừng đến <span>StudyForge</span>
-        </h1>
-
-        <p>
-            Biến việc học thành một hành trình.
-            Học → nhận EXP → lên Level → mở khóa thành tựu.
-        </p>
-
-        <div class="welcome-info">
-
-            ⚡ <b>1 phút học = 1 EXP</b><br>
-            🎯 Hoàn thành nhiệm vụ để nhận EXP<br>
-            🏆 Mở khóa nhiều thành tựu<br>
-            🔥 Duy trì Streak mỗi ngày<br>
-            📚 Theo dõi tiến trình học tập
-
-        </div>
-
-        <button class="btn" id="enterButton">
-            🚀 Bắt đầu học
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- AUTH -->
-
 <div class="auth-overlay" id="authOverlay">
-
     <div class="auth-box">
-
-        <h2 id="authTitle">
-            👤 Đăng nhập
-        </h2>
-
-        <p class="auth-subtitle">
-            Đăng nhập hoặc tạo tài khoản StudyForge.
-        </p>
-
-        <input
-            type="email"
-            id="authEmail"
-            placeholder="Email"
-            autocomplete="email"
-        >
-
-        <input
-            type="password"
-            id="authPassword"
-            placeholder="Mật khẩu tối thiểu 6 ký tự"
-            autocomplete="current-password"
-        >
-
+        <h2 id="authTitle">👤 Đăng nhập</h2>
+        <p class="auth-subtitle">Đăng nhập hoặc tạo tài khoản StudyForge.</p>
+        <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
+        <input type="password" id="authPassword" placeholder="Mật khẩu tối thiểu 6 ký tự" autocomplete="current-password">
         <div class="auth-buttons">
-
-            <button class="btn" id="authSubmit">
-                Đăng nhập
-            </button>
-
-            <button class="btn secondary" id="switchAuth">
-                Đăng ký
-            </button>
-
+            <button class="btn" id="authSubmit">Đăng nhập</button>
+            <button class="btn secondary" id="switchAuth">Đăng ký</button>
         </div>
-
         <div class="auth-message" id="authMessage"></div>
-
-        <button class="btn secondary auth-close" id="closeAuth">
-            Đóng
-        </button>
-
+        <button class="btn secondary auth-close" id="closeAuth">Đóng</button>
     </div>
-
 </div>
-
-
-<!-- USER -->
 
 <div class="user-info" id="userInfo">
-
     <div class="user-email" id="userEmail"></div>
-
-    <button class="btn secondary" id="logoutButton">
-        🚪 Đăng xuất
-    </button>
-
+    <button class="btn secondary" id="logoutButton">🚪 Đăng xuất</button>
 </div>
 
-
-<div class="creator">
-    Người tạo: <b>Hoàng Ngọc Đạt</b>
+<div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-box">
+        <div class="welcome-icon">⚒️</div>
+        <h2>Chào mừng đến StudyForge!</h2>
+        <p>Học tập → nhận EXP → lên Level → mở khóa thành tựu.</p>
+        <div class="welcome-info">
+            <div>📚 Hoàn thành nhiệm vụ: <b>+10 EXP</b></div>
+            <div>🍅 Pomodoro hoàn thành: <b>+25 EXP</b></div>
+            <div>🔥 Hoàn thành ngày: <b>+50 EXP</b></div>
+            <div>⏱️ 180 phút học: <b>+180 EXP</b></div>
+            <div>⭐ Mỗi Level cần: <b>100 EXP</b></div>
+        </div>
+        <button class="btn" id="enterWebButton">🚀 Bắt đầu học</button>
+    </div>
 </div>
 
+<div class="creator">Người tạo: <b>Hoàng Ngọc Đạt</b></div>
 <div class="toast" id="toast"></div>
 
-
 <script>
-
 /* =====================================================
-   STORAGE
+   STORAGE / DATA
 ===================================================== */
-
 const STORAGE_KEY = "studyforge_data";
-
 let studyData;
 
-try{
-    studyData =
-        JSON.parse(
-            localStorage.getItem(STORAGE_KEY)
-        ) || {};
-}catch{
+try {
+    studyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+} catch {
     studyData = {};
 }
 
-studyData.goal =
-    Number.isInteger(studyData.goal)
-    ? studyData.goal
-    : 300;
+studyData.goal = Number.isInteger(studyData.goal) ? studyData.goal : 300;
+studyData.currentDay = Number.isInteger(studyData.currentDay) ? studyData.currentDay : 1;
+studyData.completedDays = Array.isArray(studyData.completedDays) ? studyData.completedDays : [];
+studyData.streak = Number.isInteger(studyData.streak) ? studyData.streak : 0;
+studyData.tasks = Array.isArray(studyData.tasks) ? studyData.tasks : [];
+studyData.studyMinutes = Number.isFinite(studyData.studyMinutes) ? studyData.studyMinutes : 0;
+studyData.pomodoros = Number.isInteger(studyData.pomodoros) ? studyData.pomodoros : 0;
+studyData.startDate = studyData.startDate || null;
+studyData.lastCompletedDate = studyData.lastCompletedDate || null;
+studyData.exp = Number.isInteger(studyData.exp) ? studyData.exp : 0;
+studyData.completedTaskIds = Array.isArray(studyData.completedTaskIds) ? studyData.completedTaskIds : [];
+studyData.welcomeShown = Boolean(studyData.welcomeShown);
 
-studyData.currentDay =
-    Number.isInteger(studyData.currentDay)
-    ? studyData.currentDay
-    : 1;
-
-studyData.completedDays =
-    Array.isArray(studyData.completedDays)
-    ? studyData.completedDays
-    : [];
-
-studyData.streak =
-    Number.isInteger(studyData.streak)
-    ? studyData.streak
-    : 0;
-
-studyData.tasks =
-    Array.isArray(studyData.tasks)
-    ? studyData.tasks
-    : [];
-
-studyData.studyMinutes =
-    Number.isFinite(studyData.studyMinutes)
-    ? studyData.studyMinutes
-    : 0;
-
-studyData.pomodoros =
-    Number.isInteger(studyData.pomodoros)
-    ? studyData.pomodoros
-    : 0;
-
-studyData.startDate =
-    studyData.startDate || null;
-
-studyData.lastCompletedDate =
-    studyData.lastCompletedDate || null;
-
-studyData.xp =
-    Number.isFinite(studyData.xp)
-    ? studyData.xp
-    : studyData.studyMinutes;
-
-studyData.completedQuests =
-    studyData.completedQuests &&
-    typeof studyData.completedQuests === "object"
-    ? studyData.completedQuests
-    : {};
-
-studyData.questDate =
-    studyData.questDate || null;
-
-
-function saveData(){
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(studyData)
-    );
-
+function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(studyData));
 }
 
-
-/* =====================================================
-   UTILS
-===================================================== */
-
-function getToday(){
-
-    return new Intl.DateTimeFormat(
-        "en-CA",
-        {
-            timeZone:"Asia/Ho_Chi_Minh"
-        }
-    ).format(new Date());
-
-}
-
-
-function showToast(message){
-
-    const toast =
-        document.getElementById("toast");
-
-    toast.textContent =
-        message;
-
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
     toast.classList.add("show");
-
-    clearTimeout(
-        window.toastTimer
-    );
-
-    window.toastTimer =
-        setTimeout(
-            () => {
-                toast.classList.remove("show");
-            },
-            2800
-        );
-
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
 }
-
-
-/* =====================================================
-   XP SYSTEM
-===================================================== */
-
-/*
-   Công thức:
-   Level 1: 0 → 99 EXP
-   Level 2: 100 → 249 EXP
-   Level 3: 250 → 449 EXP
-   ...
-
-   EXP cần cho level tiếp theo:
-   100 + (level - 1) * 50
-*/
-
-function getLevelInfo(xp){
-
-    let level = 1;
-    let remaining = Math.max(0,xp);
-
-    while(true){
-
-        const needed =
-            100 + (level - 1) * 50;
-
-        if(remaining < needed){
-
-            return {
-                level,
-                current:remaining,
-                needed
-            };
-
-        }
-
-        remaining -= needed;
-        level++;
-
-    }
-
-}
-
-
-function addXP(amount,reason){
-
-    amount =
-        Math.max(
-            0,
-            Math.floor(amount)
-        );
-
-    if(!amount)
-        return;
-
-    const oldLevel =
-        getLevelInfo(
-            studyData.xp
-        ).level;
-
-    studyData.xp += amount;
-
-    const newLevel =
-        getLevelInfo(
-            studyData.xp
-        ).level;
-
-    saveData();
-    updateXP();
-    updateJourney();
-    renderQuests();
-
-    if(newLevel > oldLevel){
-
-        showToast(
-            `🎉 LEVEL UP! Bạn đã đạt Level ${newLevel}! +${amount} EXP`
-        );
-
-    }else{
-
-        showToast(
-            `⚡ +${amount} EXP${reason ? " · " + reason : ""}`
-        );
-
-    }
-
-}
-
-
-function updateXP(){
-
-    const info =
-        getLevelInfo(
-            studyData.xp
-        );
-
-    document.getElementById(
-        "xpLevel"
-    ).textContent =
-        info.level;
-
-    document.getElementById(
-        "levelValue"
-    ).textContent =
-        info.level;
-
-    document.getElementById(
-        "xpCurrent"
-    ).textContent =
-        `${info.current} EXP`;
-
-    document.getElementById(
-        "xpNext"
-    ).textContent =
-        `${info.needed} EXP`;
-
-    const percent =
-        Math.min(
-            100,
-            (info.current / info.needed) * 100
-        );
-
-    document.getElementById(
-        "xpBar"
-    ).style.width =
-        percent + "%";
-
-}
-
 
 /* =====================================================
    DATE
 ===================================================== */
-
-function dateDiff(a,b){
-
-    const x =
-        new Date(a + "T00:00:00");
-
-    const y =
-        new Date(b + "T00:00:00");
-
-    return Math.round(
-        (y-x)/(1000*60*60*24)
-    );
-
+function getToday() {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Ho_Chi_Minh"
+    }).format(new Date());
 }
 
+function dateDiff(a, b) {
+    const x = new Date(a + "T00:00:00");
+    const y = new Date(b + "T00:00:00");
+    return Math.round((y - x) / 86400000);
+}
+
+/* =====================================================
+   EXP / LEVEL
+===================================================== */
+function getLevel() {
+    return Math.floor(studyData.exp / 100) + 1;
+}
+
+function getLevelExp() {
+    return studyData.exp % 100;
+}
+
+function addExp(amount, reason) {
+    const oldLevel = getLevel();
+    studyData.exp += Math.max(0, Number(amount) || 0);
+    const newLevel = getLevel();
+    saveData();
+    updateJourney();
+
+    if (newLevel > oldLevel) {
+        showToast(`🎉 LEVEL UP! Bạn đã lên Level ${newLevel}! +${amount} EXP`);
+        setTimeout(() => alert(`🎉 LEVEL UP!\n\nBạn đã lên Level ${newLevel}!`), 250);
+    } else if (reason) {
+        showToast(`✨ +${amount} EXP · ${reason}`);
+    }
+}
 
 /* =====================================================
    MOTIVATION
 ===================================================== */
-
 const motivations = [
-
     "Mỗi ngày tiến một chút, bạn sẽ đi rất xa. 🚀",
     "Không cần hoàn hảo, chỉ cần không bỏ cuộc. 🔥",
     "Học hôm nay để ngày mai giỏi hơn chính mình hôm qua. 📚",
@@ -1593,2367 +410,814 @@ const motivations = [
     "Mỗi lần bạn ngồi xuống học là một lần bạn mạnh hơn.",
     "Đừng bỏ cuộc chỉ vì hôm nay khó.",
     "Bạn có thể làm được. Bắt đầu từ câu đầu tiên.",
-    "🔥 StudyForge: Forge your future!",
-    "Không ai giỏi ngay từ đầu. Giỏi là kết quả của việc luyện tập.",
-    "Một trang sách hôm nay có thể thay đổi tương lai của bạn.",
-    "Kỷ luật sẽ đưa bạn đến nơi mà động lực không thể.",
-    "Hãy thắng chính mình của ngày hôm qua. 🏆",
-    "Mục tiêu lớn bắt đầu từ những bước nhỏ.",
-    "Cứ học tiếp. Thành quả đang ở phía trước.",
-    "Mỗi phút tập trung đều đáng giá.",
-    "Bạn không cần chạy nhanh, chỉ cần không dừng lại.",
-    "Hôm nay khó, ngày mai sẽ dễ hơn."
+    "🔥 StudyForge: Forge your future!"
 ];
 
-
-let currentQuoteIndex = -1;
-
-
-function randomQuote(){
-
-    let index;
-
-    do{
-
-        index =
-            Math.floor(
-                Math.random() *
-                motivations.length
-            );
-
-    }while(
-        motivations.length > 1 &&
-        index === currentQuoteIndex
-    );
-
-    currentQuoteIndex =
-        index;
-
-    document.getElementById(
-        "motivationText"
-    ).textContent =
-        motivations[index];
-
+function randomQuote() {
+    const quote = motivations[Math.floor(Math.random() * motivations.length)];
+    document.getElementById("motivationText").textContent = quote;
 }
 
-
-function updateMotivation(){
-
-    if(currentQuoteIndex < 0){
-
-        currentQuoteIndex =
-            Math.floor(
-                Math.random() *
-                motivations.length
-            );
-
-    }
-
-    document.getElementById(
-        "motivationText"
-    ).textContent =
-        motivations[currentQuoteIndex];
-
-}
-
-
-document.getElementById(
-    "randomQuoteButton"
-).onclick =
-    randomQuote;
-
+document.getElementById("randomQuoteButton").onclick = randomQuote;
 
 /* =====================================================
    JOURNEY
 ===================================================== */
-
-function updateJourney(){
-
-    document.getElementById(
-        "dayText"
-    ).textContent =
+function updateJourney() {
+    document.getElementById("dayText").textContent =
         `Ngày ${studyData.currentDay} / ${studyData.goal}`;
 
-    const progress =
-        Math.min(
-            100,
-            (
-                (studyData.currentDay - 1) /
-                studyData.goal
-            ) * 100
-        );
+    const progress = Math.min(100, ((studyData.currentDay - 1) / studyData.goal) * 100);
+    document.getElementById("progressBar").style.width = progress + "%";
 
-    document.querySelector(
-        ".progress-bar"
-    ).style.width =
-        progress + "%";
+    const level = getLevel();
+    const levelExp = getLevelExp();
 
-    document.getElementById(
-        "streakValue"
-    ).textContent =
-        studyData.streak + " ngày";
-
-    document.getElementById(
-        "studyTimeValue"
-    ).textContent =
-        studyData.studyMinutes + " phút";
-
-    document.getElementById(
-        "goalDisplay"
-    ).textContent =
-        studyData.goal + " ngày";
-
-    document.getElementById(
-        "completedCount"
-    ).textContent =
-        studyData.completedDays.length;
-
-    document.getElementById(
-        "totalHours"
-    ).textContent =
-        (studyData.studyMinutes / 60)
-        .toFixed(1) + "h";
-
-    document.getElementById(
-        "pomodoroCount"
-    ).textContent =
-        studyData.pomodoros;
+    document.getElementById("expText").textContent = `${levelExp} / 100 EXP`;
+    document.getElementById("levelText").textContent = `Level ${level}`;
+    document.getElementById("levelValue").textContent = level;
+    document.getElementById("streakValue").textContent = studyData.streak + " ngày";
+    document.getElementById("studyTimeValue").textContent = studyData.studyMinutes + " phút";
+    document.getElementById("goalDisplay").textContent = studyData.goal + " ngày";
+    document.getElementById("completedCount").textContent = studyData.completedDays.length;
+    document.getElementById("totalHours").textContent = (studyData.studyMinutes / 60).toFixed(1) + "h";
+    document.getElementById("pomodoroCount").textContent = studyData.pomodoros;
 
     renderDays();
-    updateMotivation();
     renderAchievements();
-    updateXP();
-
 }
 
-
-function renderDays(){
-
-    const container =
-        document.querySelector(".days");
-
+function renderDays() {
+    const container = document.querySelector(".days");
     container.innerHTML = "";
 
-    for(
-        let i=1;
-        i<=1000;
-        i++
-    ){
+    for (let i = 1; i <= 1000; i++) {
+        const box = document.createElement("div");
+        box.className = "day-box";
+        box.textContent = i;
 
-        const box =
-            document.createElement("div");
-
-        box.className =
-            "day-box";
-
-        box.textContent =
-            i;
-
-        if(
-            studyData.completedDays
-                .includes(i)
-        ){
-
-            box.classList.add("done");
-
-        }
-
-        if(
-            i === studyData.currentDay
-        ){
-
-            box.classList.add("current");
-
-        }
+        if (studyData.completedDays.includes(i)) box.classList.add("done");
+        if (i === studyData.currentDay) box.classList.add("current");
 
         container.appendChild(box);
-
     }
-
 }
 
+function completeToday() {
+    const today = getToday();
 
-function completeToday(){
-
-    const today =
-        getToday();
-
-    if(
-        studyData.lastCompletedDate === today
-    ){
-
-        alert(
-            "✅ Hôm nay bạn đã hoàn thành rồi!"
-        );
-
+    if (studyData.lastCompletedDate === today) {
+        alert("✅ Hôm nay bạn đã hoàn thành rồi!");
         return;
-
     }
 
-    const day =
-        studyData.currentDay;
+    const day = studyData.currentDay;
 
-    if(
-        !studyData.completedDays.includes(day)
-    ){
-
+    if (!studyData.completedDays.includes(day)) {
         studyData.completedDays.push(day);
-
     }
 
-    if(
-        studyData.lastCompletedDate
-    ){
-
-        const difference =
-            dateDiff(
-                studyData.lastCompletedDate,
-                today
-            );
-
-        if(difference === 1){
-
-            studyData.streak++;
-
-        }else if(difference > 1){
-
-            studyData.streak = 1;
-
-        }
-
-    }else{
-
+    if (studyData.lastCompletedDate) {
+        const difference = dateDiff(studyData.lastCompletedDate, today);
+        studyData.streak = difference === 1 ? studyData.streak + 1 : 1;
+    } else {
         studyData.streak = 1;
-
     }
 
-    studyData.lastCompletedDate =
-        today;
+    studyData.lastCompletedDate = today;
 
-    /*
-       Hoàn thành ngày:
-       +50 EXP
-    */
-
-    addXP(
-        50,
-        "Hoàn thành ngày học"
-    );
-
-    if(
-        studyData.currentDay <
-        studyData.goal
-    ){
-
+    if (studyData.currentDay < studyData.goal) {
         studyData.currentDay++;
-
     }
 
     saveData();
     updateJourney();
-    renderQuests();
+    addExp(50, "Hoàn thành ngày học");
 
-    if(
-        day === studyData.goal
-    ){
-
-        alert(
-            "🎉 CHÚC MỪNG!\n\n" +
-            "Bạn đã hoàn thành mục tiêu " +
-            studyData.goal +
-            " ngày!"
-        );
-
+    if (day === studyData.goal) {
+        alert(`🎉 CHÚC MỪNG!\n\nBạn đã hoàn thành mục tiêu ${studyData.goal} ngày!`);
     }
-
 }
 
+document.getElementById("completeButton").onclick = completeToday;
 
-function changeGoal(){
+function changeGoal() {
+    const answer = prompt("🎯 Nhập mục tiêu từ 1 đến 1000 ngày:", studyData.goal);
+    if (answer === null) return;
 
-    const answer =
-        prompt(
-            "🎯 Nhập mục tiêu từ 1 đến 1000 ngày:",
-            studyData.goal
-        );
+    const goal = Number(answer);
 
-    if(answer === null)
+    if (!Number.isInteger(goal) || goal < 1 || goal > 1000) {
+        alert("⚠️ Hãy nhập số từ 1 đến 1000.");
         return;
-
-    const goal =
-        Number(answer);
-
-    if(
-        !Number.isInteger(goal) ||
-        goal < 1 ||
-        goal > 1000
-    ){
-
-        alert(
-            "⚠️ Hãy nhập số từ 1 đến 1000."
-        );
-
-        return;
-
     }
 
-    studyData.goal =
-        goal;
-
-    if(
-        studyData.currentDay > goal
-    ){
-
-        studyData.currentDay =
-            goal;
-
-    }
+    studyData.goal = goal;
+    if (studyData.currentDay > goal) studyData.currentDay = goal;
 
     saveData();
     updateJourney();
-
 }
 
+document.getElementById("goalButton").onclick = changeGoal;
 
-function changeStartDate(){
+function changeStartDate() {
+    const answer = prompt(
+        "📅 Nhập ngày bắt đầu theo dạng YYYY-MM-DD:",
+        studyData.startDate || getToday()
+    );
 
-    const answer =
-        prompt(
-            "📅 Nhập ngày bắt đầu theo dạng YYYY-MM-DD:",
-            studyData.startDate ||
-            getToday()
-        );
+    if (answer === null) return;
 
-    if(answer === null)
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(answer)) {
+        alert("⚠️ Hãy nhập đúng dạng YYYY-MM-DD.");
         return;
-
-    if(
-        !/^\d{4}-\d{2}-\d{2}$/.test(answer)
-    ){
-
-        alert(
-            "⚠️ Hãy nhập đúng dạng YYYY-MM-DD."
-        );
-
-        return;
-
     }
 
-    studyData.startDate =
-        answer;
-
+    studyData.startDate = answer;
     saveData();
-
-    showToast(
-        "✅ Đã cập nhật ngày bắt đầu!"
-    );
-
+    showToast("✅ Đã cập nhật ngày bắt đầu!");
 }
 
-
-document.getElementById(
-    "completeButton"
-).onclick =
-    completeToday;
-
-document.getElementById(
-    "goalButton"
-).onclick =
-    changeGoal;
-
-document.getElementById(
-    "startDateButton"
-).onclick =
-    changeStartDate;
-
-
-/* =====================================================
-   DAILY QUESTS
-===================================================== */
-
-function resetDailyQuests(){
-
-    const today =
-        getToday();
-
-    if(
-        studyData.questDate !== today
-    ){
-
-        studyData.questDate =
-            today;
-
-        studyData.completedQuests = {};
-
-        saveData();
-
-    }
-
-}
-
-
-const questDefinitions = [
-
-    {
-        id:"study30",
-        title:"📚 Khởi động",
-        desc:"Học ít nhất 30 phút",
-        target:30,
-        reward:30,
-        type:"minutes"
-    },
-
-    {
-        id:"study60",
-        title:"🔥 Tập trung",
-        desc:"Học ít nhất 60 phút",
-        target:60,
-        reward:60,
-        type:"minutes"
-    },
-
-    {
-        id:"study120",
-        title:"⚡ Deep Focus",
-        desc:"Học ít nhất 120 phút",
-        target:120,
-        reward:100,
-        type:"minutes"
-    },
-
-    {
-        id:"study180",
-        title:"🚀 Chiến binh 180 phút",
-        desc:"Học ít nhất 180 phút",
-        target:180,
-        reward:150,
-        type:"minutes"
-    },
-
-    {
-        id:"todo3",
-        title:"📋 Hoàn thành nhiệm vụ",
-        desc:"Hoàn thành 3 việc trong TODO",
-        target:3,
-        reward:50,
-        type:"tasks"
-    },
-
-    {
-        id:"pomodoro2",
-        title:"🍅 Pomodoro",
-        desc:"Hoàn thành 2 Pomodoro",
-        target:2,
-        reward:40,
-        type:"pomodoro"
-    },
-
-    {
-        id:"streak",
-        title:"🔥 Không bỏ cuộc",
-        desc:"Duy trì streak hôm nay",
-        target:1,
-        reward:50,
-        type:"day"
-    }
-
-];
-
-
-function getQuestValue(quest){
-
-    if(quest.type === "minutes")
-        return studyData.studyMinutes;
-
-    if(quest.type === "tasks")
-        return studyData.tasks.filter(
-            task => task.done
-        ).length;
-
-    if(quest.type === "pomodoro")
-        return studyData.pomodoros;
-
-    if(quest.type === "day")
-        return studyData.lastCompletedDate === getToday()
-        ? 1
-        : 0;
-
-    return 0;
-
-}
-
-
-function renderQuests(){
-
-    resetDailyQuests();
-
-    const container =
-        document.getElementById(
-            "questList"
-        );
-
-    container.innerHTML = "";
-
-    questDefinitions.forEach(
-        quest => {
-
-            const value =
-                getQuestValue(quest);
-
-            const complete =
-                value >= quest.target;
-
-            const claimed =
-                !!studyData.completedQuests[
-                    quest.id
-                ];
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "quest" +
-                (
-                    claimed
-                    ? " completed"
-                    : ""
-                );
-
-            const percent =
-                Math.min(
-                    100,
-                    (value / quest.target) * 100
-                );
-
-            div.innerHTML = `
-
-                <div class="quest-top">
-
-                    <div class="quest-title">
-                        ${quest.title}
-                    </div>
-
-                    <div class="quest-reward">
-                        +${quest.reward} EXP
-                    </div>
-
-                </div>
-
-                <div class="quest-desc">
-                    ${quest.desc}
-                </div>
-
-                <div class="quest-progress">
-                    <div style="width:${percent}%"></div>
-                </div>
-
-                <div class="quest-status">
-                    ${
-                        claimed
-                        ? "✅ Đã nhận thưởng"
-                        : `${Math.min(value,quest.target)} / ${quest.target}`
-                    }
-                </div>
-
-            `;
-
-            if(
-                complete &&
-                !claimed
-            ){
-
-                const button =
-                    document.createElement("button");
-
-                button.className =
-                    "btn";
-
-                button.textContent =
-                    `🎁 Nhận +${quest.reward} EXP`;
-
-                button.onclick =
-                    () => {
-
-                        studyData.completedQuests[
-                            quest.id
-                        ] = true;
-
-                        saveData();
-
-                        addXP(
-                            quest.reward,
-                            quest.title
-                        );
-
-                        renderQuests();
-
-                    };
-
-                div.appendChild(button);
-
-            }
-
-            container.appendChild(div);
-
-        }
-    );
-
-}
-
+document.getElementById("startDateButton").onclick = changeStartDate;
 
 /* =====================================================
    POMODORO
 ===================================================== */
-
 let focusMinutes = 25;
 let focusSeconds = 1500;
 let focusRunning = false;
 let focusInterval = null;
 
-const timerDisplay =
-    document.querySelector(
-        ".timer-number"
-    );
+const timerDisplay = document.querySelector(".timer-number");
+const startButton = document.getElementById("startFocusButton");
+const resetButton = document.getElementById("resetFocusButton");
+const customTime = document.getElementById("customTime");
 
-const startButton =
-    document.getElementById(
-        "startFocusButton"
-    );
-
-const resetButton =
-    document.getElementById(
-        "resetFocusButton"
-    );
-
-const customTime =
-    document.getElementById(
-        "customTime"
-    );
-
-
-function updateTimer(){
-
-    const minutes =
-        Math.floor(
-            focusSeconds / 60
-        )
-        .toString()
-        .padStart(2,"0");
-
-    const seconds =
-        (
-            focusSeconds % 60
-        )
-        .toString()
-        .padStart(2,"0");
-
-    timerDisplay.textContent =
-        `${minutes}:${seconds}`;
-
+function updateTimer() {
+    const minutes = Math.floor(focusSeconds / 60).toString().padStart(2, "0");
+    const seconds = (focusSeconds % 60).toString().padStart(2, "0");
+    timerDisplay.textContent = `${minutes}:${seconds}`;
 }
 
+function setFocusTime(minutes) {
+    if (focusRunning) return;
 
-function setFocusTime(minutes){
+    focusMinutes = minutes;
+    focusSeconds = minutes * 60;
 
-    if(focusRunning)
-        return;
-
-    focusMinutes =
-        minutes;
-
-    focusSeconds =
-        minutes * 60;
-
-    document
-        .querySelectorAll(
-            ".timer-settings button"
-        )
-        .forEach(
-            button => {
-
-                button.classList.toggle(
-                    "active",
-                    Number(
-                        button.dataset.minutes
-                    ) === minutes
-                );
-
-            }
-        );
+    document.querySelectorAll(".timer-settings button").forEach(button => {
+        button.classList.toggle("active", Number(button.dataset.minutes) === minutes);
+    });
 
     updateTimer();
-
 }
 
+document.querySelectorAll(".timer-settings button").forEach(button => {
+    button.onclick = () => setFocusTime(Number(button.dataset.minutes));
+});
 
-document
-    .querySelectorAll(
-        ".timer-settings button"
-    )
-    .forEach(
-        button => {
-
-            button.onclick =
-                () => {
-
-                    setFocusTime(
-                        Number(
-                            button.dataset.minutes
-                        )
-                    );
-
-                };
-
-        }
-    );
-
-
-customTime.addEventListener(
-    "change",
-    () => {
-
-        const value =
-            Number(
-                customTime.value
-            );
-
-        if(
-            Number.isInteger(value) &&
-            value >= 1 &&
-            value <= 180
-        ){
-
-            setFocusTime(value);
-
-        }
-
+customTime.addEventListener("change", () => {
+    const value = Number(customTime.value);
+    if (Number.isInteger(value) && value >= 1 && value <= 180) {
+        setFocusTime(value);
+    } else if (customTime.value) {
+        alert("⚠️ Thời gian phải từ 1 đến 180 phút.");
+        customTime.value = "";
     }
-);
+});
 
-
-function startFocus(){
-
-    if(focusRunning)
+function startFocus() {
+    if (focusRunning) {
+        clearInterval(focusInterval);
+        focusRunning = false;
+        startButton.textContent = "▶ Tiếp tục";
         return;
-
-    if(focusSeconds <= 0){
-
-        focusSeconds =
-            focusMinutes * 60;
-
     }
 
     focusRunning = true;
+    startButton.textContent = "⏸ Tạm dừng";
 
-    startButton.textContent =
-        "⏸ Đang học...";
+    focusInterval = setInterval(() => {
+        focusSeconds--;
+        updateTimer();
 
-    focusInterval =
-        setInterval(
-            () => {
+        if (focusSeconds <= 0) {
+            clearInterval(focusInterval);
+            focusRunning = false;
 
-                focusSeconds--;
+            studyData.studyMinutes += focusMinutes;
+            studyData.pomodoros++;
 
-                updateTimer();
+            saveData();
+            updateJourney();
+            addExp(focusMinutes, `Hoàn thành ${focusMinutes} phút Focus`);
 
-                if(
-                    focusSeconds <= 0
-                ){
+            focusSeconds = focusMinutes * 60;
+            startButton.textContent = "▶ Bắt đầu";
+            updateTimer();
 
-                    clearInterval(
-                        focusInterval
-                    );
-
-                    focusRunning = false;
-
-                    /*
-                       1 phút = 1 EXP
-                    */
-
-                    studyData.studyMinutes +=
-                        focusMinutes;
-
-                    studyData.pomodoros++;
-
-                    saveData();
-
-                    addXP(
-                        focusMinutes,
-                        `Học ${focusMinutes} phút`
-                    );
-
-                    focusSeconds =
-                        focusMinutes * 60;
-
-                    startButton.textContent =
-                        "▶ Bắt đầu";
-
-                    updateTimer();
-                    updateJourney();
-                    renderQuests();
-
-                    alert(
-                        `🎉 Hoàn thành ${focusMinutes} phút Focus!\n\n` +
-                        `⚡ +${focusMinutes} EXP`
-                    );
-
-                }
-
-            },
-            1000
-        );
-
+            alert(`🎉 Hoàn thành ${focusMinutes} phút Focus!\n\n+${focusMinutes} EXP`);
+        }
+    }, 1000);
 }
 
-
-function resetFocus(){
-
-    clearInterval(
-        focusInterval
-    );
-
+function resetFocus() {
+    clearInterval(focusInterval);
     focusRunning = false;
-
-    focusSeconds =
-        focusMinutes * 60;
-
-    startButton.textContent =
-        "▶ Bắt đầu";
-
+    focusSeconds = focusMinutes * 60;
+    startButton.textContent = "▶ Bắt đầu";
     updateTimer();
-
 }
 
-
-startButton.onclick =
-    startFocus;
-
-resetButton.onclick =
-    resetFocus;
-
+startButton.onclick = startFocus;
+resetButton.onclick = resetFocus;
 
 /* =====================================================
-   TODO
+   TODO + EXP
 ===================================================== */
+const todoInput = document.getElementById("todoInput");
+const todoButton = document.getElementById("todoButton");
+const taskList = document.getElementById("taskList");
 
-const todoInput =
-    document.getElementById(
-        "todoInput"
-    );
-
-const todoButton =
-    document.getElementById(
-        "todoButton"
-    );
-
-const taskList =
-    document.getElementById(
-        "taskList"
-    );
-
-
-function renderTasks(){
-
+function renderTasks() {
     taskList.innerHTML = "";
 
-    studyData.tasks.forEach(
-        (task,index) => {
+    studyData.tasks.forEach((task, index) => {
+        const row = document.createElement("div");
+        row.className = "task" + (task.done ? " done" : "");
 
-            const row =
-                document.createElement("div");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.done;
 
-            row.className =
-                "task" +
-                (
-                    task.done
-                    ? " done"
-                    : ""
-                );
+        const span = document.createElement("span");
+        span.textContent = task.text;
 
-            const checkbox =
-                document.createElement("input");
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-task";
+        deleteButton.textContent = "✕";
 
-            checkbox.type =
-                "checkbox";
+        checkbox.onchange = () => {
+            const wasDone = studyData.tasks[index].done;
+            studyData.tasks[index].done = checkbox.checked;
 
-            checkbox.checked =
-                task.done;
+            if (!wasDone && checkbox.checked) {
+                addExp(10, "Hoàn thành nhiệm vụ");
+            }
 
-            const span =
-                document.createElement("span");
+            saveData();
+            renderTasks();
+        };
 
-            span.textContent =
-                task.text;
+        deleteButton.onclick = () => {
+            studyData.tasks.splice(index, 1);
+            saveData();
+            renderTasks();
+        };
 
-            const deleteButton =
-                document.createElement("button");
-
-            deleteButton.className =
-                "delete-task";
-
-            deleteButton.textContent =
-                "✕";
-
-            checkbox.onchange =
-                () => {
-
-                    const wasDone =
-                        studyData.tasks[index].done;
-
-                    studyData.tasks[index].done =
-                        checkbox.checked;
-
-                    /*
-                       +10 EXP khi hoàn thành TODO
-                    */
-
-                    if(
-                        !wasDone &&
-                        checkbox.checked
-                    ){
-
-                        addXP(
-                            10,
-                            "Hoàn thành việc"
-                        );
-
-                    }
-
-                    saveData();
-                    renderTasks();
-                    renderQuests();
-
-                };
-
-            deleteButton.onclick =
-                () => {
-
-                    studyData.tasks
-                        .splice(index,1);
-
-                    saveData();
-                    renderTasks();
-                    renderQuests();
-
-                };
-
-            row.appendChild(checkbox);
-            row.appendChild(span);
-            row.appendChild(deleteButton);
-
-            taskList.appendChild(row);
-
-        }
-    );
-
+        row.append(checkbox, span, deleteButton);
+        taskList.appendChild(row);
+    });
 }
 
-
-function addTask(){
-
-    const text =
-        todoInput.value.trim();
-
-    if(!text)
-        return;
+function addTask() {
+    const text = todoInput.value.trim();
+    if (!text) return;
 
     studyData.tasks.push({
-        text:text,
-        done:false
+        text,
+        done: false,
+        createdAt: Date.now()
     });
 
     todoInput.value = "";
-
     saveData();
     renderTasks();
-
+    showToast("📋 Đã thêm nhiệm vụ · Hoàn thành = +10 EXP");
 }
 
+todoButton.onclick = addTask;
 
-todoButton.onclick =
-    addTask;
-
-todoInput.addEventListener(
-    "keydown",
-    event => {
-
-        if(event.key === "Enter")
-            addTask();
-
-    }
-);
-
+todoInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") addTask();
+});
 
 /* =====================================================
    ACHIEVEMENTS
 ===================================================== */
-
 const achievements = [
-
-    {
-        name:"🌱 Bắt đầu",
-        desc:"Hoàn thành ngày đầu tiên",
-        check:() =>
-            studyData.completedDays.length >= 1
-    },
-
-    {
-        name:"📚 5 ngày",
-        desc:"Hoàn thành 5 ngày học",
-        check:() =>
-            studyData.completedDays.length >= 5
-    },
-
-    {
-        name:"🔥 7 ngày",
-        desc:"Streak đạt 7 ngày",
-        check:() =>
-            studyData.streak >= 7
-    },
-
-    {
-        name:"🔥 14 ngày",
-        desc:"Streak đạt 14 ngày",
-        check:() =>
-            studyData.streak >= 14
-    },
-
-    {
-        name:"🏆 30 ngày",
-        desc:"Hoàn thành 30 ngày",
-        check:() =>
-            studyData.completedDays.length >= 30
-    },
-
-    {
-        name:"💎 50 ngày",
-        desc:"Hoàn thành 50 ngày",
-        check:() =>
-            studyData.completedDays.length >= 50
-    },
-
-    {
-        name:"💎 100 ngày",
-        desc:"Hoàn thành 100 ngày",
-        check:() =>
-            studyData.completedDays.length >= 100
-    },
-
-    {
-        name:"🚀 365 ngày",
-        desc:"Hoàn thành 365 ngày",
-        check:() =>
-            studyData.completedDays.length >= 365
-    },
-
-    {
-        name:"🌌 1000 ngày",
-        desc:"Hoàn thành 1000 ngày",
-        check:() =>
-            studyData.completedDays.length >= 1000
-    },
-
-    {
-        name:"⚡ 100 EXP",
-        desc:"Đạt 100 EXP",
-        check:() =>
-            studyData.xp >= 100
-    },
-
-    {
-        name:"⚡ 500 EXP",
-        desc:"Đạt 500 EXP",
-        check:() =>
-            studyData.xp >= 500
-    },
-
-    {
-        name:"🔥 1000 EXP",
-        desc:"Đạt 1000 EXP",
-        check:() =>
-            studyData.xp >= 1000
-    },
-
-    {
-        name:"👑 2500 EXP",
-        desc:"Đạt 2500 EXP",
-        check:() =>
-            studyData.xp >= 2500
-    },
-
-    {
-        name:"📖 60 phút",
-        desc:"Học đủ 60 phút",
-        check:() =>
-            studyData.studyMinutes >= 60
-    },
-
-    {
-        name:"📚 180 phút",
-        desc:"Học đủ 180 phút",
-        check:() =>
-            studyData.studyMinutes >= 180
-    },
-
-    {
-        name:"🚀 500 phút",
-        desc:"Học đủ 500 phút",
-        check:() =>
-            studyData.studyMinutes >= 500
-    },
-
-    {
-        name:"🧠 1000 phút",
-        desc:"Học đủ 1000 phút",
-        check:() =>
-            studyData.studyMinutes >= 1000
-    },
-
-    {
-        name:"🧠 5000 phút",
-        desc:"Học đủ 5000 phút",
-        check:() =>
-            studyData.studyMinutes >= 5000
-    },
-
-    {
-        name:"🍅 Pomodoro x1",
-        desc:"Hoàn thành Pomodoro đầu tiên",
-        check:() =>
-            studyData.pomodoros >= 1
-    },
-
-    {
-        name:"🍅 Pomodoro x10",
-        desc:"Hoàn thành 10 Pomodoro",
-        check:() =>
-            studyData.pomodoros >= 10
-    },
-
-    {
-        name:"🍅 Pomodoro x50",
-        desc:"Hoàn thành 50 Pomodoro",
-        check:() =>
-            studyData.pomodoros >= 50
-    },
-
-    {
-        name:"🍅 Pomodoro x100",
-        desc:"Hoàn thành 100 Pomodoro",
-        check:() =>
-            studyData.pomodoros >= 100
-    },
-
-    {
-        name:"📋 Task Master",
-        desc:"Hoàn thành 20 việc",
-        check:() =>
-            studyData.tasks.filter(
-                task => task.done
-            ).length >= 20
-    },
-
-    {
-        name:"⚒️ StudyForge",
-        desc:"Hoàn thành mục tiêu",
-        check:() =>
-            studyData.completedDays.length >=
-            studyData.goal
-    }
-
+    ["🌱 Tân binh", "Hoàn thành ngày đầu tiên", () => studyData.completedDays.length >= 1],
+    ["🔥 3 ngày", "Streak đạt 3 ngày", () => studyData.streak >= 3],
+    ["🔥 7 ngày", "Streak đạt 7 ngày", () => studyData.streak >= 7],
+    ["🔥 14 ngày", "Streak đạt 14 ngày", () => studyData.streak >= 14],
+    ["🔥 30 ngày", "Streak đạt 30 ngày", () => studyData.streak >= 30],
+    ["🏆 30 ngày học", "Hoàn thành 30 ngày", () => studyData.completedDays.length >= 30],
+    ["💎 100 ngày học", "Hoàn thành 100 ngày", () => studyData.completedDays.length >= 100],
+    ["🚀 300 ngày học", "Hoàn thành 300 ngày", () => studyData.completedDays.length >= 300],
+    ["🌌 500 ngày học", "Hoàn thành 500 ngày", () => studyData.completedDays.length >= 500],
+    ["👑 1000 ngày học", "Hoàn thành 1000 ngày", () => studyData.completedDays.length >= 1000],
+    ["📚 100 phút", "Học đủ 100 phút", () => studyData.studyMinutes >= 100],
+    ["📚 500 phút", "Học đủ 500 phút", () => studyData.studyMinutes >= 500],
+    ["🧠 1000 phút", "Học đủ 1000 phút", () => studyData.studyMinutes >= 1000],
+    ["🧠 3000 phút", "Học đủ 3000 phút", () => studyData.studyMinutes >= 3000],
+    ["⏱️ 10 giờ", "Học đủ 10 giờ", () => studyData.studyMinutes >= 600],
+    ["⏱️ 50 giờ", "Học đủ 50 giờ", () => studyData.studyMinutes >= 3000],
+    ["🍅 5 Pomodoro", "Hoàn thành 5 Pomodoro", () => studyData.pomodoros >= 5],
+    ["🍅 10 Pomodoro", "Hoàn thành 10 Pomodoro", () => studyData.pomodoros >= 10],
+    ["🍅 50 Pomodoro", "Hoàn thành 50 Pomodoro", () => studyData.pomodoros >= 50],
+    ["🍅 100 Pomodoro", "Hoàn thành 100 Pomodoro", () => studyData.pomodoros >= 100],
+    ["⭐ Level 5", "Đạt Level 5", () => getLevel() >= 5],
+    ["⭐ Level 10", "Đạt Level 10", () => getLevel() >= 10],
+    ["⭐ Level 25", "Đạt Level 25", () => getLevel() >= 25],
+    ["⚒️ StudyForge", "Hoàn thành mục tiêu hiện tại", () => studyData.completedDays.length >= studyData.goal]
 ];
 
-
-function renderAchievements(){
-
-    const container =
-        document.getElementById(
-            "achievementList"
-        );
-
+function renderAchievements() {
+    const container = document.getElementById("achievementList");
     container.innerHTML = "";
-
     let unlocked = 0;
 
-    achievements.forEach(
-        achievement => {
+    achievements.forEach(([name, desc, check]) => {
+        const ok = check();
+        if (ok) unlocked++;
 
-            const ok =
-                achievement.check();
+        const div = document.createElement("div");
+        div.className = "achievement" + (ok ? " unlocked" : "");
+        div.innerHTML = `<b>${name}</b><span>${ok ? "✅ " : "🔒 "}${desc}</span>`;
+        container.appendChild(div);
+    });
 
-            if(ok)
-                unlocked++;
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "achievement" +
-                (
-                    ok
-                    ? " unlocked"
-                    : ""
-                );
-
-            div.innerHTML = `
-                <b>${achievement.name}</b>
-                <span>${achievement.desc}</span>
-            `;
-
-            container.appendChild(div);
-
-        }
-    );
-
-    document.getElementById(
-        "achievementCount"
-    ).textContent =
-        `${unlocked}/${achievements.length}`;
-
+    document.getElementById("achievementCount").textContent = unlocked;
 }
-
 
 /* =====================================================
    MUSIC
 ===================================================== */
-
-const musicTracks = [];
-
-for(let i=1;i<=10;i++){
-
-    musicTracks.push(
-        `music/chill${i}.mp3`
-    );
-
-}
-
+const musicTracks = Array.from({length:10}, (_,i) => `music/chill${i+1}.mp3`);
 let musicIndex = 0;
 let isPlaying = false;
 
-const audioPlayer =
-    new Audio();
+const audioPlayer = new Audio();
+audioPlayer.preload = "auto";
 
-audioPlayer.preload =
-    "auto";
+const musicList = document.getElementById("musicList");
+const playPauseButton = document.getElementById("playPauseButton");
+const nextButton = document.getElementById("nextButton");
+const nowPlaying = document.getElementById("nowPlaying");
 
-const musicList =
-    document.getElementById(
-        "musicList"
-    );
-
-const playPauseButton =
-    document.getElementById(
-        "playPauseButton"
-    );
-
-const nextButton =
-    document.getElementById(
-        "nextButton"
-    );
-
-const nowPlaying =
-    document.getElementById(
-        "nowPlaying"
-    );
-
-
-function createMusicButtons(){
-
+function createMusicButtons() {
     musicList.innerHTML = "";
 
-    musicTracks.forEach(
-        (track,index) => {
+    musicTracks.forEach((track, index) => {
+        const button = document.createElement("button");
+        button.className = "music-btn";
+        button.textContent = `🎧 Chill ${index + 1}`;
 
-            const button =
-                document.createElement("button");
+        button.onclick = () => {
+            if (musicIndex === index && isPlaying) audioPlayer.pause();
+            else playMusic(index);
+        };
 
-            button.className =
-                "music-btn";
-
-            button.textContent =
-                `🎧 Chill ${index+1}`;
-
-            button.onclick =
-                () => {
-
-                    if(
-                        musicIndex === index &&
-                        isPlaying
-                    ){
-
-                        audioPlayer.pause();
-
-                    }else{
-
-                        playMusic(index);
-
-                    }
-
-                };
-
-            musicList.appendChild(button);
-
-        }
-    );
-
+        musicList.appendChild(button);
+    });
 }
 
+function updateMusicUI() {
+    document.querySelectorAll(".music-btn").forEach((button, index) => {
+        const active = index === musicIndex && isPlaying;
+        button.classList.toggle("active", active);
+        button.textContent = active ? `⏸ Chill ${index+1}` : `🎧 Chill ${index+1}`;
+    });
 
-function updateMusicUI(){
-
-    const buttons =
-        document.querySelectorAll(
-            ".music-btn"
-        );
-
-    buttons.forEach(
-        (button,index) => {
-
-            button.classList.toggle(
-                "active",
-                index === musicIndex &&
-                isPlaying
-            );
-
-            button.textContent =
-                (
-                    index === musicIndex &&
-                    isPlaying
-                )
-                ? `⏸ Chill ${index+1}`
-                : `🎧 Chill ${index+1}`;
-
-        }
-    );
-
-    playPauseButton.textContent =
-        isPlaying
-        ? "⏸ Tạm dừng"
-        : "▶ Phát";
-
-    nowPlaying.textContent =
-        isPlaying
+    playPauseButton.textContent = isPlaying ? "⏸ Tạm dừng" : "▶ Phát";
+    nowPlaying.textContent = isPlaying
         ? `🎵 Đang phát: Chill ${musicIndex+1}`
         : `⏸ Đã dừng: Chill ${musicIndex+1}`;
-
 }
 
+function playMusic(index) {
+    if (index < 0 || index >= musicTracks.length) return;
 
-function playMusic(index){
-
-    if(
-        index < 0 ||
-        index >= musicTracks.length
-    )
-        return;
-
-    musicIndex =
-        index;
-
+    musicIndex = index;
     audioPlayer.pause();
+    audioPlayer.src = musicTracks[index];
+    audioPlayer.currentTime = 0;
 
-    audioPlayer.src =
-        musicTracks[index];
-
-    audioPlayer.currentTime =
-        0;
-
-    audioPlayer.play()
-        .catch(
-            () => {
-
-                isPlaying = false;
-                updateMusicUI();
-
-                alert(
-                    `⚠️ Không thể phát Chill ${index+1}.\n\n` +
-                    `Kiểm tra file:\n` +
-                    `music/chill${index+1}.mp3`
-                );
-
-            }
-        );
-
-}
-
-
-playPauseButton.onclick =
-    () => {
-
-        if(isPlaying){
-
-            audioPlayer.pause();
-
-        }else{
-
-            if(!audioPlayer.src){
-
-                playMusic(
-                    musicIndex
-                );
-
-            }else{
-
-                audioPlayer.play()
-                    .catch(() => {});
-
-            }
-
-        }
-
-    };
-
-
-nextButton.onclick =
-    () => {
-
-        musicIndex++;
-
-        if(
-            musicIndex >=
-            musicTracks.length
-        ){
-
-            musicIndex = 0;
-
-        }
-
-        playMusic(
-            musicIndex
-        );
-
-    };
-
-
-audioPlayer.addEventListener(
-    "ended",
-    () => {
-
-        musicIndex++;
-
-        if(
-            musicIndex >=
-            musicTracks.length
-        ){
-
-            musicIndex = 0;
-
-        }
-
-        playMusic(
-            musicIndex
-        );
-
-    }
-);
-
-
-audioPlayer.addEventListener(
-    "pause",
-    () => {
-
+    audioPlayer.play().catch(() => {
         isPlaying = false;
         updateMusicUI();
+        alert(`⚠️ Không thể phát Chill ${index+1}.\n\nKiểm tra file: music/chill${index+1}.mp3`);
+    });
+}
 
-    }
-);
+playPauseButton.onclick = () => {
+    if (isPlaying) audioPlayer.pause();
+    else if (!audioPlayer.src) playMusic(musicIndex);
+    else audioPlayer.play().catch(() => {});
+};
 
+nextButton.onclick = () => {
+    musicIndex = (musicIndex + 1) % musicTracks.length;
+    playMusic(musicIndex);
+};
 
-audioPlayer.addEventListener(
-    "play",
-    () => {
+audioPlayer.addEventListener("ended", () => {
+    musicIndex = (musicIndex + 1) % musicTracks.length;
+    playMusic(musicIndex);
+});
 
-        isPlaying = true;
-        updateMusicUI();
+audioPlayer.addEventListener("pause", () => {
+    isPlaying = false;
+    updateMusicUI();
+});
 
-    }
-);
+audioPlayer.addEventListener("play", () => {
+    isPlaying = true;
+    updateMusicUI();
+});
+
 /* =====================================================
-   AI STUDY ASSISTANT
+   AI
 ===================================================== */
+function formatAI(text) {
+    if (!text) return "";
+
+    let html = String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    const mathBlocks = [];
+
+    html = html.replace(
+        /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|(?<!\$)\$(?!\$)[\s\S]*?(?<!\$)\$(?!\$))/g,
+        match => {
+            const id = `MATHBLOCK${mathBlocks.length}X`;
+            mathBlocks.push(match);
+            return id;
+        }
+    );
+
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+    html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    html = html.replace(/^### (.*?)$/gm, "<h3>$1</h3>");
+    html = html.replace(/\r?\n/g, "<br>");
+
+    mathBlocks.forEach((formula, index) => {
+        html = html.replace(`MATHBLOCK${index}X`, formula);
+    });
+
+    return html;
+}
 
 const aiInput = document.getElementById("aiInput");
 const aiButton = document.getElementById("aiButton");
 const aiBox = document.getElementById("aiBox");
 const aiQuota = document.getElementById("aiQuota");
-
 const AI_DAILY_LIMIT = 20;
 
-function getAIToday() {
+function getTodayKey() {
     return new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Ho_Chi_Minh"
+        timeZone:"Asia/Ho_Chi_Minh"
     }).format(new Date());
 }
 
-let aiQuotaData = null;
+let aiQuotaData;
 
 try {
-    aiQuotaData = JSON.parse(
-        localStorage.getItem("studyforge_ai_quota")
-    );
+    aiQuotaData = JSON.parse(localStorage.getItem("studyforge_ai_quota"));
 } catch {
     aiQuotaData = null;
 }
 
-if (
-    !aiQuotaData ||
-    aiQuotaData.date !== getAIToday()
-) {
-    aiQuotaData = {
-        date: getAIToday(),
-        used: 0
-    };
-
-    localStorage.setItem(
-        "studyforge_ai_quota",
-        JSON.stringify(aiQuotaData)
-    );
+if (!aiQuotaData || aiQuotaData.date !== getTodayKey()) {
+    aiQuotaData = {date:getTodayKey(), used:0};
+    localStorage.setItem("studyforge_ai_quota", JSON.stringify(aiQuotaData));
 }
 
 function updateAIQuota() {
-
-    const remaining = Math.max(
-        0,
-        AI_DAILY_LIMIT - aiQuotaData.used
-    );
-
-    aiQuota.textContent =
-        remaining > 0
-            ? `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`
-            : "FREE · Đã hết lượt hôm nay";
+    const remaining = Math.max(0, AI_DAILY_LIMIT - aiQuotaData.used);
+    aiQuota.textContent = remaining === 0
+        ? "FREE · Đã hết lượt hôm nay"
+        : `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`;
 }
 
+function useAILimit() {
+    if (aiQuotaData.used >= AI_DAILY_LIMIT) return false;
 
-/* =========================
-   HIỂN THỊ AI
-========================= */
-
-function escapeHTML(text) {
-
-    return String(text || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+    aiQuotaData.used++;
+    localStorage.setItem("studyforge_ai_quota", JSON.stringify(aiQuotaData));
+    updateAIQuota();
+    return true;
 }
-
-
-function formatAI(text) {
-
-    let result = escapeHTML(text);
-
-    result = result.replace(
-        /^### (.*)$/gm,
-        "<h3>$1</h3>"
-    );
-
-    result = result.replace(
-        /\*\*(.*?)\*\*/g,
-        "<strong>$1</strong>"
-    );
-
-    result = result.replace(
-        /`([^`]+)`/g,
-        "<code>$1</code>"
-    );
-
-    result = result.replace(
-        /\n/g,
-        "<br>"
-    );
-
-    return result;
-}
-
-
-/* =========================
-   GỬI CÂU HỎI AI
-========================= */
 
 async function askAI() {
-
     const question = aiInput.value.trim();
 
     if (!question) {
-
-        aiBox.innerHTML =
-            "⚠️ Hãy nhập câu hỏi trước nhé!";
-
+        aiBox.textContent = "⚠️ Hãy nhập câu hỏi trước nhé!";
         return;
     }
 
     if (aiQuotaData.used >= AI_DAILY_LIMIT) {
-
-        aiBox.innerHTML =
-            "⛔ Bạn đã hết 20 lượt AI hôm nay.";
-
+        aiBox.textContent = "⛔ Bạn đã dùng hết 20 lượt AI hôm nay.";
         return;
     }
 
     aiButton.disabled = true;
+    aiInput.disabled = true;
     aiButton.textContent = "⏳";
-
-    aiBox.innerHTML =
-        "🤖 <strong>StudyForge AI đang suy nghĩ...</strong>";
+    aiBox.textContent = "🤖 StudyForge AI đang suy nghĩ...";
 
     try {
-
         const response = await fetch("/api/ask", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                message: question
-            })
-
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({message:question})
         });
 
         let data;
-
         try {
             data = await response.json();
         } catch {
-            throw new Error(
-                "Máy chủ AI trả về dữ liệu không hợp lệ."
-            );
+            throw new Error("API không trả về dữ liệu JSON hợp lệ.");
         }
 
         if (!response.ok) {
-
-            throw new Error(
-                data?.error ||
-                `Lỗi máy chủ: ${response.status}`
-            );
-
+            throw new Error(data.error || "AI không trả lời được.");
         }
 
-        if (!data?.reply) {
-
-            throw new Error(
-                "AI không trả về câu trả lời."
-            );
-
+        if (!data.reply) {
+            throw new Error("API không trả về nội dung trả lời.");
         }
 
-        /* Chỉ trừ lượt khi AI trả lời thành công */
+        // Chỉ trừ lượt khi API thực sự trả lời thành công.
+        if (!useAILimit()) return;
 
-        aiQuotaData.used++;
-
-        localStorage.setItem(
-            "studyforge_ai_quota",
-            JSON.stringify(aiQuotaData)
-        );
-
-        updateAIQuota();
-
-        aiBox.innerHTML =
-            "🤖 " + formatAI(data.reply);
-
-        /* Render công thức toán */
+        aiBox.innerHTML = "🤖 " + formatAI(data.reply);
 
         if (window.MathJax) {
-
-            try {
-
-                await MathJax.typesetPromise([
-                    aiBox
-                ]);
-
-            } catch (error) {
-
-                console.warn(
-                    "MathJax:",
-                    error
-                );
-
-            }
-
+            MathJax.typesetClear([aiBox]);
+            await MathJax.typesetPromise([aiBox]);
         }
 
     } catch (error) {
-
-        console.error(
-            "StudyForge AI:",
-            error
-        );
-
-        aiBox.innerHTML =
-            "❌ <strong>AI không kết nối được.</strong><br><br>" +
-            escapeHTML(
-                error.message ||
-                "Không xác định được lỗi."
-            );
-
+        console.error("AI ERROR:", error);
+        aiBox.textContent = "❌ " + (error.message || "Có lỗi kết nối AI.");
     } finally {
-
         aiButton.disabled = false;
+        aiInput.disabled = false;
         aiButton.textContent = "Gửi";
-
+        aiInput.focus();
     }
 }
-
-
-/* =========================
-   NÚT GỬI
-========================= */
 
 aiButton.onclick = askAI;
 
+aiInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") askAI();
+});
 
-/* =========================
-   ENTER ĐỂ GỬI
-========================= */
+document.querySelectorAll(".example-btn").forEach(button => {
+    button.onclick = () => {
+        aiInput.value = button.dataset.example;
+        aiInput.focus();
+    };
+});
 
-aiInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Enter" &&
-            !event.shiftKey
-        ) {
-
-            event.preventDefault();
-
-            askAI();
-
-        }
-
-    }
-);
-
-
-/* =========================
-   VÍ DỤ BÀI TOÁN
-========================= */
-
-const aiExamples = [
-    "Giải phương trình: 2x + 5 = 17",
-    "Giải hệ phương trình: x + y = 10; 2x - y = 5",
-    "Phân tích đa thức: x² - 5x + 6",
-    "Tính: 25 × 16 - 120",
-    "Giải phương trình: x² - 5x + 6 = 0",
-    "Cho tam giác ABC vuông tại A, AB = 6cm, AC = 8cm. Tính BC."
-];
-
-
-function createAIExamples() {
-
-    const old =
-        document.getElementById(
-            "aiExamples"
-        );
-
-    if (old) {
-        old.remove();
-    }
-
-    const wrapper =
-        document.createElement("div");
-
-    wrapper.id =
-        "aiExamples";
-
-    wrapper.style.cssText = `
-        display:flex;
-        flex-wrap:wrap;
-        gap:8px;
-        margin-top:12px;
-    `;
-
-    aiExamples.forEach(
-        example => {
-
-            const button =
-                document.createElement("button");
-
-            button.type = "button";
-
-            button.textContent =
-                "💡 " + example;
-
-            button.style.cssText = `
-                border:1px solid #263c55;
-                background:#10243a;
-                color:white;
-                padding:9px 11px;
-                border-radius:10px;
-                cursor:pointer;
-                text-align:left;
-            `;
-
-            button.onclick = () => {
-
-                aiInput.value =
-                    example;
-
-                aiInput.focus();
-
-            };
-
-            wrapper.appendChild(
-                button
-            );
-
-        }
-    );
-
-    aiInput.parentElement.after(
-        wrapper
-    );
-}
-
-
-createAIExamples();
-updateAIQuota();
 /* =====================================================
    SUPABASE AUTH
 ===================================================== */
+const SUPABASE_URL = "https://gucxknalotvyhjxqkbel.supabase.co";
+const SUPABASE_KEY = "sb_publishable_j-wwTzYkJ43oQstFb4XmPA_E2BKL-Re";
 
-const SUPABASE_URL =
-    "https://gucxknalotvyhjxqkbel.supabase.co";
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
-const SUPABASE_KEY =
-    "sb_publishable_j-wwTzYkJ43oQstFb4XmPA_E2BKL-Re";
+const loginButton = document.getElementById("loginButton");
+const authOverlay = document.getElementById("authOverlay");
+const authTitle = document.getElementById("authTitle");
+const authEmail = document.getElementById("authEmail");
+const authPassword = document.getElementById("authPassword");
+const authSubmit = document.getElementById("authSubmit");
+const switchAuth = document.getElementById("switchAuth");
+const closeAuth = document.getElementById("closeAuth");
+const authMessage = document.getElementById("authMessage");
+const userInfo = document.getElementById("userInfo");
+const userEmail = document.getElementById("userEmail");
+const logoutButton = document.getElementById("logoutButton");
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+let isRegisterMode = false;
 
-
-const loginButton =
-    document.getElementById(
-        "loginButton"
-    );
-
-const authOverlay =
-    document.getElementById(
-        "authOverlay"
-    );
-
-const authTitle =
-    document.getElementById(
-        "authTitle"
-    );
-
-const authEmail =
-    document.getElementById(
-        "authEmail"
-    );
-
-const authPassword =
-    document.getElementById(
-        "authPassword"
-    );
-
-const authSubmit =
-    document.getElementById(
-        "authSubmit"
-    );
-
-const switchAuth =
-    document.getElementById(
-        "switchAuth"
-    );
-
-const closeAuth =
-    document.getElementById(
-        "closeAuth"
-    );
-
-const authMessage =
-    document.getElementById(
-        "authMessage"
-    );
-
-const userInfo =
-    document.getElementById(
-        "userInfo"
-    );
-
-const userEmail =
-    document.getElementById(
-        "userEmail"
-    );
-
-const logoutButton =
-    document.getElementById(
-        "logoutButton"
-    );
-
-let isRegisterMode =
-    false;
-
-
-function openAuth(){
-
+function openAuth() {
     authOverlay.classList.add("show");
-
     authMessage.textContent = "";
-
-    setTimeout(
-        () => authEmail.focus(),
-        100
-    );
-
+    setTimeout(() => authEmail.focus(), 100);
 }
 
-
-function closeAuthModal(){
-
+function closeAuthModal() {
     authOverlay.classList.remove("show");
     authMessage.textContent = "";
-
 }
 
+loginButton.onclick = async () => {
+    const {data, error} = await supabaseClient.auth.getSession();
 
-loginButton.onclick =
-    async () => {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .auth
-                .getSession();
-
-        if(error){
-
-            openAuth();
-            return;
-
-        }
-
-        if(data.session){
-
-            userInfo.classList.toggle("show");
-            return;
-
-        }
-
+    if (error) {
+        console.error(error);
         openAuth();
-
-    };
-
-
-closeAuth.onclick =
-    closeAuthModal;
-
-
-authOverlay.addEventListener(
-    "click",
-    event => {
-
-        if(event.target === authOverlay)
-            closeAuthModal();
-
+        return;
     }
-);
 
+    if (data.session) {
+        userInfo.classList.toggle("show");
+        return;
+    }
 
-switchAuth.onclick =
-    () => {
+    openAuth();
+};
 
-        isRegisterMode =
-            !isRegisterMode;
+closeAuth.onclick = closeAuthModal;
 
-        authMessage.textContent =
-            "";
+authOverlay.addEventListener("click", event => {
+    if (event.target === authOverlay) closeAuthModal();
+});
 
-        authPassword.value =
-            "";
+switchAuth.onclick = () => {
+    isRegisterMode = !isRegisterMode;
+    authMessage.textContent = "";
+    authPassword.value = "";
 
-        if(isRegisterMode){
+    if (isRegisterMode) {
+        authTitle.textContent = "📝 Đăng ký tài khoản";
+        authSubmit.textContent = "Đăng ký";
+        switchAuth.textContent = "Đăng nhập";
+    } else {
+        authTitle.textContent = "👤 Đăng nhập";
+        authSubmit.textContent = "Đăng nhập";
+        switchAuth.textContent = "Đăng ký";
+    }
+};
 
-            authTitle.textContent =
-                "📝 Đăng ký tài khoản";
+authSubmit.onclick = async () => {
+    const email = authEmail.value.trim();
+    const password = authPassword.value;
 
-            authSubmit.textContent =
-                "Đăng ký";
+    if (!email || !password) {
+        authMessage.textContent = "⚠️ Nhập đầy đủ email và mật khẩu.";
+        return;
+    }
 
-            switchAuth.textContent =
-                "Đăng nhập";
+    if (password.length < 6) {
+        authMessage.textContent = "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
+        return;
+    }
 
-        }else{
+    authSubmit.disabled = true;
+    authMessage.textContent = "";
 
-            authTitle.textContent =
-                "👤 Đăng nhập";
+    try {
+        if (isRegisterMode) {
+            authSubmit.textContent = "⏳ Đang tạo tài khoản...";
 
-            authSubmit.textContent =
-                "Đăng nhập";
-
-            switchAuth.textContent =
-                "Đăng ký";
-
-        }
-
-    };
-
-
-authSubmit.onclick =
-    async () => {
-
-        const email =
-            authEmail.value.trim();
-
-        const password =
-            authPassword.value;
-
-        if(!email || !password){
-
-            authMessage.textContent =
-                "⚠️ Nhập đầy đủ email và mật khẩu.";
-
-            return;
-
-        }
-
-        if(password.length < 6){
-
-            authMessage.textContent =
-                "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
-
-            return;
-
-        }
-
-        authSubmit.disabled =
-            true;
-
-        try{
-
-            if(isRegisterMode){
-
-                authSubmit.textContent =
-                    "⏳ Đang tạo tài khoản...";
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signUp({
-                            email,
-                            password,
-                            options:{
-                                data:{
-                                    name:
-                                        email.split("@")[0]
-                                }
-                            }
-                        });
-
-                if(error)
-                    throw error;
-
-                if(data.session){
-
-                    authMessage.textContent =
-                        "✅ Đăng ký thành công!";
-
-                    updateAuthUI(data.user);
-
-                    setTimeout(
-                        closeAuthModal,
-                        700
-                    );
-
-                }else{
-
-                    authMessage.textContent =
-                        "⚠️ Tài khoản đã tạo. Hãy kiểm tra email để xác nhận.";
-
+            const {data, error} = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options:{
+                    data:{name:email.split("@")[0]}
                 }
+            });
 
-            }else{
+            if (error) throw error;
 
-                authSubmit.textContent =
-                    "⏳ Đang đăng nhập...";
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signInWithPassword({
-                            email,
-                            password
-                        });
-
-                if(error)
-                    throw error;
-
-                authMessage.textContent =
-                    "✅ Đăng nhập thành công!";
-
+            if (data.session) {
+                authMessage.textContent = "✅ Đăng ký thành công!";
                 updateAuthUI(data.user);
-
-                setTimeout(
-                    closeAuthModal,
-                    500
-                );
-
+                setTimeout(closeAuthModal, 700);
+            } else {
+                authMessage.textContent =
+                    "⚠️ Tài khoản đã tạo. Nếu Supabase bật xác nhận email, hãy xác nhận email trước khi đăng nhập.";
             }
 
-        }catch(error){
+        } else {
+            authSubmit.textContent = "⏳ Đang đăng nhập...";
 
-            let message =
-                error.message ||
-                "Có lỗi xảy ra.";
+            const {data, error} = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
 
-            if(
-                message
-                    .toLowerCase()
-                    .includes(
-                        "invalid login credentials"
-                    )
-            ){
+            if (error) throw error;
 
-                message =
-                    "❌ Email hoặc mật khẩu không đúng.";
-
-            }
-
-            if(
-                message
-                    .toLowerCase()
-                    .includes(
-                        "email not confirmed"
-                    )
-            ){
-
-                message =
-                    "❌ Email chưa được xác nhận.";
-
-            }
-
-            authMessage.textContent =
-                message;
-
-        }finally{
-
-            authSubmit.disabled =
-                false;
-
-            authSubmit.textContent =
-                isRegisterMode
-                ? "Đăng ký"
-                : "Đăng nhập";
-
+            authMessage.textContent = "✅ Đăng nhập thành công!";
+            updateAuthUI(data.user);
+            setTimeout(closeAuthModal, 500);
         }
 
-    };
+    } catch (error) {
+        console.error("AUTH ERROR:", error);
 
+        let message = error.message || "Có lỗi xảy ra.";
 
-authPassword.addEventListener(
-    "keydown",
-    event => {
+        if (message.toLowerCase().includes("invalid login credentials")) {
+            message = "❌ Email hoặc mật khẩu không đúng.";
+        }
 
-        if(event.key === "Enter")
-            authSubmit.click();
+        if (message.toLowerCase().includes("email not confirmed")) {
+            message = "❌ Email chưa được xác nhận.";
+        }
 
+        authMessage.textContent = message;
+
+    } finally {
+        authSubmit.disabled = false;
+        authSubmit.textContent = isRegisterMode ? "Đăng ký" : "Đăng nhập";
     }
-);
+};
 
+authPassword.addEventListener("keydown", event => {
+    if (event.key === "Enter") authSubmit.click();
+});
 
-logoutButton.onclick =
-    async () => {
+logoutButton.onclick = async () => {
+    const {error} = await supabaseClient.auth.signOut();
 
-        const {error} =
-            await supabaseClient
-                .auth
-                .signOut();
+    if (error) {
+        alert("❌ Không thể đăng xuất.");
+        return;
+    }
 
-        if(error){
+    updateAuthUI(null);
+};
 
-            alert(
-                "❌ Không thể đăng xuất."
-            );
-
-            return;
-
-        }
-
-        userInfo.classList.remove("show");
-
-        loginButton.textContent =
-            "👤 Đăng nhập";
-
-    };
-
-
-function updateAuthUI(user){
-
-    if(user){
-
+function updateAuthUI(user) {
+    if (user) {
         const name =
             user.user_metadata?.name ||
             user.user_metadata?.full_name ||
             user.email?.split("@")[0] ||
             "Bạn";
 
-        loginButton.textContent =
-            `👤 ${name}`;
-
-        userEmail.textContent =
-            user.email ||
-            "Tài khoản";
-
-    }else{
-
-        loginButton.textContent =
-            "👤 Đăng nhập";
-
-        userEmail.textContent =
-            "";
-
-        userInfo.classList.remove(
-            "show"
-        );
-
+        loginButton.textContent = `👤 ${name}`;
+        userEmail.textContent = user.email || "Tài khoản";
+    } else {
+        loginButton.textContent = "👤 Đăng nhập";
+        userEmail.textContent = "";
+        userInfo.classList.remove("show");
     }
-
 }
 
-
-async function checkLogin(){
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .auth
-            .getSession();
-
-    if(error){
-
+async function checkLogin() {
+    const {data, error} = await supabaseClient.auth.getSession();
+    if (error) {
         console.error(error);
         return;
-
     }
-
-    updateAuthUI(
-        data.session?.user || null
-    );
-
+    updateAuthUI(data.session?.user || null);
 }
 
-
-supabaseClient.auth.onAuthStateChange(
-    (
-        event,
-        session
-    ) => {
-
-        updateAuthUI(
-            session?.user || null
-        );
-
-    }
-);
-
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    updateAuthUI(session?.user || null);
+});
 
 /* =====================================================
-   WELCOME SCREEN
+   WELCOME BEFORE WEB
 ===================================================== */
+const welcomeOverlay = document.getElementById("welcomeOverlay");
+const enterWebButton = document.getElementById("enterWebButton");
 
-const welcomeOverlay =
-    document.getElementById(
-        "welcomeOverlay"
-    );
-
-const enterButton =
-    document.getElementById(
-        "enterButton"
-    );
-
-
-function showWelcome(){
-
-    const today =
-        getToday();
-
-    const lastShown =
-        localStorage.getItem(
-            "studyforge_welcome_date"
-        );
-
-    /*
-       Hiện thông báo trước khi vào web.
-       Mỗi ngày hiện 1 lần.
-    */
-
-    if(lastShown !== today){
-
+function showWelcome() {
+    if (!studyData.welcomeShown) {
         welcomeOverlay.classList.add("show");
-
     }
-
 }
 
-
-enterButton.onclick =
-    () => {
-
-        localStorage.setItem(
-            "studyforge_welcome_date",
-            getToday()
-        );
-
-        welcomeOverlay.classList.remove(
-            "show"
-        );
-
-    };
-
+enterWebButton.onclick = () => {
+    studyData.welcomeShown = true;
+    saveData();
+    welcomeOverlay.classList.remove("show");
+};
 
 /* =====================================================
    START
 ===================================================== */
-
-if(!studyData.startDate){
-
-    studyData.startDate =
-        getToday();
-
+if (!studyData.startDate) {
+    studyData.startDate = getToday();
     saveData();
-
 }
 
-resetDailyQuests();
-
 createMusicButtons();
-
 updateJourney();
-
-updateXP();
-
 updateTimer();
-
 renderTasks();
-
-renderQuests();
-
-renderAchievements();
-
 updateMusicUI();
-
 updateAIQuota();
-
 checkLogin();
-
+randomQuote();
 showWelcome();
-
 </script>
-
 </body>
 </html>
