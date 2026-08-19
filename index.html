@@ -1262,7 +1262,128 @@ aiInput.addEventListener(
         }
 
     }
-);    
+);
+// ===============================
+// STUDYFORGE - GOOGLE LOGIN
+// ===============================
+
+const SUPABASE_URL =
+    "https://gucxknalotvyhjxqkbel.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_j-wwTzYkJ43oQstFb4XmPA_E2BKL-Re";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+const loginButton =
+    document.querySelector(".login");
+
+
+// ===============================
+// KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP
+// ===============================
+
+async function checkLogin() {
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if (user) {
+
+        const name =
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email ||
+            "Bạn";
+
+        loginButton.textContent =
+            `👤 ${name}`;
+
+    } else {
+
+        loginButton.textContent =
+            "👤 Đăng nhập Google";
+
+    }
+}
+
+
+// ===============================
+// NÚT ĐĂNG NHẬP GOOGLE
+// ===============================
+
+loginButton.onclick = async () => {
+
+    loginButton.disabled = true;
+
+    loginButton.textContent =
+        "⏳ Đang mở Google...";
+
+    const { error } =
+        await supabaseClient.auth.signInWithOAuth({
+
+            provider: "google",
+
+            options: {
+
+                redirectTo:
+                    "https://study-forge-ten-olive.vercel.app"
+
+            }
+
+        });
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "❌ Đăng nhập lỗi:\n" +
+            error.message
+        );
+
+        loginButton.disabled = false;
+
+        loginButton.textContent =
+            "👤 Đăng nhập Google";
+    }
+};
+
+
+// ===============================
+// CẬP NHẬT SAU KHI ĐĂNG NHẬP
+// ===============================
+
+supabaseClient.auth.onAuthStateChange(
+    (event, session) => {
+
+        if (session?.user) {
+
+            const name =
+                session.user.user_metadata?.full_name ||
+                session.user.user_metadata?.name ||
+                session.user.email ||
+                "Bạn";
+
+            loginButton.textContent =
+                `👤 ${name}`;
+
+        } else {
+
+            loginButton.textContent =
+                "👤 Đăng nhập Google";
+
+        }
+
+    }
+);
+
+checkLogin();
 </script>
 </body>
 </html>
