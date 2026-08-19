@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -21,7 +20,6 @@ window.MathJax = {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -39,7 +37,7 @@ body {
     width: 92%;
     max-width: 1150px;
     margin: auto;
-    padding: 25px 0 70px;
+    padding: 25px 0 80px;
 }
 
 header {
@@ -70,6 +68,10 @@ header {
 
 .login:hover {
     background: #1a3048;
+}
+
+button {
+    font-family: inherit;
 }
 
 .grid {
@@ -133,10 +135,6 @@ header {
     margin-top: 5px;
 }
 
-button {
-    font-family: inherit;
-}
-
 .btn {
     border: none;
     padding: 12px 17px;
@@ -150,6 +148,11 @@ button {
 
 .btn:hover {
     opacity: .9;
+}
+
+.btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 .btn.secondary {
@@ -247,16 +250,18 @@ input:focus {
     background: #081522;
     border-radius: 13px;
     padding: 15px;
+    line-height: 1.6;
+    min-height: 70px;
 }
 
 /* =========================
-   LOGIN MODAL
+   AUTH
 ========================= */
 
 .auth-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.7);
+    background: rgba(0,0,0,.72);
     display: none;
     align-items: center;
     justify-content: center;
@@ -275,7 +280,7 @@ input:focus {
     border: 1px solid #263c55;
     border-radius: 22px;
     padding: 25px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
 }
 
 .auth-box h2 {
@@ -312,18 +317,20 @@ input:focus {
     margin-top: 12px;
     font-size: 14px;
     color: #91a4b9;
+    line-height: 1.5;
 }
 
 .user-info {
     display: none;
     position: fixed;
-    top: 20px;
+    top: 75px;
     right: 20px;
     background: #10243a;
     border: 1px solid #263c55;
     border-radius: 14px;
-    padding: 12px;
+    padding: 14px;
     z-index: 5000;
+    min-width: 220px;
 }
 
 .user-info.show {
@@ -334,6 +341,7 @@ input:focus {
     font-size: 13px;
     color: #91a4b9;
     margin-bottom: 8px;
+    word-break: break-all;
 }
 
 .creator {
@@ -342,7 +350,7 @@ input:focus {
     bottom: 15px;
     color: #91a4b9;
     font-size: 13px;
-    background: rgba(13,27,45,.9);
+    background: rgba(13,27,45,.94);
     border: 1px solid #1c3046;
     padding: 8px 12px;
     border-radius: 10px;
@@ -379,8 +387,13 @@ input:focus {
         padding: 9px 12px;
         font-size: 12px;
     }
-}
 
+    .creator {
+        right: 10px;
+        bottom: 10px;
+        font-size: 11px;
+    }
+}
 </style>
 </head>
 
@@ -402,7 +415,9 @@ input:focus {
 
 <div class="grid">
 
-<!-- HÀNH TRÌNH -->
+<!-- =========================
+     JOURNEY
+========================= -->
 
 <section class="card hero">
 
@@ -422,17 +437,17 @@ input:focus {
 
         <div class="stat">
             🔥 Streak
-            <b>0 ngày</b>
+            <b id="streakValue">0 ngày</b>
         </div>
 
         <div class="stat">
             ⏱️ Thời gian học
-            <b>0 phút</b>
+            <b id="studyTimeValue">0 phút</b>
         </div>
 
         <div class="stat">
             ⚡ Level
-            <b>1</b>
+            <b id="levelValue">1</b>
         </div>
 
     </div>
@@ -452,7 +467,9 @@ input:focus {
 </section>
 
 
-<!-- FOCUS -->
+<!-- =========================
+     POMODORO
+========================= -->
 
 <section class="card timer">
 
@@ -477,7 +494,9 @@ input:focus {
 </section>
 
 
-<!-- TODO -->
+<!-- =========================
+     TODO
+========================= -->
 
 <section class="card">
 
@@ -501,10 +520,14 @@ input:focus {
 
     </div>
 
+    <div id="taskList"></div>
+
 </section>
 
 
-<!-- JOURNEY -->
+<!-- =========================
+     JOURNEY DAYS
+========================= -->
 
 <section class="card">
 
@@ -523,7 +546,9 @@ input:focus {
 </section>
 
 
-<!-- AI -->
+<!-- =========================
+     AI
+========================= -->
 
 <section class="card">
 
@@ -540,10 +565,8 @@ input:focus {
     </p>
 
     <div class="ai-box" id="aiBox">
-
         👋 Chào bạn! StudyForge AI sẽ giúp
         bạn học tập, giải bài và tạo quiz.
-
     </div>
 
     <div class="todo-add">
@@ -563,7 +586,9 @@ input:focus {
 </section>
 
 
-<!-- MUSIC -->
+<!-- =========================
+     MUSIC
+========================= -->
 
 <section class="card">
 
@@ -576,30 +601,36 @@ input:focus {
     <div class="music">
 
         <button class="btn secondary">
-            Chill 1
+            🎧 Chill 1
         </button>
 
         <button class="btn secondary">
-            Chill 2
+            🎧 Chill 2
         </button>
 
         <button class="btn secondary">
-            Chill 3
+            🎧 Chill 3
         </button>
 
         <button class="btn secondary">
-            Chill 4
+            🎧 Chill 4
         </button>
 
     </div>
 
     <div class="actions">
 
-        <button class="btn">
+        <button
+            class="btn"
+            id="playPauseButton"
+        >
             ▶ / ⏸
         </button>
 
-        <button class="btn secondary">
+        <button
+            class="btn secondary"
+            id="nextButton"
+        >
             ⏭ Tiếp
         </button>
 
@@ -624,7 +655,7 @@ input:focus {
         </h2>
 
         <p class="auth-subtitle">
-            Đăng nhập để lưu tài khoản StudyForge.
+            Đăng nhập hoặc tạo tài khoản StudyForge.
         </p>
 
         <input
@@ -637,7 +668,7 @@ input:focus {
         <input
             type="password"
             id="authPassword"
-            placeholder="Mật khẩu"
+            placeholder="Mật khẩu tối thiểu 6 ký tự"
             autocomplete="current-password"
         >
 
@@ -676,11 +707,14 @@ input:focus {
 </div>
 
 
-<!-- USER INFO -->
+<!-- =========================
+     USER INFO
+========================= -->
 
 <div class="user-info" id="userInfo">
 
-    <div class="user-email" id="userEmail"></div>
+    <div class="user-email" id="userEmail">
+    </div>
 
     <button
         class="btn secondary"
@@ -692,7 +726,9 @@ input:focus {
 </div>
 
 
-<!-- NGƯỜI TẠO -->
+<!-- =========================
+     CREATOR
+========================= -->
 
 <div class="creator">
     Người tạo: <b>Hoàng Ngọc Đạt</b>
@@ -701,21 +737,57 @@ input:focus {
 
 <script>
 
-/* =========================================
+/* =====================================================
    STUDYFORGE DATA
-========================================= */
+===================================================== */
 
 const STORAGE_KEY = "studyforge_data";
 
-let studyData = JSON.parse(
-    localStorage.getItem(STORAGE_KEY)
-) || {
-    goal: 300,
-    currentDay: 1,
-    completedDays: [],
-    streak: 0,
-    tasks: []
-};
+let studyData;
+
+try {
+
+    studyData =
+        JSON.parse(
+            localStorage.getItem(STORAGE_KEY)
+        ) || {};
+
+} catch {
+
+    studyData = {};
+
+}
+
+studyData.goal =
+    Number.isInteger(studyData.goal)
+    ? studyData.goal
+    : 300;
+
+studyData.currentDay =
+    Number.isInteger(studyData.currentDay)
+    ? studyData.currentDay
+    : 1;
+
+studyData.completedDays =
+    Array.isArray(studyData.completedDays)
+    ? studyData.completedDays
+    : [];
+
+studyData.streak =
+    Number.isInteger(studyData.streak)
+    ? studyData.streak
+    : 0;
+
+studyData.tasks =
+    Array.isArray(studyData.tasks)
+    ? studyData.tasks
+    : [];
+
+studyData.studyMinutes =
+    Number.isFinite(studyData.studyMinutes)
+    ? studyData.studyMinutes
+    : 0;
+
 
 function saveData() {
 
@@ -727,9 +799,9 @@ function saveData() {
 }
 
 
-/* =========================================
+/* =====================================================
    JOURNEY
-========================================= */
+===================================================== */
 
 function updateJourney() {
 
@@ -746,9 +818,24 @@ function updateJourney() {
     document.querySelector(".progress-bar")
         .style.width = progress + "%";
 
-    document.querySelector(".stat b")
+    document.getElementById("streakValue")
         .textContent =
         studyData.streak + " ngày";
+
+    document.getElementById("studyTimeValue")
+        .textContent =
+        studyData.studyMinutes + " phút";
+
+    const level =
+        Math.max(
+            1,
+            Math.floor(
+                studyData.studyMinutes / 60
+            ) + 1
+        );
+
+    document.getElementById("levelValue")
+        .textContent = level;
 
     renderDays();
 
@@ -778,13 +865,17 @@ function renderDays() {
         if (
             studyData.completedDays.includes(i)
         ) {
+
             box.classList.add("done");
+
         }
 
         if (
             i === studyData.currentDay
         ) {
+
             box.classList.add("current");
+
         }
 
         container.appendChild(box);
@@ -802,7 +893,13 @@ function completeToday() {
     if (
         studyData.completedDays.includes(day)
     ) {
+
+        alert(
+            "✅ Bạn đã hoàn thành ngày này rồi!"
+        );
+
         return;
+
     }
 
     studyData.completedDays.push(day);
@@ -846,7 +943,9 @@ function changeGoal() {
             studyData.goal
         );
 
-    if (newGoal === null) return;
+    if (
+        newGoal === null
+    ) return;
 
     const goal =
         Number(newGoal);
@@ -871,7 +970,8 @@ function changeGoal() {
         studyData.currentDay > goal
     ) {
 
-        studyData.currentDay = goal;
+        studyData.currentDay =
+            goal;
 
     }
 
@@ -891,9 +991,9 @@ document
     .onclick = changeGoal;
 
 
-/* =========================================
+/* =====================================================
    POMODORO
-========================================= */
+===================================================== */
 
 let focusSeconds = 25 * 60;
 let focusRunning = false;
@@ -903,21 +1003,29 @@ const timerDisplay =
     document.querySelector(".timer-number");
 
 const startButton =
-    document.getElementById("startFocusButton");
+    document.getElementById(
+        "startFocusButton"
+    );
 
 const resetButton =
-    document.getElementById("resetFocusButton");
+    document.getElementById(
+        "resetFocusButton"
+    );
 
 
 function updateTimer() {
 
     const minutes =
-        Math.floor(focusSeconds / 60)
+        Math.floor(
+            focusSeconds / 60
+        )
         .toString()
         .padStart(2, "0");
 
     const seconds =
-        (focusSeconds % 60)
+        (
+            focusSeconds % 60
+        )
         .toString()
         .padStart(2, "0");
 
@@ -929,7 +1037,9 @@ function updateTimer() {
 
 function startFocus() {
 
-    if (focusRunning) return;
+    if (
+        focusRunning
+    ) return;
 
     focusRunning = true;
 
@@ -937,42 +1047,48 @@ function startFocus() {
         "⏸ Đang học...";
 
     focusInterval =
-        setInterval(() => {
+        setInterval(
+            () => {
 
-            focusSeconds--;
-
-            updateTimer();
-
-            if (
-                focusSeconds <= 0
-            ) {
-
-                clearInterval(
-                    focusInterval
-                );
-
-                focusRunning = false;
-
-                focusSeconds = 25 * 60;
-
-                startButton.textContent =
-                    "▶ Bắt đầu";
+                focusSeconds--;
 
                 updateTimer();
 
-                studyData.streak++;
+                if (
+                    focusSeconds <= 0
+                ) {
 
-                saveData();
+                    clearInterval(
+                        focusInterval
+                    );
 
-                updateJourney();
+                    focusRunning = false;
 
-                alert(
-                    "🎉 Hoàn thành 25 phút Focus!"
-                );
+                    focusSeconds =
+                        25 * 60;
 
-            }
+                    startButton.textContent =
+                        "▶ Bắt đầu";
 
-        }, 1000);
+                    studyData.streak++;
+
+                    studyData.studyMinutes += 25;
+
+                    saveData();
+
+                    updateTimer();
+
+                    updateJourney();
+
+                    alert(
+                        "🎉 Hoàn thành 25 phút Focus!"
+                    );
+
+                }
+
+            },
+            1000
+        );
 
 }
 
@@ -985,7 +1101,8 @@ function resetFocus() {
 
     focusRunning = false;
 
-    focusSeconds = 25 * 60;
+    focusSeconds =
+        25 * 60;
 
     startButton.textContent =
         "▶ Bắt đầu";
@@ -1002,55 +1119,78 @@ resetButton.onclick =
     resetFocus;
 
 
-/* =========================================
+/* =====================================================
    TODO
-========================================= */
+===================================================== */
+
+const todoInput =
+    document.getElementById(
+        "todoInput"
+    );
+
+const todoButton =
+    document.getElementById(
+        "todoButton"
+    );
+
+const taskList =
+    document.getElementById(
+        "taskList"
+    );
+
 
 function renderTasks() {
 
-    const todoCard =
-        document.querySelectorAll(".card")[2];
-
-    todoCard
-        .querySelectorAll(".task")
-        .forEach(task =>
-            task.remove()
-        );
+    taskList.innerHTML = "";
 
     studyData.tasks.forEach(
         (task, index) => {
 
             const row =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             row.className =
                 "task" +
-                (task.done ? " done" : "");
+                (
+                    task.done
+                    ? " done"
+                    : ""
+                );
 
             const checkbox =
-                document.createElement("input");
+                document.createElement(
+                    "input"
+                );
 
-            checkbox.type = "checkbox";
+            checkbox.type =
+                "checkbox";
 
             checkbox.checked =
                 task.done;
 
             const span =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
 
             span.textContent =
                 task.text;
 
-            checkbox.onchange = () => {
+            checkbox.onchange =
+                () => {
 
-                studyData.tasks[index].done =
-                    checkbox.checked;
+                    studyData
+                        .tasks[index]
+                        .done =
+                        checkbox.checked;
 
-                saveData();
+                    saveData();
 
-                renderTasks();
+                    renderTasks();
 
-            };
+                };
 
             row.appendChild(
                 checkbox
@@ -1060,7 +1200,7 @@ function renderTasks() {
                 span
             );
 
-            todoCard.appendChild(
+            taskList.appendChild(
                 row
             );
 
@@ -1070,19 +1210,14 @@ function renderTasks() {
 }
 
 
-const todoInput =
-    document.getElementById("todoInput");
-
-const todoButton =
-    document.getElementById("todoButton");
-
-
 function addTask() {
 
     const text =
         todoInput.value.trim();
 
-    if (!text) return;
+    if (
+        !text
+    ) return;
 
     studyData.tasks.push({
         text: text,
@@ -1117,9 +1252,9 @@ todoInput.addEventListener(
 );
 
 
-/* =========================================
+/* =====================================================
    MUSIC
-========================================= */
+===================================================== */
 
 const musicTracks = [
     "music/chill1.mp3",
@@ -1129,6 +1264,7 @@ const musicTracks = [
 ];
 
 let musicIndex = 0;
+
 let isPlaying = false;
 
 const audioPlayer =
@@ -1143,13 +1279,13 @@ const musicButtons =
     );
 
 const playPauseButton =
-    document.querySelector(
-        ".music + .actions .btn"
+    document.getElementById(
+        "playPauseButton"
     );
 
 const nextButton =
-    document.querySelector(
-        ".music + .actions .btn.secondary"
+    document.getElementById(
+        "nextButton"
     );
 
 
@@ -1158,11 +1294,20 @@ function updateMusicButtons() {
     musicButtons.forEach(
         (button, index) => {
 
-            button.textContent =
+            if (
                 index === musicIndex &&
                 isPlaying
-                ? `⏸ Chill ${index + 1}`
-                : `🎧 Chill ${index + 1}`;
+            ) {
+
+                button.textContent =
+                    `⏸ Chill ${index + 1}`;
+
+            } else {
+
+                button.textContent =
+                    `🎧 Chill ${index + 1}`;
+
+            }
 
         }
     );
@@ -1177,31 +1322,52 @@ function playMusic(index) {
         index >= musicTracks.length
     ) return;
 
-    musicIndex = index;
+    musicIndex =
+        index;
 
     audioPlayer.pause();
 
     audioPlayer.src =
         musicTracks[musicIndex];
 
-    audioPlayer.currentTime = 0;
+    audioPlayer.currentTime =
+        0;
 
     audioPlayer.play()
-        .then(() => {
+        .then(
+            () => {
 
-            isPlaying = true;
+                isPlaying =
+                    true;
 
-            updateMusicButtons();
+                updateMusicButtons();
 
-        })
-        .catch(error => {
+            }
+        )
+        .catch(
+            error => {
 
-            console.log(
-                "Không thể phát nhạc:",
-                error
-            );
+                console.error(
+                    "Không thể phát nhạc:",
+                    error
+                );
 
-        });
+                isPlaying =
+                    false;
+
+                updateMusicButtons();
+
+                alert(
+                    "⚠️ Không tìm thấy file nhạc.\n\n" +
+                    "Kiểm tra thư mục music và 4 file:\n" +
+                    "chill1.mp3\n" +
+                    "chill2.mp3\n" +
+                    "chill3.mp3\n" +
+                    "chill4.mp3"
+                );
+
+            }
+        );
 
 }
 
@@ -1209,73 +1375,93 @@ function playMusic(index) {
 musicButtons.forEach(
     (button, index) => {
 
-        button.onclick = () => {
+        button.onclick =
+            () => {
 
-            if (
-                musicIndex === index &&
-                isPlaying
-            ) {
+                if (
+                    musicIndex === index &&
+                    isPlaying
+                ) {
 
-                audioPlayer.pause();
+                    audioPlayer.pause();
 
-                isPlaying = false;
+                    return;
 
-                updateMusicButtons();
+                }
 
-                return;
+                playMusic(index);
 
-            }
-
-            playMusic(index);
-
-        };
+            };
 
     }
 );
 
 
-playPauseButton.onclick = () => {
+playPauseButton.onclick =
+    () => {
 
-    if (isPlaying) {
+        if (
+            isPlaying
+        ) {
 
-        audioPlayer.pause();
+            audioPlayer.pause();
 
-    } else {
+        } else {
 
-        audioPlayer.play()
-            .catch(() => {});
+            if (
+                !audioPlayer.src
+            ) {
 
-    }
+                playMusic(
+                    musicIndex
+                );
 
-};
+            } else {
+
+                audioPlayer.play()
+                    .catch(
+                        () => {}
+                    );
+
+            }
+
+        }
+
+    };
 
 
-nextButton.onclick = () => {
+nextButton.onclick =
+    () => {
 
-    musicIndex++;
+        musicIndex++;
 
-    if (
-        musicIndex >=
-        musicTracks.length
-    ) {
+        if (
+            musicIndex >=
+            musicTracks.length
+        ) {
 
-        musicIndex = 0;
+            musicIndex = 0;
 
-    }
+        }
 
-    playMusic(musicIndex);
+        playMusic(
+            musicIndex
+        );
 
-};
+    };
 
 
 audioPlayer.addEventListener(
     "ended",
     () => {
 
-        audioPlayer.currentTime = 0;
+        audioPlayer.currentTime =
+            0;
 
         audioPlayer.play()
-            .catch(() => {});
+            .catch(
+                () => {}
+            );
 
     }
 );
@@ -1285,7 +1471,8 @@ audioPlayer.addEventListener(
     "pause",
     () => {
 
-        isPlaying = false;
+        isPlaying =
+            false;
 
         updateMusicButtons();
 
@@ -1297,7 +1484,8 @@ audioPlayer.addEventListener(
     "play",
     () => {
 
-        isPlaying = true;
+        isPlaying =
+            true;
 
         updateMusicButtons();
 
@@ -1305,16 +1493,25 @@ audioPlayer.addEventListener(
 );
 
 
-/* =========================================
+/* =====================================================
    AI
-========================================= */
+===================================================== */
 
 function formatAI(text) {
 
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
+    return String(text)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
         .replace(
             /^### (.*)$/gm,
             "<h3>$1</h3>"
@@ -1350,8 +1547,8 @@ const aiBox =
         "aiBox"
     );
 
-
-const AI_DAILY_LIMIT = 20;
+const AI_DAILY_LIMIT =
+    20;
 
 const todayKey =
     new Intl.DateTimeFormat(
@@ -1360,21 +1557,31 @@ const todayKey =
             timeZone:
                 "Asia/Ho_Chi_Minh"
         }
-    ).format(new Date());
+    ).format(
+        new Date()
+    );
 
 
-let aiQuotaData =
-    JSON.parse(
-        localStorage.getItem(
-            "studyforge_ai_quota"
-        )
-    ) || {
-        date: todayKey,
-        used: 0
-    };
+let aiQuotaData;
 
+try {
+
+    aiQuotaData =
+        JSON.parse(
+            localStorage.getItem(
+                "studyforge_ai_quota"
+            )
+        );
+
+} catch {
+
+    aiQuotaData =
+        null;
+
+}
 
 if (
+    !aiQuotaData ||
     aiQuotaData.date !== todayKey
 ) {
 
@@ -1449,7 +1656,9 @@ aiButton.onclick =
         const question =
             aiInput.value.trim();
 
-        if (!question) {
+        if (
+            !question
+        ) {
 
             aiBox.textContent =
                 "⚠️ Hãy nhập câu hỏi trước nhé!";
@@ -1470,7 +1679,8 @@ aiButton.onclick =
 
         }
 
-        aiButton.disabled = true;
+        aiButton.disabled =
+            true;
 
         aiButton.textContent =
             "⏳";
@@ -1484,7 +1694,8 @@ aiButton.onclick =
                 await fetch(
                     "/api/ask",
                     {
-                        method: "POST",
+                        method:
+                            "POST",
 
                         headers: {
                             "Content-Type":
@@ -1502,7 +1713,9 @@ aiButton.onclick =
             const data =
                 await response.json();
 
-            if (!response.ok) {
+            if (
+                !response.ok
+            ) {
 
                 throw new Error(
                     data.error ||
@@ -1513,7 +1726,11 @@ aiButton.onclick =
 
             if (
                 !useAILimit()
-            ) return;
+            ) {
+
+                return;
+
+            }
 
             aiBox.innerHTML =
                 "🤖 " +
@@ -1531,9 +1748,13 @@ aiButton.onclick =
 
             }
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
-            console.error(error);
+            console.error(
+                error
+            );
 
             aiBox.textContent =
                 "❌ " +
@@ -1571,10 +1792,9 @@ aiInput.addEventListener(
 );
 
 
-/* =========================================
+/* =====================================================
    SUPABASE AUTH
-   EMAIL + PASSWORD
-========================================= */
+===================================================== */
 
 const SUPABASE_URL =
     "https://gucxknalotvyhjxqkbel.supabase.co";
@@ -1650,44 +1870,32 @@ const logoutButton =
     );
 
 
-let isRegisterMode = false;
+let isRegisterMode =
+    false;
 
 
-/* MỞ CỬA SỔ */
+/* =====================================================
+   AUTH UI
+===================================================== */
 
-loginButton.onclick = async () => {
-
-    const {
-        data: {
-            session
-        }
-    } =
-        await supabaseClient
-            .auth
-            .getSession();
-
-    if (session) {
-
-        userInfo.classList.toggle(
-            "show"
-        );
-
-        return;
-
-    }
+function openAuth() {
 
     authOverlay.classList.add(
         "show"
     );
 
-    authEmail.focus();
+    authMessage.textContent =
+        "";
 
-};
+    setTimeout(
+        () => authEmail.focus(),
+        100
+    );
+
+}
 
 
-/* ĐÓNG */
-
-closeAuth.onclick = () => {
+function closeAuthModal() {
 
     authOverlay.classList.remove(
         "show"
@@ -1696,49 +1904,122 @@ closeAuth.onclick = () => {
     authMessage.textContent =
         "";
 
-};
+}
 
 
-/* CHUYỂN ĐĂNG NHẬP / ĐĂNG KÝ */
+loginButton.onclick =
+    async () => {
 
-switchAuth.onclick = () => {
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
 
-    isRegisterMode =
-        !isRegisterMode;
+        if (
+            error
+        ) {
 
-    if (
-        isRegisterMode
-    ) {
+            console.error(
+                error
+            );
 
-        authTitle.textContent =
-            "📝 Đăng ký tài khoản";
+            openAuth();
 
-        authSubmit.textContent =
-            "Đăng ký";
+            return;
 
-        switchAuth.textContent =
-            "Đăng nhập";
+        }
 
-    } else {
+        if (
+            data.session
+        ) {
 
-        authTitle.textContent =
-            "👤 Đăng nhập";
+            userInfo.classList.toggle(
+                "show"
+            );
 
-        authSubmit.textContent =
-            "Đăng nhập";
+            return;
 
-        switchAuth.textContent =
-            "Đăng ký";
+        }
+
+        openAuth();
+
+    };
+
+
+closeAuth.onclick =
+    closeAuthModal;
+
+
+/* Click ra ngoài modal */
+
+authOverlay.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target ===
+            authOverlay
+        ) {
+
+            closeAuthModal();
+
+        }
 
     }
-
-    authMessage.textContent =
-        "";
-
-};
+);
 
 
-/* ĐĂNG NHẬP / ĐĂNG KÝ */
+/* =====================================================
+   LOGIN / REGISTER MODE
+===================================================== */
+
+switchAuth.onclick =
+    () => {
+
+        isRegisterMode =
+            !isRegisterMode;
+
+        authMessage.textContent =
+            "";
+
+        authPassword.value =
+            "";
+
+        if (
+            isRegisterMode
+        ) {
+
+            authTitle.textContent =
+                "📝 Đăng ký tài khoản";
+
+            authSubmit.textContent =
+                "Đăng ký";
+
+            switchAuth.textContent =
+                "Đăng nhập";
+
+        } else {
+
+            authTitle.textContent =
+                "👤 Đăng nhập";
+
+            authSubmit.textContent =
+                "Đăng nhập";
+
+            switchAuth.textContent =
+                "Đăng ký";
+
+        }
+
+    };
+
+
+/* =====================================================
+   REGISTER / LOGIN
+===================================================== */
 
 authSubmit.onclick =
     async () => {
@@ -1749,7 +2030,10 @@ authSubmit.onclick =
         const password =
             authPassword.value;
 
-        if (!email || !password) {
+        if (
+            !email ||
+            !password
+        ) {
 
             authMessage.textContent =
                 "⚠️ Nhập đầy đủ email và mật khẩu.";
@@ -1758,7 +2042,9 @@ authSubmit.onclick =
 
         }
 
-        if (password.length < 6) {
+        if (
+            password.length < 6
+        ) {
 
             authMessage.textContent =
                 "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
@@ -1770,14 +2056,21 @@ authSubmit.onclick =
         authSubmit.disabled =
             true;
 
-        authSubmit.textContent =
-            "⏳ Đang xử lý...";
+        authMessage.textContent =
+            "";
 
         try {
+
+            /* =====================
+               ĐĂNG KÝ
+            ===================== */
 
             if (
                 isRegisterMode
             ) {
+
+                authSubmit.textContent =
+                    "⏳ Đang tạo tài khoản...";
 
                 const {
                     data,
@@ -1787,29 +2080,71 @@ authSubmit.onclick =
                         .auth
                         .signUp({
                             email,
-                            password
+                            password,
+                            options: {
+                                data: {
+                                    name:
+                                        email
+                                            .split("@")[0]
+                                }
+                            }
                         });
 
-                if (error)
+                if (
+                    error
+                ) {
+
                     throw error;
+
+                }
+
+                /*
+                 * Nếu Supabase tắt Confirm email,
+                 * data.session sẽ có ngay.
+                 */
 
                 if (
                     data.session
                 ) {
 
                     authMessage.textContent =
-                        "✅ Đăng ký thành công!";
+                        "✅ Đăng ký thành công! Đang vào StudyForge...";
+
+                    updateAuthUI(
+                        data.user
+                    );
+
+                    setTimeout(
+                        closeAuthModal,
+                        700
+                    );
 
                 } else {
 
+                    /*
+                     * Nếu vẫn hiện trường hợp này
+                     * thì Confirm email đang bật
+                     * trong Supabase.
+                     */
+
                     authMessage.textContent =
-                        "✅ Đăng ký thành công! Hãy kiểm tra email để xác nhận tài khoản.";
+                        "⚠️ Tài khoản đã tạo nhưng Supabase đang yêu cầu xác nhận email. Hãy tắt \"Confirm email\" trong Authentication → Providers → Email.";
 
                 }
 
-            } else {
+            }
+
+            /* =====================
+               ĐĂNG NHẬP
+            ===================== */
+
+            else {
+
+                authSubmit.textContent =
+                    "⏳ Đang đăng nhập...";
 
                 const {
+                    data,
                     error
                 } =
                     await supabaseClient
@@ -1819,35 +2154,69 @@ authSubmit.onclick =
                             password
                         });
 
-                if (error)
+                if (
+                    error
+                ) {
+
                     throw error;
+
+                }
 
                 authMessage.textContent =
                     "✅ Đăng nhập thành công!";
 
+                updateAuthUI(
+                    data.user
+                );
+
                 setTimeout(
-                    () => {
-
-                        authOverlay.classList.remove(
-                            "show"
-                        );
-
-                    },
+                    closeAuthModal,
                     500
                 );
 
             }
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
-            console.error(error);
+            console.error(
+                "AUTH ERROR:",
+                error
+            );
+
+            let message =
+                error.message ||
+                "Có lỗi xảy ra.";
+
+            if (
+                message
+                    .toLowerCase()
+                    .includes(
+                        "invalid login credentials"
+                    )
+            ) {
+
+                message =
+                    "❌ Email hoặc mật khẩu không đúng.";
+
+            }
+
+            if (
+                message
+                    .toLowerCase()
+                    .includes(
+                        "email not confirmed"
+                    )
+            ) {
+
+                message =
+                    "❌ Email chưa được xác nhận. Hãy tắt Confirm email trong Supabase hoặc xác nhận email.";
+
+            }
 
             authMessage.textContent =
-                "❌ " +
-                (
-                    error.message ||
-                    "Có lỗi xảy ra."
-                );
+                message;
 
         } finally {
 
@@ -1864,7 +2233,9 @@ authSubmit.onclick =
     };
 
 
-/* ENTER ĐỂ ĐĂNG NHẬP */
+/* =====================================================
+   ENTER
+===================================================== */
 
 authPassword.addEventListener(
     "keydown",
@@ -1882,14 +2253,31 @@ authPassword.addEventListener(
 );
 
 
-/* ĐĂNG XUẤT */
+/* =====================================================
+   LOGOUT
+===================================================== */
 
 logoutButton.onclick =
     async () => {
 
-        await supabaseClient
-            .auth
-            .signOut();
+        const {
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signOut();
+
+        if (
+            error
+        ) {
+
+            alert(
+                "❌ Không thể đăng xuất."
+            );
+
+            return;
+
+        }
 
         userInfo.classList.remove(
             "show"
@@ -1901,28 +2289,38 @@ logoutButton.onclick =
     };
 
 
-/* CẬP NHẬT GIAO DIỆN USER */
+/* =====================================================
+   UPDATE AUTH UI
+===================================================== */
 
 function updateAuthUI(
     user
 ) {
 
-    if (user) {
+    if (
+        user
+    ) {
 
-        const email =
-            user.email ||
-            "Tài khoản";
+        const name =
+            user.user_metadata?.name ||
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "Bạn";
 
         loginButton.textContent =
-            "👤 Đã đăng nhập";
+            `👤 ${name}`;
 
         userEmail.textContent =
-            email;
+            user.email ||
+            "Tài khoản";
 
     } else {
 
         loginButton.textContent =
             "👤 Đăng nhập";
+
+        userEmail.textContent =
+            "";
 
         userInfo.classList.remove(
             "show"
@@ -1933,38 +2331,62 @@ function updateAuthUI(
 }
 
 
-/* KIỂM TRA SESSION */
+/* =====================================================
+   CHECK LOGIN
+===================================================== */
 
 async function checkLogin() {
 
     const {
-        data: {
-            session
-        }
+        data,
+        error
     } =
         await supabaseClient
             .auth
             .getSession();
 
+    if (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+        return;
+
+    }
+
     updateAuthUI(
-        session?.user || null
+        data.session?.user ||
+        null
     );
 
 }
 
 
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
 supabaseClient.auth.onAuthStateChange(
-    (event, session) => {
+    (
+        event,
+        session
+    ) => {
 
         updateAuthUI(
-            session?.user || null
+            session?.user ||
+            null
         );
 
     }
 );
 
 
-/* CHẠY BAN ĐẦU */
+/* =====================================================
+   START
+===================================================== */
 
 updateJourney();
 
