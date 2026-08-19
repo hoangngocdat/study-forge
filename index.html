@@ -1,16 +1,484 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyForge</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>StudyForge</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #07111f;
+    color: white;
+    min-height: 100vh;
+}
+
+.app {
+    width: 92%;
+    max-width: 1150px;
+    margin: auto;
+    padding: 25px 0 50px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #6ea8ff;
+}
+
+.login {
+    background: #12253a;
+    color: white;
+    border: 1px solid #263c55;
+    padding: 11px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 18px;
+}
+
+.card {
+    background: #0d1b2d;
+    border: 1px solid #1c3046;
+    border-radius: 20px;
+    padding: 22px;
+}
+
+.hero {
+    grid-column: 1 / -1;
+}
+
+.small {
+    color: #91a4b9;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.day {
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.progress {
+    height: 12px;
+    background: #182b40;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 15px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #6ea8ff;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    background: #10243a;
+    padding: 14px;
+    border-radius: 14px;
+}
+
+.stat b {
+    display: block;
+    font-size: 21px;
+    margin-top: 5px;
+}
+
+button {
+    font-family: inherit;
+}
+
+.btn {
+    border: none;
+    padding: 12px 17px;
+    border-radius: 12px;
+    background: #6ea8ff;
+    color: #06101d;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.btn.secondary {
+    background: #1a3048;
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.timer {
+    text-align: center;
+}
+
+.timer-number {
+    font-size: 55px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+input {
+    background: #081522;
+    color: white;
+    border: 1px solid #263c55;
+    padding: 12px;
+    border-radius: 11px;
+    outline: none;
+}
+
+.todo-add {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.todo-add input {
+    flex: 1;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid #1c3046;
+}
+
+.task.done span {
+    text-decoration: line-through;
+    color: #7d8ea1;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+.day-box {
+    text-align: center;
+    padding: 8px 3px;
+    background: #14283c;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.day-box.done {
+    background: #49d17d;
+    color: #06130b;
+}
+
+.day-box.current {
+    outline: 2px solid #6ea8ff;
+}
+
+.music {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.ai-box {
+    margin-top: 15px;
+    background: #081522;
+    border-radius: 13px;
+    padding: 15px;
+}
+
+@media(max-width: 800px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        grid-column: auto;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .days {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <h1>⚒️ StudyForge</h1>
+<div class="app">
 
-    <p>Web học tập của bạn đang hoạt động!</p>
+<header>
+    <div class="logo">
+        ⚒️ Study<span>Forge</span>
+    </div>
+
+    <button class="login">
+        👤 Đăng nhập để đồng bộ
+    </button>
+</header>
+
+<div class="grid">
+
+<!-- HÀNH TRÌNH -->
+
+<section class="card hero">
+
+    <div class="small">
+        HÀNH TRÌNH HỌC TẬP
+    </div>
+
+    <div class="day">
+        Ngày 1 / 300
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar"></div>
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            🔥 Streak
+            <b>0 ngày</b>
+        </div>
+
+        <div class="stat">
+            ⏱️ Thời gian học
+            <b>0 phút</b>
+        </div>
+
+        <div class="stat">
+            ⚡ Level
+            <b>1</b>
+        </div>
+
+    </div>
+
+    <div class="actions">
+
+        <button class="btn">
+            ✅ Hoàn thành hôm nay
+        </button>
+
+        <button class="btn secondary">
+            🎯 Đổi mục tiêu
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- FOCUS -->
+
+<section class="card timer">
+
+    <div class="small">
+        FOCUS
+    </div>
+
+    <h2>🎯 Pomodoro</h2>
+
+    <div class="timer-number">
+        25:00
+    </div>
+
+    <button class="btn">
+        ▶ Bắt đầu
+    </button>
+
+    <button class="btn secondary">
+        ↺ Reset
+    </button>
+
+</section>
+
+
+<!-- TODO -->
+
+<section class="card">
+
+    <div class="small">
+        TODO
+    </div>
+
+    <h2>📋 Việc hôm nay</h2>
+
+    <div class="todo-add">
+
+        <input
+            type="text"
+            placeholder="Thêm việc cần học..."
+        >
+
+        <button class="btn">
+            +
+        </button>
+
+    </div>
+
+    <div class="task">
+        <input type="checkbox">
+        <span>Ôn bài hôm nay</span>
+    </div>
+
+</section>
+
+
+<!-- JOURNEY -->
+
+<section class="card">
+
+    <div class="small">
+        JOURNEY
+    </div>
+
+    <h2>📅 1 → 1000 ngày</h2>
+
+    <div class="days">
+
+        <div class="day-box done">1</div>
+        <div class="day-box current">2</div>
+
+        <div class="day-box">3</div>
+        <div class="day-box">4</div>
+        <div class="day-box">5</div>
+        <div class="day-box">6</div>
+        <div class="day-box">7</div>
+        <div class="day-box">8</div>
+        <div class="day-box">9</div>
+        <div class="day-box">10</div>
+
+    </div>
+
+    <p class="small" style="margin-top:15px">
+        Mỗi người có thể chọn mục tiêu từ 1 → 1000 ngày.
+    </p>
+
+</section>
+
+
+<!-- AI -->
+
+<section class="card">
+
+    <div class="small">
+        AI
+    </div>
+
+    <h2>🤖 StudyForge AI</h2>
+
+    <p class="small" style="margin-top:8px">
+        FREE · 20 lượt/ngày
+    </p>
+
+    <div class="ai-box">
+
+        👋 Chào bạn! StudyForge AI sẽ giúp
+        bạn học tập, giải bài và tạo quiz.
+
+    </div>
+
+    <div class="todo-add">
+
+        <input
+            type="text"
+            placeholder="Hỏi bài..."
+        >
+
+        <button class="btn">
+            Gửi
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- MUSIC -->
+
+<section class="card">
+
+    <div class="small">
+        MUSIC
+    </div>
+
+    <h2>🎧 Study Music</h2>
+
+    <div class="music">
+
+        <button class="btn secondary">
+            Chill 1
+        </button>
+
+        <button class="btn secondary">
+            Chill 2
+        </button>
+
+        <button class="btn secondary">
+            Chill 3
+        </button>
+
+        <button class="btn secondary">
+            Chill 4
+        </button>
+
+    </div>
+
+    <div class="actions">
+
+        <button class="btn">
+            ▶ / ⏸
+        </button>
+
+        <button class="btn secondary">
+            ⏭ Tiếp
+        </button>
+
+    </div>
+
+</section>
+
+</div>
+
+</div>
 
 </body>
 </html>
