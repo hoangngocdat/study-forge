@@ -736,6 +736,96 @@ startButton.onclick = startFocus;
 resetButton.onclick = resetFocus;
 
 updateTimer();
+// ===============================
+// TODO SYSTEM
+// ===============================
+
+if (!studyData.tasks) {
+    studyData.tasks = [];
+}
+
+function renderTasks() {
+
+    const todoCard =
+        document.querySelectorAll(".card")[2];
+
+    todoCard
+        .querySelectorAll(".task")
+        .forEach(task => task.remove());
+
+    studyData.tasks.forEach((task, index) => {
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "task" + (task.done ? " done" : "");
+
+        row.innerHTML = `
+            <input type="checkbox"
+                   ${task.done ? "checked" : ""}>
+            <span>${escapeHTML(task.text)}</span>
+        `;
+
+        row.querySelector("input").onchange = () => {
+
+            studyData.tasks[index].done =
+                !studyData.tasks[index].done;
+
+            saveData();
+            renderTasks();
+        };
+
+        todoCard.appendChild(row);
+    });
+}
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+const todoInput =
+    document.querySelector(".todo-add input");
+
+const todoButton =
+    document.querySelector(".todo-add .btn");
+
+todoButton.onclick = () => {
+
+    const text =
+        todoInput.value.trim();
+
+    if (!text) return;
+
+    studyData.tasks.push({
+        text: text,
+        done: false
+    });
+
+    todoInput.value = "";
+
+    saveData();
+    renderTasks();
+};
+
+todoInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+            todoButton.click();
+        }
+
+    }
+);
+
+renderTasks();
 </script>
 </body>
 </html>
