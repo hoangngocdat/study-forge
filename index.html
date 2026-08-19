@@ -1100,9 +1100,12 @@ const aiBox = document.querySelector(
 
 const AI_DAILY_LIMIT = 20;
 
-const todayKey =
-    new Date().toISOString().slice(0, 10);
-
+const todayKey = new Intl.DateTimeFormat(
+    "en-CA",
+    {
+        timeZone: "Asia/Ho_Chi_Minh"
+    }
+).format(new Date());
 let aiQuotaData =
     JSON.parse(
         localStorage.getItem("studyforge_ai_quota")
@@ -1185,10 +1188,6 @@ if (
         "⛔ Bạn đã dùng hết 20 lượt AI hôm nay. Mai quay lại nhé!";
     return;
 }
-
-if (!useAILimit()) {
-    return;
-}
     aiButton.disabled = true;
     aiButton.textContent = "⏳";
 
@@ -1224,6 +1223,9 @@ if (!useAILimit()) {
             );
 
         }
+        if (!useAILimit()) {
+    return;
+}
 aiBox.innerHTML =
     "🤖 " + formatAI(data.reply);
 
