@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>StudyForge</title>
 
@@ -31,18 +31,19 @@ window.MathJax = {
 
 html,body{
     width:100%;
-    max-width:100%;
-    overflow-x:hidden;
+    min-width:1100px;
+    overflow-x:auto;
 }
 
 body{
-    font-family:Arial,sans-serif;
-    background:#07111f;
-    color:white;
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+        radial-gradient(circle at top left,#102b48 0,#07111f 35%,#050b13 100%);
+    color:#fff;
     min-height:100vh;
 }
 
-button,input{
+button,input,textarea,select{
     font-family:inherit;
 }
 
@@ -51,13 +52,13 @@ button{
 }
 
 button:disabled{
+    opacity:.5;
     cursor:not-allowed;
-    opacity:.55;
 }
 
 .app{
-    width:92%;
-    max-width:1200px;
+    width:96%;
+    max-width:1600px;
     margin:auto;
     padding:25px 0 90px;
 }
@@ -66,50 +67,43 @@ header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:15px;
     margin-bottom:25px;
 }
 
 .logo{
-    font-size:28px;
-    font-weight:bold;
+    font-size:32px;
+    font-weight:800;
 }
 
 .logo span{
     color:#6ea8ff;
 }
 
-.login,
-.timer-settings button,
-.calc-btn,
-.translate-btn{
+.login{
     background:#12253a;
-    color:white;
-    border:1px solid #263c55;
-    padding:11px 16px;
+    color:#fff;
+    border:1px solid #29445f;
+    padding:12px 18px;
     border-radius:12px;
+    font-weight:bold;
 }
 
-.login:hover,
-.timer-settings button:hover,
-.calc-btn:hover,
-.translate-btn:hover{
-    background:#1a3048;
+.login:hover{
+    background:#1c3853;
 }
 
 .grid{
     display:grid;
-    grid-template-columns:1.3fr 1fr;
+    grid-template-columns:1.15fr .85fr;
     gap:18px;
 }
 
 .card{
-    background:#0d1b2d;
-    border:1px solid #1c3046;
+    background:rgba(13,27,45,.96);
+    border:1px solid #1d354d;
     border-radius:20px;
     padding:22px;
-    min-width:0;
-    width:100%;
+    box-shadow:0 12px 35px rgba(0,0,0,.18);
 }
 
 .hero,
@@ -123,10 +117,11 @@ header{
     color:#91a4b9;
     font-size:13px;
     margin-bottom:8px;
+    letter-spacing:.4px;
 }
 
 .day{
-    font-size:38px;
+    font-size:42px;
     font-weight:bold;
 }
 
@@ -140,7 +135,7 @@ header{
 
 .progress-bar{
     height:100%;
-    width:0%;
+    width:0;
     background:#6ea8ff;
     transition:width .35s;
 }
@@ -171,6 +166,12 @@ header{
     margin-top:5px;
 }
 
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
 .btn{
     border:none;
     padding:12px 17px;
@@ -187,13 +188,7 @@ header{
 
 .btn.secondary{
     background:#1a3048;
-    color:white;
-}
-
-.actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+    color:#fff;
 }
 
 .motivation{
@@ -203,7 +198,6 @@ header{
     border-radius:15px;
     padding:17px;
     line-height:1.6;
-    min-height:75px;
 }
 
 .motivation-title{
@@ -218,7 +212,7 @@ header{
     padding:8px 12px;
     border:1px solid #31516f;
     background:#0d2034;
-    color:white;
+    color:#fff;
     border-radius:9px;
 }
 
@@ -227,9 +221,10 @@ header{
 }
 
 .timer-number{
-    font-size:55px;
+    font-size:64px;
     font-weight:bold;
     margin:20px 0;
+    font-variant-numeric:tabular-nums;
 }
 
 .timer-settings{
@@ -237,7 +232,14 @@ header{
     gap:7px;
     flex-wrap:wrap;
     justify-content:center;
-    margin-top:5px;
+}
+
+.timer-settings button{
+    background:#12253a;
+    color:#fff;
+    border:1px solid #263c55;
+    padding:9px 13px;
+    border-radius:9px;
 }
 
 .timer-settings button.active{
@@ -246,24 +248,23 @@ header{
 }
 
 .custom-time{
-    width:90px;
-    background:#081522;
-    color:white;
-    border:1px solid #263c55;
-    padding:8px;
-    border-radius:9px;
+    width:100px;
 }
 
-input{
+input,
+textarea,
+select{
     background:#081522;
-    color:white;
+    color:#fff;
     border:1px solid #263c55;
     padding:12px;
     border-radius:11px;
     outline:none;
 }
 
-input:focus{
+input:focus,
+textarea:focus,
+select:focus{
     border-color:#6ea8ff;
 }
 
@@ -271,12 +272,10 @@ input:focus{
     display:flex;
     gap:8px;
     margin-top:15px;
-    width:100%;
 }
 
 .todo-add input{
     flex:1;
-    min-width:0;
 }
 
 .task{
@@ -303,9 +302,9 @@ input:focus{
 
 .days{
     display:grid;
-    grid-template-columns:repeat(10,minmax(0,1fr));
+    grid-template-columns:repeat(20,1fr);
     gap:6px;
-    max-height:250px;
+    max-height:300px;
     overflow-y:auto;
     margin-top:15px;
 }
@@ -329,7 +328,7 @@ input:focus{
 
 .stats-big{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(4,1fr);
     gap:10px;
     margin-top:15px;
 }
@@ -348,7 +347,7 @@ input:focus{
 
 .achievement-list{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:8px;
     margin-top:15px;
 }
@@ -375,7 +374,7 @@ input:focus{
     font-size:13px;
 }
 
-/* AI */
+/* ================= AI ================= */
 
 .ai-box{
     margin-top:15px;
@@ -384,8 +383,8 @@ input:focus{
     border-radius:15px;
     padding:18px;
     line-height:1.8;
-    min-height:260px;
-    max-height:470px;
+    min-height:280px;
+    max-height:500px;
     overflow-y:auto;
     font-size:15px;
     word-wrap:break-word;
@@ -413,7 +412,6 @@ input:focus{
 
 .ai-box mjx-container[display="true"]{
     overflow-x:auto;
-    overflow-y:hidden;
     padding:7px 0;
 }
 
@@ -425,19 +423,12 @@ input:focus{
 
 .ai-input-area input{
     flex:1;
-    min-width:0;
     height:48px;
 }
 
 .ai-input-area .btn{
     margin-top:0;
-    min-width:75px;
-}
-
-.ai-hint{
-    color:#91a4b9;
-    font-size:12px;
-    margin-top:9px;
+    min-width:90px;
 }
 
 .example-buttons{
@@ -450,17 +441,16 @@ input:focus{
 .example-btn{
     border:1px solid #263c55;
     background:#10243a;
-    color:white;
+    color:#fff;
     padding:8px 10px;
     border-radius:9px;
-    font-size:12px;
 }
 
-/* MUSIC */
+/* ================= MUSIC ================= */
 
 .music-list{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(5,1fr);
     gap:8px;
     margin-top:15px;
 }
@@ -468,8 +458,8 @@ input:focus{
 .music-btn{
     border:1px solid #263c55;
     background:#10243a;
-    color:white;
-    padding:11px;
+    color:#fff;
+    padding:12px;
     border-radius:10px;
     text-align:left;
 }
@@ -485,107 +475,190 @@ input:focus{
     flex-wrap:wrap;
 }
 
+.repeat-control{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:15px;
+    background:#10243a;
+    padding:12px;
+    border-radius:12px;
+}
+
+.repeat-control input{
+    width:18px;
+    height:18px;
+}
+
 .now-playing{
     margin-top:13px;
     color:#91a4b9;
-    font-size:13px;
 }
 
-.repeat-status{
-    margin-top:10px;
-    color:#6ea8ff;
-    font-size:13px;
-}
+/* ================= CALCULATOR ================= */
 
-/* CALCULATOR */
-
-.calculator{
-    max-width:420px;
-    margin:18px auto 0;
-    background:#081522;
-    border:1px solid #263c55;
-    border-radius:18px;
-    padding:15px;
-}
-
-.calc-display{
-    width:100%;
-    height:75px;
-    background:#06101a;
-    border:1px solid #263c55;
-    border-radius:12px;
-    color:white;
-    text-align:right;
-    padding:12px;
-    font-size:28px;
-    margin-bottom:12px;
-}
-
-.calc-grid{
+.calculator-wrap{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:8px;
+    grid-template-columns:500px 1fr;
+    gap:25px;
+}
+
+.casio{
+    background:#05080d;
+    border:2px solid #34465a;
+    border-radius:22px;
+    padding:18px;
+    box-shadow:0 15px 50px rgba(0,0,0,.45);
+}
+
+.casio-screen{
+    background:#b9d49a;
+    color:#14210c;
+    border:6px solid #222b31;
+    border-radius:8px;
+    padding:12px;
+    min-height:100px;
+    margin-bottom:15px;
+    font-family:monospace;
+    text-align:right;
+    overflow:hidden;
+}
+
+.casio-expression{
+    min-height:28px;
+    font-size:18px;
+    white-space:nowrap;
+    overflow-x:auto;
+}
+
+.casio-result{
+    font-size:34px;
+    font-weight:bold;
+    min-height:42px;
+    white-space:nowrap;
+    overflow-x:auto;
+}
+
+.casio-mode{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-size:12px;
+    color:#aebbc8;
+}
+
+.calc-buttons{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:7px;
 }
 
 .calc-btn{
-    min-height:55px;
-    font-size:17px;
+    min-height:52px;
+    border:1px solid #303d4b;
+    background:linear-gradient(#25313d,#151d25);
+    color:#fff;
+    border-radius:9px;
+    font-weight:bold;
+    font-size:15px;
 }
 
-.calc-btn.equal{
-    background:#6ea8ff;
-    color:#06101d;
+.calc-btn:hover{
+    filter:brightness(1.25);
+}
+
+.calc-btn.number{
+    background:linear-gradient(#344352,#1b252e);
 }
 
 .calc-btn.operator{
+    background:#213d59;
+}
+
+.calc-btn.function{
+    background:#25352d;
+}
+
+.calc-btn.danger{
+    background:#54252c;
+}
+
+.calc-btn.equal{
+    background:#3c6ea8;
+}
+
+.calc-info{
+    background:#081522;
+    border:1px solid #1d354d;
+    border-radius:15px;
+    padding:20px;
+    line-height:1.8;
+}
+
+.calc-info h3{
     color:#6ea8ff;
+    margin-bottom:10px;
 }
 
-/* TRANSLATOR */
-
-.translate-box{
-    max-width:800px;
-    margin:auto;
+.calc-info code{
+    background:#14283c;
+    padding:3px 6px;
+    border-radius:5px;
 }
 
-.translate-row{
+/* ================= TRANSLATOR ================= */
+
+.translate-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-top:15px;
+    gap:15px;
 }
 
 .translate-area{
-    width:100%;
-    min-height:160px;
-    resize:vertical;
     background:#081522;
-    color:white;
-    border:1px solid #263c55;
-    border-radius:12px;
-    padding:14px;
-    font-family:Arial,sans-serif;
-    outline:none;
+    border:1px solid #1d354d;
+    border-radius:15px;
+    padding:15px;
 }
 
-.translate-area:focus{
-    border-color:#6ea8ff;
-}
-
-.translate-label{
+.translate-area label{
+    display:block;
     color:#91a4b9;
     font-size:13px;
-    margin-bottom:7px;
+    margin-bottom:8px;
+}
+
+.translate-area textarea{
+    width:100%;
+    height:180px;
+    resize:vertical;
+    font-size:16px;
+    line-height:1.6;
 }
 
 .translate-actions{
     display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-top:10px;
+    gap:10px;
+    margin-top:12px;
 }
 
-/* AUTH */
+.translate-result{
+    min-height:180px;
+    background:#0d1b2d;
+    border:1px solid #263c55;
+    border-radius:11px;
+    padding:14px;
+    line-height:1.7;
+    white-space:pre-wrap;
+}
+
+.translate-status{
+    margin-top:8px;
+    color:#91a4b9;
+    font-size:12px;
+}
+
+/* ================= AUTH ================= */
 
 .auth-overlay,
 .welcome-overlay{
@@ -650,7 +723,6 @@ input:focus{
     margin-top:12px;
     font-size:14px;
     color:#91a4b9;
-    line-height:1.5;
 }
 
 .user-info{
@@ -696,7 +768,6 @@ input:focus{
 
 .welcome-icon{
     font-size:48px;
-    margin-bottom:8px;
 }
 
 .welcome-box p{
@@ -725,99 +796,17 @@ input:focus{
     opacity:0;
     background:#10243a;
     border:1px solid #31516f;
-    color:white;
+    color:#fff;
     padding:12px 16px;
     border-radius:12px;
     z-index:11000;
     transition:.25s;
     pointer-events:none;
-    max-width:90vw;
-    text-align:center;
 }
 
 .toast.show{
     opacity:1;
     transform:translate(-50%,0);
-}
-
-/* MOBILE */
-
-@media(max-width:800px){
-
-    .app{
-        width:100%;
-        padding:15px 10px 85px;
-    }
-
-    .grid{
-        grid-template-columns:1fr;
-    }
-
-    .hero,
-    .ai-card,
-    .calculator-card,
-    .translate-card{
-        grid-column:auto;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .day{
-        font-size:30px;
-    }
-
-    .timer-number{
-        font-size:48px;
-    }
-
-    .days{
-        grid-template-columns:repeat(7,minmax(0,1fr));
-    }
-
-    .achievement-list,
-    .music-list{
-        grid-template-columns:1fr;
-    }
-
-    .ai-box{
-        min-height:300px;
-        max-height:450px;
-        font-size:14px;
-    }
-
-    .ai-input-area{
-        flex-direction:column;
-    }
-
-    .ai-input-area .btn{
-        width:100%;
-    }
-
-    header{
-        align-items:flex-start;
-    }
-
-    .logo{
-        font-size:22px;
-    }
-
-    .login{
-        padding:9px 12px;
-        font-size:12px;
-    }
-
-    .creator{
-        right:8px;
-        bottom:8px;
-        font-size:11px;
-        max-width:calc(100vw - 16px);
-    }
-
-    .translate-row{
-        grid-template-columns:1fr;
-    }
 }
 </style>
 </head>
@@ -833,626 +822,791 @@ input:focus{
 
 <div class="grid">
 
-<!-- ================= HERO ================= -->
+<!-- ================= JOURNEY ================= -->
 
 <section class="card hero">
 
-    <div class="small">HÀNH TRÌNH HỌC TẬP</div>
+<div class="small">HÀNH TRÌNH HỌC TẬP</div>
 
-    <div class="day" id="dayText">
-        Ngày 1 / 300
-    </div>
+<div class="day" id="dayText">Ngày 1 / 300</div>
 
-    <div class="progress">
-        <div class="progress-bar" id="progressBar"></div>
-    </div>
+<div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
 
-    <div class="exp-line">
-        <span id="expText">0 / 100 EXP</span>
-        <span id="levelText">Level 1</span>
-    </div>
+<div class="exp-line">
+    <span id="expText">0 / 100 EXP</span>
+    <span id="levelText">Level 1</span>
+</div>
 
-    <div class="stats">
+<div class="stats">
 
-        <div class="stat">
-            🔥 Streak
-            <b id="streakValue">0 ngày</b>
-        </div>
+<div class="stat">
+🔥 Streak
+<b id="streakValue">0 ngày</b>
+</div>
 
-        <div class="stat">
-            ⏱️ Thời gian học
-            <b id="studyTimeValue">0 phút</b>
-        </div>
+<div class="stat">
+⏱️ Thời gian học
+<b id="studyTimeValue">0 phút</b>
+</div>
 
-        <div class="stat">
-            ⚡ Level
-            <b id="levelValue">1</b>
-        </div>
+<div class="stat">
+⚡ Level
+<b id="levelValue">1</b>
+</div>
 
-    </div>
+</div>
 
-    <div class="actions">
+<div class="actions">
 
-        <button class="btn" id="completeButton">
-            ✅ Hoàn thành hôm nay
-        </button>
+<button class="btn" id="completeButton">
+✅ Hoàn thành hôm nay
+</button>
 
-        <button class="btn secondary" id="goalButton">
-            🎯 Đổi mục tiêu
-        </button>
+<button class="btn secondary" id="goalButton">
+🎯 Đổi mục tiêu
+</button>
 
-        <button class="btn secondary" id="startDateButton">
-            📅 Ngày bắt đầu
-        </button>
+<button class="btn secondary" id="startDateButton">
+📅 Ngày bắt đầu
+</button>
 
-    </div>
+</div>
 
-    <div class="motivation">
+<div class="motivation">
 
-        <div class="motivation-title">
-            💡 CHÂM NGÔN HÔM NAY
-        </div>
+<div class="motivation-title">
+💡 CHÂM NGÔN HÔM NAY
+</div>
 
-        <div id="motivationText">
-            Mỗi ngày tiến một chút, bạn sẽ đi rất xa.
-        </div>
+<div id="motivationText">
+Mỗi ngày tiến một chút, bạn sẽ đi rất xa.
+</div>
 
-        <button class="quote-btn" id="randomQuoteButton">
-            🎲 Random châm ngôn
-        </button>
+<button class="quote-btn" id="randomQuoteButton">
+🎲 Random châm ngôn
+</button>
 
-    </div>
+</div>
 
 </section>
-
 
 <!-- ================= POMODORO ================= -->
 
 <section class="card timer">
 
-    <div class="small">FOCUS</div>
+<div class="small">FOCUS</div>
 
-    <h2>🎯 Pomodoro</h2>
+<h2>🎯 Pomodoro</h2>
 
-    <div class="timer-number">
-        25:00
-    </div>
+<div class="timer-number">
+25:00
+</div>
 
-    <div class="timer-settings">
+<div class="timer-settings">
 
-        <button data-minutes="5">5p</button>
-        <button data-minutes="15">15p</button>
-        <button data-minutes="25" class="active">25p</button>
-        <button data-minutes="45">45p</button>
-        <button data-minutes="60">60p</button>
+<button data-minutes="5">5p</button>
+<button data-minutes="15">15p</button>
+<button data-minutes="25" class="active">25p</button>
+<button data-minutes="45">45p</button>
+<button data-minutes="60">60p</button>
 
-        <input
-            id="customTime"
-            class="custom-time"
-            type="number"
-            min="1"
-            max="180"
-            placeholder="Tự chọn"
-        >
+<input
+id="customTime"
+class="custom-time"
+type="number"
+min="1"
+max="180"
+placeholder="Tự chọn"
+>
 
-    </div>
+</div>
 
-    <button class="btn" id="startFocusButton">
-        ▶ Bắt đầu
-    </button>
+<button class="btn" id="startFocusButton">
+▶ Bắt đầu
+</button>
 
-    <button class="btn secondary" id="resetFocusButton">
-        ↺ Reset
-    </button>
+<button class="btn secondary" id="resetFocusButton">
+↺ Reset
+</button>
 
 </section>
-
 
 <!-- ================= TODO ================= -->
 
 <section class="card">
 
-    <div class="small">TODO</div>
+<div class="small">TODO</div>
 
-    <h2>📋 Nhiệm vụ hôm nay</h2>
+<h2>📋 Nhiệm vụ hôm nay</h2>
 
-    <p class="small" style="margin-top:8px">
-        Hoàn thành nhiệm vụ để nhận EXP và lên Level.
-    </p>
+<p class="small" style="margin-top:8px">
+Hoàn thành nhiệm vụ để nhận EXP và lên Level.
+</p>
 
-    <div class="todo-add">
+<div class="todo-add">
 
-        <input
-            id="todoInput"
-            type="text"
-            placeholder="Ví dụ: Làm 10 bài toán..."
-        >
+<input
+id="todoInput"
+type="text"
+placeholder="Ví dụ: Làm 10 bài toán..."
+>
 
-        <button class="btn" id="todoButton">
-            +
-        </button>
+<button class="btn" id="todoButton">
++
+</button>
 
-    </div>
+</div>
 
-    <div id="taskList"></div>
+<div id="taskList"></div>
 
 </section>
-
 
 <!-- ================= JOURNEY ================= -->
 
 <section class="card">
 
-    <div class="small">JOURNEY</div>
+<div class="small">JOURNEY</div>
 
-    <h2>📅 Hành trình 1 → 1000 ngày</h2>
+<h2>📅 Hành trình 1 → 1000 ngày</h2>
 
-    <div class="days"></div>
+<div class="days"></div>
 
-    <p class="small" style="margin-top:15px">
-        Mục tiêu hiện tại:
-        <b id="goalDisplay">300 ngày</b>
-    </p>
+<p class="small" style="margin-top:15px">
+Mục tiêu hiện tại:
+<b id="goalDisplay">300 ngày</b>
+</p>
 
 </section>
-
 
 <!-- ================= STATISTICS ================= -->
 
 <section class="card">
 
-    <div class="small">STATISTICS</div>
+<div class="small">STATISTICS</div>
 
-    <h2>📊 Thống kê</h2>
+<h2>📊 Thống kê</h2>
 
-    <div class="stats-big">
+<div class="stats-big">
 
-        <div class="big-stat">
-            📚 Ngày đã học
-            <strong id="completedCount">0</strong>
-        </div>
+<div class="big-stat">
+📚 Ngày đã học
+<strong id="completedCount">0</strong>
+</div>
 
-        <div class="big-stat">
-            ⏱️ Tổng thời gian
-            <strong id="totalHours">0h</strong>
-        </div>
+<div class="big-stat">
+⏱️ Tổng thời gian
+<strong id="totalHours">0h</strong>
+</div>
 
-        <div class="big-stat">
-            🍅 Pomodoro
-            <strong id="pomodoroCount">0</strong>
-        </div>
+<div class="big-stat">
+🍅 Pomodoro
+<strong id="pomodoroCount">0</strong>
+</div>
 
-        <div class="big-stat">
-            🏆 Thành tựu
-            <strong id="achievementCount">0</strong>
-        </div>
+<div class="big-stat">
+🏆 Thành tựu
+<strong id="achievementCount">0</strong>
+</div>
 
-    </div>
+</div>
 
 </section>
-
 
 <!-- ================= ACHIEVEMENTS ================= -->
 
 <section class="card">
 
-    <div class="small">ACHIEVEMENTS</div>
+<div class="small">ACHIEVEMENTS</div>
 
-    <h2>🏆 Thành tựu</h2>
+<h2>🏆 Thành tựu</h2>
 
-    <div
-        class="achievement-list"
-        id="achievementList">
-    </div>
+<div class="achievement-list" id="achievementList"></div>
 
 </section>
-
 
 <!-- ================= AI ================= -->
 
 <section class="card ai-card">
 
-    <div class="small">
-        AI STUDY ASSISTANT
-    </div>
+<div class="small">AI STUDY ASSISTANT</div>
 
-    <h2>
-        🤖 StudyForge AI
-    </h2>
+<h2>🤖 StudyForge AI</h2>
 
-    <p class="small" style="margin-top:8px">
-        🚀 AI không giới hạn ở giao diện StudyForge
-    </p>
+<p class="small" style="margin-top:8px">
+<span id="aiQuota">
+AI · Không giới hạn ở giao diện
+</span>
+</p>
 
-    <div class="ai-box" id="aiBox">
+<div class="ai-box" id="aiBox">
 
-        👋 Chào bạn!
+👋 Chào bạn!
 
-        <br><br>
+StudyForge AI sẽ giúp bạn học tập,
+giải bài và tạo quiz.
 
-        StudyForge AI sẽ giúp bạn học tập,
-        giải bài và tạo quiz.
+<br><br>
 
-        <br><br>
+Hãy nhập câu hỏi bên dưới nhé!
 
-        Hãy nhập câu hỏi bên dưới nhé!
+</div>
 
-    </div>
+<div class="example-buttons">
 
-    <div class="example-buttons">
+<button
+class="example-btn"
+data-example="Giải phương trình 2x + 5 = 17 bằng cách trình bày từng bước."
+>
+📐 Ví dụ toán
+</button>
 
-        <button
-            class="example-btn"
-            data-example="Giải phương trình 2x + 5 = 17 bằng cách trình bày từng bước."
-        >
-            📐 Ví dụ toán
-        </button>
+<button
+class="example-btn"
+data-example="Phân tích đa thức x^2 - 5x + 6 thành nhân tử và giải thích từng bước."
+>
+🧮 Phân tích đa thức
+</button>
 
-        <button
-            class="example-btn"
-            data-example="Phân tích đa thức x^2 - 5x + 6 thành nhân tử và giải thích từng bước."
-        >
-            🧮 Phân tích đa thức
-        </button>
+<button
+class="example-btn"
+data-example="Tạo cho tôi 5 câu trắc nghiệm Toán lớp 9 về phương trình bậc hai."
+>
+📝 Tạo quiz
+</button>
 
-        <button
-            class="example-btn"
-            data-example="Tạo cho tôi 5 câu trắc nghiệm Toán lớp 9 về phương trình bậc hai."
-        >
-            📝 Tạo quiz
-        </button>
+</div>
 
-    </div>
+<div class="ai-input-area">
 
-    <div class="ai-input-area">
+<input
+id="aiInput"
+type="text"
+placeholder="Hỏi bài, nhờ giải toán, tạo quiz..."
+>
 
-        <input
-            id="aiInput"
-            type="text"
-            placeholder="Hỏi bài, nhờ giải toán, tạo quiz..."
-        >
+<button class="btn" id="aiButton">
+Gửi
+</button>
 
-        <button class="btn" id="aiButton">
-            Gửi
-        </button>
+</div>
 
-    </div>
-
-    <div class="ai-hint">
-        💡 AI hỗ trợ giải bài, giải thích kiến thức và tạo câu hỏi ôn tập.
-    </div>
+<div class="ai-hint">
+💡 AI hỗ trợ giải bài, giải thích kiến thức và tạo câu hỏi ôn tập.
+</div>
 
 </section>
-
 
 <!-- ================= MUSIC ================= -->
 
 <section class="card">
 
-    <div class="small">MUSIC</div>
+<div class="small">MUSIC</div>
 
-    <h2>🎧 Study Music</h2>
+<h2>🎧 Study Music</h2>
 
-    <div
-        class="music-list"
-        id="musicList">
-    </div>
+<div class="music-list" id="musicList"></div>
 
-    <div class="music-controls">
+<div class="music-controls">
 
-        <button class="btn" id="playPauseButton">
-            ▶ Phát
-        </button>
+<button class="btn" id="playPauseButton">
+▶ Phát
+</button>
 
-        <button class="btn secondary" id="nextButton">
-            ⏭ Tiếp
-        </button>
+<button class="btn secondary" id="nextButton">
+⏭ Bài tiếp
+</button>
 
-        <button class="btn secondary" id="repeatButton">
-            🔁 Repeat: ON
-        </button>
+</div>
 
-    </div>
+<div class="repeat-control">
 
-    <div
-        class="now-playing"
-        id="nowPlaying">
-        Chưa phát bài nào
-    </div>
+<input type="checkbox" id="repeatMusic" checked>
 
-    <div
-        class="repeat-status"
-        id="repeatStatus">
-        🔁 Hết bài sẽ phát lại chính bài này.
-    </div>
+<label for="repeatMusic">
+🔁 Lặp lại bài hiện tại
+</label>
+
+</div>
+
+<div class="now-playing" id="nowPlaying">
+Chưa phát bài nào
+</div>
 
 </section>
 
-
-<!-- ================= CALCULATOR ================= -->
+<!-- ================= CASIO ================= -->
 
 <section class="card calculator-card">
 
-    <div class="small">
-        CALCULATOR
-    </div>
+<div class="small">SCIENTIFIC CALCULATOR</div>
 
-    <h2>
-        🧮 Máy tính Casio
-    </h2>
+<h2>🧮 StudyForge Casio</h2>
 
-    <p class="small" style="margin-top:8px">
-        Máy tính nhanh cho học tập.
-    </p>
+<br>
 
-    <div class="calculator">
+<div class="calculator-wrap">
 
-        <input
-            id="calcDisplay"
-            class="calc-display"
-            type="text"
-            value=""
-            readonly
-        >
+<div class="casio">
 
-        <div class="calc-grid">
+<div class="casio-mode">
 
-            <button class="calc-btn" onclick="calcClear()">AC</button>
-            <button class="calc-btn" onclick="calcDelete()">DEL</button>
-            <button class="calc-btn operator" onclick="calcInput('(')">(</button>
-            <button class="calc-btn operator" onclick="calcInput(')')">)</button>
+<span id="calcMode">
+DEG
+</span>
 
-            <button class="calc-btn" onclick="calcInput('7')">7</button>
-            <button class="calc-btn" onclick="calcInput('8')">8</button>
-            <button class="calc-btn" onclick="calcInput('9')">9</button>
-            <button class="calc-btn operator" onclick="calcInput('/')">÷</button>
+<span>
+ANS: <b id="calcAns">0</b>
+</span>
 
-            <button class="calc-btn" onclick="calcInput('4')">4</button>
-            <button class="calc-btn" onclick="calcInput('5')">5</button>
-            <button class="calc-btn" onclick="calcInput('6')">6</button>
-            <button class="calc-btn operator" onclick="calcInput('*')">×</button>
+</div>
 
-            <button class="calc-btn" onclick="calcInput('1')">1</button>
-            <button class="calc-btn" onclick="calcInput('2')">2</button>
-            <button class="calc-btn" onclick="calcInput('3')">3</button>
-            <button class="calc-btn operator" onclick="calcInput('-')">−</button>
+<div class="casio-screen">
 
-            <button class="calc-btn" onclick="calcInput('0')">0</button>
-            <button class="calc-btn" onclick="calcInput('.')">.</button>
-            <button class="calc-btn equal" onclick="calcResult()">=</button>
-            <button class="calc-btn operator" onclick="calcInput('+')">+</button>
+<div
+class="casio-expression"
+id="calcExpression"
+>
+0
+</div>
 
-        </div>
+<div
+class="casio-result"
+id="calcResult"
+>
+0
+</div>
 
-    </div>
+</div>
+
+<div class="calc-buttons">
+
+<button class="calc-btn function" data-action="mode">
+DEG/RAD
+</button>
+
+<button class="calc-btn danger" data-action="clear">
+AC
+</button>
+
+<button class="calc-btn danger" data-action="delete">
+DEL
+</button>
+
+<button class="calc-btn function" data-value="(">
+(
+</button>
+
+<button class="calc-btn function" data-value=")">
+)
+</button>
+
+<button class="calc-btn operator" data-value="/">
+÷
+</button>
+
+
+<button class="calc-btn function" data-value="sin(">
+sin
+</button>
+
+<button class="calc-btn function" data-value="cos(">
+cos
+</button>
+
+<button class="calc-btn function" data-value="tan(">
+tan
+</button>
+
+<button class="calc-btn function" data-value="log(">
+log
+</button>
+
+<button class="calc-btn function" data-value="ln(">
+ln
+</button>
+
+<button class="calc-btn operator" data-value="*">
+×
+</button>
+
+
+<button class="calc-btn function" data-value="sqrt(">
+√
+</button>
+
+<button class="calc-btn function" data-value="^2">
+x²
+</button>
+
+<button class="calc-btn function" data-value="^">
+xʸ
+</button>
+
+<button class="calc-btn function" data-value="10^">
+10ˣ
+</button>
+
+<button class="calc-btn function" data-value="exp(">
+EXP
+</button>
+
+<button class="calc-btn operator" data-value="-">
+−
+</button>
+
+
+<button class="calc-btn function" data-value="π">
+π
+</button>
+
+<button class="calc-btn function" data-value="e">
+e
+</button>
+
+<button class="calc-btn function" data-value="Ans">
+Ans
+</button>
+
+<button class="calc-btn function" data-value="%">
+%
+</button>
+
+<button class="calc-btn operator" data-value="+">
++
+</button>
+
+<button class="calc-btn equal" data-action="equals">
+=
+</button>
+
+
+<button class="calc-btn number" data-value="7">
+7
+</button>
+
+<button class="calc-btn number" data-value="8">
+8
+</button>
+
+<button class="calc-btn number" data-value="9">
+9
+</button>
+
+<button class="calc-btn number" data-value="4">
+4
+</button>
+
+<button class="calc-btn number" data-value="5">
+5
+</button>
+
+<button class="calc-btn number" data-value="6">
+6
+</button>
+
+
+<button class="calc-btn number" data-value="1">
+1
+</button>
+
+<button class="calc-btn number" data-value="2">
+2
+</button>
+
+<button class="calc-btn number" data-value="3">
+3
+</button>
+
+<button class="calc-btn number" data-value="0">
+0
+</button>
+
+<button class="calc-btn number" data-value=".">
+.
+</button>
+
+<button class="calc-btn function" data-action="negate">
++/−
+</button>
+
+</div>
+
+</div>
+
+<div class="calc-info">
+
+<h3>📖 Hướng dẫn</h3>
+
+<p>
+Máy tính hỗ trợ:
+</p>
+
+<br>
+
+<p>
+• <code>sin</code>, <code>cos</code>, <code>tan</code>
+</p>
+
+<p>
+• <code>log</code>, <code>ln</code>
+</p>
+
+<p>
+• <code>√</code>
+</p>
+
+<p>
+• <code>x²</code>, <code>xʸ</code>
+</p>
+
+<p>
+• <code>10ˣ</code>, <code>EXP</code>
+</p>
+
+<p>
+• <code>π</code>, <code>e</code>
+</p>
+
+<p>
+• <code>Ans</code>
+</p>
+
+<p>
+• phần trăm
+</p>
+
+<p>
+• ngoặc
+</p>
+
+<p>
+• DEG / RAD
+</p>
+
+<br>
+
+<p style="color:#91a4b9">
+Ví dụ:
+</p>
+
+<br>
+
+<p>
+<code>sin(30)</code> → 0.5 ở DEG
+</p>
+
+<p>
+<code>sqrt(144)</code> → 12
+</p>
+
+<p>
+<code>2^10</code> → 1024
+</p>
+
+<p>
+<code>log(1000)</code> → 3
+</p>
+
+<p>
+<code>5^2 + 3^2</code> → 34
+</p>
+
+</div>
+
+</div>
 
 </section>
 
-
-<!-- ================= GOOGLE TRANSLATE ================= -->
+<!-- ================= TRANSLATOR ================= -->
 
 <section class="card translate-card">
 
-    <div class="small">
-        TRANSLATOR
-    </div>
+<div class="small">ENGLISH TRANSLATOR</div>
 
-    <h2>
-        🌐 Google Dịch — English → Tiếng Việt
-    </h2>
+<h2>🌐 Google Translate · Anh → Việt</h2>
 
-    <p class="small" style="margin-top:8px">
-        Nhập từ hoặc câu tiếng Anh rồi mở Google Dịch.
-    </p>
+<p class="small" style="margin-top:8px">
+Nhập từ hoặc câu tiếng Anh để dịch sang tiếng Việt.
+</p>
 
-    <div class="translate-box">
+<div class="translate-grid">
 
-        <div class="translate-row">
+<div class="translate-area">
 
-            <div>
+<label>
+🇬🇧 TIẾNG ANH
+</label>
 
-                <div class="translate-label">
-                    🇬🇧 Tiếng Anh
-                </div>
+<textarea
+id="translateInput"
+placeholder="Ví dụ: I am going to school today."
+></textarea>
 
-                <textarea
-                    id="englishText"
-                    class="translate-area"
-                    placeholder="Ví dụ: I have finished my homework."
-                ></textarea>
+<div class="translate-actions">
 
-            </div>
+<button class="btn" id="translateButton">
+🌐 Dịch
+</button>
 
-            <div>
+<button class="btn secondary" id="clearTranslate">
+🗑 Xóa
+</button>
 
-                <div class="translate-label">
-                    🇻🇳 Tiếng Việt
-                </div>
+</div>
 
-                <textarea
-                    id="vietnameseText"
-                    class="translate-area"
-                    placeholder="Bản dịch sẽ hiển thị tại Google Dịch."
-                    readonly
-                ></textarea>
+</div>
 
-            </div>
+<div class="translate-area">
 
-        </div>
+<label>
+🇻🇳 TIẾNG VIỆT
+</label>
 
-        <div class="translate-actions">
+<div
+class="translate-result"
+id="translateResult"
+>
+Bản dịch sẽ xuất hiện ở đây...
+</div>
 
-            <button
-                class="btn"
-                id="googleTranslateButton">
-                🌐 Dịch bằng Google
-            </button>
+<div
+class="translate-status"
+id="translateStatus"
+>
+Sẵn sàng dịch.
+</div>
 
-            <button
-                class="translate-btn"
-                id="copyEnglishButton">
-                📋 Copy tiếng Anh
-            </button>
+</div>
 
-            <button
-                class="translate-btn"
-                id="clearTranslateButton">
-                🗑️ Xóa
-            </button>
-
-        </div>
-
-        <p class="small" style="margin-top:12px">
-            💡 Google Dịch sẽ mở với ngôn ngữ Anh → Việt.
-        </p>
-
-    </div>
+</div>
 
 </section>
 
 </div>
 </div>
-
 
 <!-- ================= AUTH ================= -->
 
 <div class="auth-overlay" id="authOverlay">
 
-    <div class="auth-box">
+<div class="auth-box">
 
-        <h2 id="authTitle">
-            👤 Đăng nhập
-        </h2>
+<h2 id="authTitle">
+👤 Đăng nhập
+</h2>
 
-        <p class="auth-subtitle">
-            Đăng nhập hoặc tạo tài khoản StudyForge.
-        </p>
+<p class="auth-subtitle">
+Đăng nhập hoặc tạo tài khoản StudyForge.
+</p>
 
-        <input
-            type="email"
-            id="authEmail"
-            placeholder="Email"
-            autocomplete="email"
-        >
+<input
+type="email"
+id="authEmail"
+placeholder="Email"
+autocomplete="email"
+>
 
-        <input
-            type="password"
-            id="authPassword"
-            placeholder="Mật khẩu tối thiểu 6 ký tự"
-            autocomplete="current-password"
-        >
+<input
+type="password"
+id="authPassword"
+placeholder="Mật khẩu tối thiểu 6 ký tự"
+autocomplete="current-password"
+>
 
-        <div class="auth-buttons">
+<div class="auth-buttons">
 
-            <button class="btn" id="authSubmit">
-                Đăng nhập
-            </button>
+<button class="btn" id="authSubmit">
+Đăng nhập
+</button>
 
-            <button class="btn secondary" id="switchAuth">
-                Đăng ký
-            </button>
-
-        </div>
-
-        <div
-            class="auth-message"
-            id="authMessage">
-        </div>
-
-        <button
-            class="btn secondary auth-close"
-            id="closeAuth">
-            Đóng
-        </button>
-
-    </div>
+<button class="btn secondary" id="switchAuth">
+Đăng ký
+</button>
 
 </div>
 
+<div class="auth-message" id="authMessage"></div>
+
+<button class="btn secondary auth-close" id="closeAuth">
+Đóng
+</button>
+
+</div>
+
+</div>
 
 <div class="user-info" id="userInfo">
 
-    <div
-        class="user-email"
-        id="userEmail">
-    </div>
+<div class="user-email" id="userEmail"></div>
 
-    <button
-        class="btn secondary"
-        id="logoutButton">
-        🚪 Đăng xuất
-    </button>
+<button class="btn secondary" id="logoutButton">
+🚪 Đăng xuất
+</button>
 
 </div>
-
 
 <!-- ================= WELCOME ================= -->
 
 <div class="welcome-overlay" id="welcomeOverlay">
 
-    <div class="welcome-box">
+<div class="welcome-box">
 
-        <div class="welcome-icon">
-            ⚒️
-        </div>
+<div class="welcome-icon">
+⚒️
+</div>
 
-        <h2>
-            Chào mừng đến StudyForge!
-        </h2>
+<h2>
+Chào mừng đến StudyForge!
+</h2>
 
-        <p>
-            Học tập → nhận EXP → lên Level → mở khóa thành tựu.
-        </p>
+<p>
+Học tập → nhận EXP → lên Level → mở khóa thành tựu.
+</p>
 
-        <div class="welcome-info">
+<div class="welcome-info">
 
-            <div>
-                📚 Hoàn thành nhiệm vụ:
-                <b>+10 EXP</b>
-            </div>
+<div>
+📚 Hoàn thành nhiệm vụ:
+<b>+10 EXP</b>
+</div>
 
-            <div>
-                🍅 Pomodoro:
-                <b>+25 EXP</b>
-            </div>
+<div>
+🍅 Pomodoro:
+<b>+25 EXP</b>
+</div>
 
-            <div>
-                🔥 Hoàn thành ngày:
-                <b>+50 EXP</b>
-            </div>
+<div>
+🔥 Hoàn thành ngày:
+<b>+50 EXP</b>
+</div>
 
-            <div>
-                ⏱️ Focus:
-                <b>+phút học</b>
-            </div>
+<div>
+⏱️ Focus:
+<b>+EXP theo phút</b>
+</div>
 
-            <div>
-                ⭐ Mỗi Level:
-                <b>100 EXP</b>
-            </div>
-
-        </div>
-
-        <button
-            class="btn"
-            id="enterWebButton">
-            🚀 Bắt đầu học
-        </button>
-
-    </div>
+<div>
+⭐ Mỗi Level:
+<b>100 EXP</b>
+</div>
 
 </div>
 
+<button class="btn" id="enterWebButton">
+🚀 Bắt đầu học
+</button>
+
+</div>
+
+</div>
 
 <div class="creator">
-    Người tạo: <b>Hoàng Ngọc Đạt</b>
+Người tạo: <b>Hoàng Ngọc Đạt</b>
 </div>
 
-<div
-    class="toast"
-    id="toast">
-</div>
-
+<div class="toast" id="toast"></div>
 
 <script>
 
@@ -1473,38 +1627,38 @@ try{
 
 studyData.goal =
     Number.isInteger(studyData.goal)
-        ? studyData.goal
-        : 300;
+    ? studyData.goal
+    : 300;
 
 studyData.currentDay =
     Number.isInteger(studyData.currentDay)
-        ? studyData.currentDay
-        : 1;
+    ? studyData.currentDay
+    : 1;
 
 studyData.completedDays =
     Array.isArray(studyData.completedDays)
-        ? studyData.completedDays
-        : [];
+    ? studyData.completedDays
+    : [];
 
 studyData.streak =
     Number.isInteger(studyData.streak)
-        ? studyData.streak
-        : 0;
+    ? studyData.streak
+    : 0;
 
 studyData.tasks =
     Array.isArray(studyData.tasks)
-        ? studyData.tasks
-        : [];
+    ? studyData.tasks
+    : [];
 
 studyData.studyMinutes =
     Number.isFinite(studyData.studyMinutes)
-        ? studyData.studyMinutes
-        : 0;
+    ? studyData.studyMinutes
+    : 0;
 
 studyData.pomodoros =
     Number.isInteger(studyData.pomodoros)
-        ? studyData.pomodoros
-        : 0;
+    ? studyData.pomodoros
+    : 0;
 
 studyData.startDate =
     studyData.startDate || null;
@@ -1514,12 +1668,11 @@ studyData.lastCompletedDate =
 
 studyData.exp =
     Number.isInteger(studyData.exp)
-        ? studyData.exp
-        : 0;
+    ? studyData.exp
+    : 0;
 
 studyData.welcomeShown =
     Boolean(studyData.welcomeShown);
-
 
 function saveData(){
     localStorage.setItem(
@@ -1527,7 +1680,6 @@ function saveData(){
         JSON.stringify(studyData)
     );
 }
-
 
 function showToast(message){
 
@@ -1542,11 +1694,10 @@ function showToast(message){
 
     showToast.timer =
         setTimeout(
-            () => toast.classList.remove("show"),
+            ()=>toast.classList.remove("show"),
             2600
         );
 }
-
 
 /* =====================================================
    DATE
@@ -1560,9 +1711,7 @@ function getToday(){
             timeZone:"Asia/Ho_Chi_Minh"
         }
     ).format(new Date());
-
 }
-
 
 function dateDiff(a,b){
 
@@ -1575,29 +1724,21 @@ function dateDiff(a,b){
     return Math.round(
         (y-x)/86400000
     );
-
 }
-
 
 /* =====================================================
    EXP
 ===================================================== */
 
 function getLevel(){
-
     return Math.floor(
         studyData.exp/100
     )+1;
-
 }
-
 
 function getLevelExp(){
-
     return studyData.exp%100;
-
 }
-
 
 function addExp(amount,reason){
 
@@ -1614,7 +1755,6 @@ function addExp(amount,reason){
         getLevel();
 
     saveData();
-
     updateJourney();
 
     if(newLevel>oldLevel){
@@ -1623,67 +1763,85 @@ function addExp(amount,reason){
             `🎉 LEVEL UP! Level ${newLevel}!`
         );
 
+        setTimeout(()=>{
+            alert(
+                `🎉 LEVEL UP!\n\nBạn đã lên Level ${newLevel}!`
+            );
+        },250);
+
     }else if(reason){
 
         showToast(
             `✨ +${amount} EXP · ${reason}`
         );
-
     }
-
 }
-
 
 /* =====================================================
    MOTIVATION
 ===================================================== */
 
-const motivations=[
+const motivations = [
 
 "Mỗi ngày tiến một chút, bạn sẽ đi rất xa. 🚀",
+
 "Không cần hoàn hảo, chỉ cần không bỏ cuộc. 🔥",
+
 "Học hôm nay để ngày mai giỏi hơn chính mình hôm qua. 📚",
+
 "30 phút tập trung tốt hơn 3 giờ mất tập trung. 🎯",
+
 "Bạn không cần học thật nhiều, hãy học thật đều. ⚡",
+
 "Khó không có nghĩa là không thể. 💪",
+
 "Mỗi bài tập hoàn thành là một bước tiến. 🏆",
-"Tương lai được xây từ những việc bạn làm hôm nay. 🌟",
-"Đừng chờ có động lực. Hãy bắt đầu. 🚀",
+
+"Tương lai của bạn được xây từ những việc bạn làm hôm nay. 🌟",
+
+"Đừng chờ có động lực. Hãy bắt đầu rồi động lực sẽ đến. 🚀",
+
 "Một ngày nữa, một bước nữa. 🔥",
+
 "Kiên trì hôm nay, tự hào ngày mai. 🏆",
-"Bạn đã bắt đầu rồi, hãy đi tiếp. 💙",
-"Tập trung vào tiến bộ, không phải hoàn hảo.",
-"Học một chút mỗi ngày sẽ tạo nên khác biệt.",
-"Đi chậm vẫn tốt hơn đứng yên.",
+
+"Bạn đã bắt đầu rồi, vậy hãy đi tiếp. 💙",
+
+"Tập trung vào tiến bộ, không phải sự hoàn hảo.",
+
+"Học một chút mỗi ngày sẽ tạo nên khác biệt rất lớn.",
+
+"Đi chậm vẫn tốt hơn là đứng yên.",
+
 "Não cũng cần luyện tập giống như cơ bắp. 🧠",
-"Mỗi lần bạn học là một lần bạn mạnh hơn.",
+
+"Mỗi lần bạn ngồi xuống học là một lần bạn mạnh hơn.",
+
 "Đừng bỏ cuộc chỉ vì hôm nay khó.",
+
 "Bạn có thể làm được. Bắt đầu từ câu đầu tiên.",
+
 "🔥 StudyForge: Forge your future!"
 
 ];
-
 
 function randomQuote(){
 
     const quote =
         motivations[
             Math.floor(
-                Math.random()*
-                motivations.length
+                Math.random()*motivations.length
             )
         ];
 
     document.getElementById(
         "motivationText"
     ).textContent = quote;
-
 }
 
 document.getElementById(
     "randomQuoteButton"
 ).onclick = randomQuote;
-
 
 /* =====================================================
    JOURNEY
@@ -1759,9 +1917,7 @@ function updateJourney(){
 
     renderDays();
     renderAchievements();
-
 }
-
 
 function renderDays(){
 
@@ -1793,11 +1949,8 @@ function renderDays(){
         }
 
         container.appendChild(box);
-
     }
-
 }
-
 
 function completeToday(){
 
@@ -1805,8 +1958,7 @@ function completeToday(){
         getToday();
 
     if(
-        studyData.lastCompletedDate===
-        today
+        studyData.lastCompletedDate===today
     ){
 
         alert(
@@ -1814,20 +1966,15 @@ function completeToday(){
         );
 
         return;
-
     }
 
     const day =
         studyData.currentDay;
 
     if(
-        !studyData.completedDays
-        .includes(day)
+        !studyData.completedDays.includes(day)
     ){
-
-        studyData.completedDays
-            .push(day);
-
+        studyData.completedDays.push(day);
     }
 
     if(studyData.lastCompletedDate){
@@ -1840,44 +1987,47 @@ function completeToday(){
 
         studyData.streak =
             difference===1
-                ? studyData.streak+1
-                : 1;
+            ? studyData.streak+1
+            : 1;
 
     }else{
 
         studyData.streak=1;
-
     }
 
-    studyData.lastCompletedDate =
-        today;
+    studyData.lastCompletedDate=today;
 
     if(
         studyData.currentDay<
         studyData.goal
     ){
-
         studyData.currentDay++;
-
     }
 
     saveData();
-
-    updateJourney();
 
     addExp(
         50,
         "Hoàn thành ngày học"
     );
 
+    updateJourney();
+
+    if(day===studyData.goal){
+
+        alert(
+            `🎉 CHÚC MỪNG!\n\nBạn đã hoàn thành mục tiêu ${studyData.goal} ngày!`
+        );
+    }
 }
 
 document.getElementById(
     "completeButton"
 ).onclick=completeToday;
 
-
-function changeGoal(){
+document.getElementById(
+    "goalButton"
+).onclick=()=>{
 
     const answer =
         prompt(
@@ -1901,7 +2051,6 @@ function changeGoal(){
         );
 
         return;
-
     }
 
     studyData.goal=goal;
@@ -1909,27 +2058,20 @@ function changeGoal(){
     if(
         studyData.currentDay>goal
     ){
-
         studyData.currentDay=goal;
-
     }
 
     saveData();
-
     updateJourney();
-
-}
+};
 
 document.getElementById(
-    "goalButton"
-).onclick=changeGoal;
-
-
-function changeStartDate(){
+    "startDateButton"
+).onclick=()=>{
 
     const answer =
         prompt(
-            "📅 Nhập ngày bắt đầu YYYY-MM-DD:",
+            "📅 Ngày bắt đầu YYYY-MM-DD:",
             studyData.startDate||getToday()
         );
 
@@ -1940,11 +2082,10 @@ function changeStartDate(){
     ){
 
         alert(
-            "⚠️ Hãy nhập đúng dạng YYYY-MM-DD."
+            "⚠️ Ngày không hợp lệ."
         );
 
         return;
-
     }
 
     studyData.startDate=answer;
@@ -1954,13 +2095,7 @@ function changeStartDate(){
     showToast(
         "✅ Đã cập nhật ngày bắt đầu!"
     );
-
-}
-
-document.getElementById(
-    "startDateButton"
-).onclick=changeStartDate;
-
+};
 
 /* =====================================================
    POMODORO
@@ -1989,13 +2124,14 @@ const customTime =
         "customTime"
     );
 
-
 function updateTimer(){
 
     const minutes =
         Math.floor(
             focusSeconds/60
-        ).toString().padStart(2,"0");
+        )
+        .toString()
+        .padStart(2,"0");
 
     const seconds =
         (focusSeconds%60)
@@ -2004,9 +2140,7 @@ function updateTimer(){
 
     timerDisplay.textContent =
         `${minutes}:${seconds}`;
-
 }
-
 
 function setFocusTime(minutes){
 
@@ -2031,26 +2165,23 @@ function setFocusTime(minutes){
         });
 
     updateTimer();
-
 }
 
-
 document
-    .querySelectorAll(
-        ".timer-settings button"
-    )
-    .forEach(button=>{
+.querySelectorAll(
+    ".timer-settings button"
+)
+.forEach(button=>{
 
-        button.onclick=()=>{
-            setFocusTime(
-                Number(
-                    button.dataset.minutes
-                )
-            );
-        };
+    button.onclick=()=>{
+        setFocusTime(
+            Number(
+                button.dataset.minutes
+            )
+        );
+    };
 
-    });
-
+});
 
 customTime.addEventListener(
     "change",
@@ -2070,24 +2201,19 @@ customTime.addEventListener(
         }else if(customTime.value){
 
             alert(
-                "⚠️ Thời gian phải từ 1 đến 180 phút."
+                "⚠️ Thời gian từ 1 đến 180 phút."
             );
 
             customTime.value="";
-
         }
-
     }
 );
-
 
 function startFocus(){
 
     if(focusRunning){
 
-        clearInterval(
-            focusInterval
-        );
+        clearInterval(focusInterval);
 
         focusRunning=false;
 
@@ -2095,7 +2221,6 @@ function startFocus(){
             "▶ Tiếp tục";
 
         return;
-
     }
 
     focusRunning=true;
@@ -2125,12 +2250,12 @@ function startFocus(){
 
                 saveData();
 
-                updateJourney();
-
                 addExp(
                     focusMinutes,
                     `Hoàn thành ${focusMinutes} phút Focus`
                 );
+
+                updateJourney();
 
                 focusSeconds =
                     focusMinutes*60;
@@ -2141,15 +2266,12 @@ function startFocus(){
                 updateTimer();
 
                 alert(
-                    `🎉 Hoàn thành ${focusMinutes} phút Focus!`
+                    `🎉 Hoàn thành ${focusMinutes} phút Focus!\n\n+${focusMinutes} EXP`
                 );
-
             }
 
         },1000);
-
 }
-
 
 function resetFocus(){
 
@@ -2159,20 +2281,17 @@ function resetFocus(){
 
     focusRunning=false;
 
-    focusSeconds=
+    focusSeconds =
         focusMinutes*60;
 
     startButton.textContent=
         "▶ Bắt đầu";
 
     updateTimer();
-
 }
-
 
 startButton.onclick=startFocus;
 resetButton.onclick=resetFocus;
-
 
 /* =====================================================
    TODO
@@ -2193,7 +2312,6 @@ const taskList =
         "taskList"
     );
 
-
 function renderTasks(){
 
     taskList.innerHTML="";
@@ -2202,25 +2320,34 @@ function renderTasks(){
         (task,index)=>{
 
             const row =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
-            row.className=
+            row.className =
                 "task"+
                 (task.done?" done":"");
 
             const checkbox =
-                document.createElement("input");
+                document.createElement(
+                    "input"
+                );
 
             checkbox.type="checkbox";
             checkbox.checked=task.done;
 
             const span =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
 
-            span.textContent=task.text;
+            span.textContent=
+                task.text;
 
             const deleteButton =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
             deleteButton.className=
                 "delete-task";
@@ -2232,7 +2359,7 @@ function renderTasks(){
                 const wasDone =
                     studyData.tasks[index].done;
 
-                studyData.tasks[index].done =
+                studyData.tasks[index].done=
                     checkbox.checked;
 
                 if(
@@ -2244,22 +2371,21 @@ function renderTasks(){
                         10,
                         "Hoàn thành nhiệm vụ"
                     );
-
                 }
 
                 saveData();
                 renderTasks();
-
             };
 
             deleteButton.onclick=()=>{
 
-                studyData.tasks
-                    .splice(index,1);
+                studyData.tasks.splice(
+                    index,
+                    1
+                );
 
                 saveData();
                 renderTasks();
-
             };
 
             row.append(
@@ -2269,12 +2395,9 @@ function renderTasks(){
             );
 
             taskList.appendChild(row);
-
         }
     );
-
 }
-
 
 function addTask(){
 
@@ -2284,37 +2407,31 @@ function addTask(){
     if(!text)return;
 
     studyData.tasks.push({
-
-        text:text,
+        text,
         done:false,
         createdAt:Date.now()
-
     });
 
     todoInput.value="";
 
     saveData();
-
     renderTasks();
 
     showToast(
-        "📋 Đã thêm nhiệm vụ · Hoàn thành = +10 EXP"
+        "📋 Đã thêm nhiệm vụ · +10 EXP"
     );
-
 }
-
 
 todoButton.onclick=addTask;
 
 todoInput.addEventListener(
     "keydown",
-    event=>{
-        if(event.key==="Enter"){
+    e=>{
+        if(e.key==="Enter"){
             addTask();
         }
     }
 );
-
 
 /* =====================================================
    ACHIEVEMENTS
@@ -2322,56 +2439,139 @@ todoInput.addEventListener(
 
 const achievements=[
 
-["🌱 Tân binh","Hoàn thành ngày đầu tiên",()=>studyData.completedDays.length>=1],
+[
+"🌱 Tân binh",
+"Hoàn thành ngày đầu tiên",
+()=>studyData.completedDays.length>=1
+],
 
-["🔥 3 ngày","Streak đạt 3 ngày",()=>studyData.streak>=3],
+[
+"🔥 3 ngày",
+"Streak đạt 3 ngày",
+()=>studyData.streak>=3
+],
 
-["🔥 7 ngày","Streak đạt 7 ngày",()=>studyData.streak>=7],
+[
+"🔥 7 ngày",
+"Streak đạt 7 ngày",
+()=>studyData.streak>=7
+],
 
-["🔥 14 ngày","Streak đạt 14 ngày",()=>studyData.streak>=14],
+[
+"🔥 14 ngày",
+"Streak đạt 14 ngày",
+()=>studyData.streak>=14
+],
 
-["🔥 30 ngày","Streak đạt 30 ngày",()=>studyData.streak>=30],
+[
+"🔥 30 ngày",
+"Streak đạt 30 ngày",
+()=>studyData.streak>=30
+],
 
-["🏆 30 ngày học","Hoàn thành 30 ngày",()=>studyData.completedDays.length>=30],
+[
+"🏆 30 ngày học",
+"Hoàn thành 30 ngày",
+()=>studyData.completedDays.length>=30
+],
 
-["💎 100 ngày học","Hoàn thành 100 ngày",()=>studyData.completedDays.length>=100],
+[
+"💎 100 ngày học",
+"Hoàn thành 100 ngày",
+()=>studyData.completedDays.length>=100
+],
 
-["🚀 300 ngày học","Hoàn thành 300 ngày",()=>studyData.completedDays.length>=300],
+[
+"🚀 300 ngày học",
+"Hoàn thành 300 ngày",
+()=>studyData.completedDays.length>=300
+],
 
-["🌌 500 ngày học","Hoàn thành 500 ngày",()=>studyData.completedDays.length>=500],
+[
+"🌌 500 ngày học",
+"Hoàn thành 500 ngày",
+()=>studyData.completedDays.length>=500
+],
 
-["👑 1000 ngày học","Hoàn thành 1000 ngày",()=>studyData.completedDays.length>=1000],
+[
+"👑 1000 ngày học",
+"Hoàn thành 1000 ngày",
+()=>studyData.completedDays.length>=1000
+],
 
-["📚 100 phút","Học đủ 100 phút",()=>studyData.studyMinutes>=100],
+[
+"📚 100 phút",
+"Học đủ 100 phút",
+()=>studyData.studyMinutes>=100
+],
 
-["📚 500 phút","Học đủ 500 phút",()=>studyData.studyMinutes>=500],
+[
+"📚 500 phút",
+"Học đủ 500 phút",
+()=>studyData.studyMinutes>=500
+],
 
-["🧠 1000 phút","Học đủ 1000 phút",()=>studyData.studyMinutes>=1000],
+[
+"🧠 1000 phút",
+"Học đủ 1000 phút",
+()=>studyData.studyMinutes>=1000
+],
 
-["🧠 3000 phút","Học đủ 3000 phút",()=>studyData.studyMinutes>=3000],
+[
+"⏱️ 10 giờ",
+"Học đủ 10 giờ",
+()=>studyData.studyMinutes>=600
+],
 
-["⏱️ 10 giờ","Học đủ 10 giờ",()=>studyData.studyMinutes>=600],
+[
+"⏱️ 50 giờ",
+"Học đủ 50 giờ",
+()=>studyData.studyMinutes>=3000
+],
 
-["⏱️ 50 giờ","Học đủ 50 giờ",()=>studyData.studyMinutes>=3000],
+[
+"🍅 5 Pomodoro",
+"Hoàn thành 5 Pomodoro",
+()=>studyData.pomodoros>=5
+],
 
-["🍅 5 Pomodoro","Hoàn thành 5 Pomodoro",()=>studyData.pomodoros>=5],
+[
+"🍅 10 Pomodoro",
+"Hoàn thành 10 Pomodoro",
+()=>studyData.pomodoros>=10
+],
 
-["🍅 10 Pomodoro","Hoàn thành 10 Pomodoro",()=>studyData.pomodoros>=10],
+[
+"🍅 50 Pomodoro",
+"Hoàn thành 50 Pomodoro",
+()=>studyData.pomodoros>=50
+],
 
-["🍅 50 Pomodoro","Hoàn thành 50 Pomodoro",()=>studyData.pomodoros>=50],
+[
+"⭐ Level 5",
+"Đạt Level 5",
+()=>getLevel()>=5
+],
 
-["🍅 100 Pomodoro","Hoàn thành 100 Pomodoro",()=>studyData.pomodoros>=100],
+[
+"⭐ Level 10",
+"Đạt Level 10",
+()=>getLevel()>=10
+],
 
-["⭐ Level 5","Đạt Level 5",()=>getLevel()>=5],
+[
+"⭐ Level 25",
+"Đạt Level 25",
+()=>getLevel()>=25
+],
 
-["⭐ Level 10","Đạt Level 10",()=>getLevel()>=10],
-
-["⭐ Level 25","Đạt Level 25",()=>getLevel()>=25],
-
-["⚒️ StudyForge","Hoàn thành mục tiêu hiện tại",()=>studyData.completedDays.length>=studyData.goal]
+[
+"⚒️ StudyForge",
+"Hoàn thành mục tiêu",
+()=>studyData.completedDays.length>=studyData.goal
+]
 
 ];
-
 
 function renderAchievements(){
 
@@ -2392,71 +2592,56 @@ function renderAchievements(){
             if(ok)unlocked++;
 
             const div =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
-            div.className=
+            div.className =
                 "achievement"+
                 (ok?" unlocked":"");
 
-            div.innerHTML=
+            div.innerHTML =
                 `<b>${name}</b>
                  <span>
-                 ${ok?"✅ ":"🔒 "}${desc}
+                 ${ok?"✅":"🔒"} ${desc}
                  </span>`;
 
             container.appendChild(div);
-
         }
     );
 
     document.getElementById(
         "achievementCount"
     ).textContent=unlocked;
-
 }
-
 
 /* =====================================================
    MUSIC
-   LẶP LẠI CHÍNH BÀI ĐANG PHÁT
+   LẶP CHÍNH BÀI HIỆN TẠI
 ===================================================== */
 
 const musicTracks=[
 
-    "music/chill1.mp3",
-    "music/chill2.mp3",
-    "music/chill3.mp3",
-    "music/chill4.mp3",
-    "music/chill5.mp3",
-    "music/chill6.mp3",
-    "music/chill7.mp3",
-    "music/chill8.mp3",
-    "music/chill9.mp3",
-    "music/chill10.mp3"
+"music/chill1.mp3",
+"music/chill2.mp3",
+"music/chill3.mp3",
+"music/chill4.mp3",
+"music/chill5.mp3",
+"music/chill6.mp3",
+"music/chill7.mp3",
+"music/chill8.mp3",
+"music/chill9.mp3",
+"music/chill10.mp3"
 
 ];
 
-
 let musicIndex=0;
 let isPlaying=false;
-
-/*
-   true = hết bài sẽ lặp lại chính bài đó
-*/
-let repeatMusic=true;
 
 const audioPlayer =
     new Audio();
 
 audioPlayer.preload="auto";
-
-/*
-   Quan trọng:
-   loop=true khiến chill1 hết
-   sẽ quay lại chill1.
-*/
-audioPlayer.loop=true;
-
 
 const musicList =
     document.getElementById(
@@ -2473,21 +2658,25 @@ const nextButton =
         "nextButton"
     );
 
-const repeatButton =
-    document.getElementById(
-        "repeatButton"
-    );
-
 const nowPlaying =
     document.getElementById(
         "nowPlaying"
     );
 
-const repeatStatus =
+const repeatMusic =
     document.getElementById(
-        "repeatStatus"
+        "repeatMusic"
     );
 
+/*
+   QUAN TRỌNG:
+
+   Nếu repeat bật:
+   chill1 hết -> chill1 lại
+   chill2 hết -> chill2 lại
+
+   Không tự nhảy sang bài khác.
+*/
 
 function createMusicButtons(){
 
@@ -2519,67 +2708,49 @@ function createMusicButtons(){
                 }else{
 
                     playMusic(index);
-
                 }
-
             };
 
             musicList.appendChild(button);
-
         }
     );
-
 }
-
 
 function updateMusicUI(){
 
     document
-        .querySelectorAll(
-            ".music-btn"
-        )
-        .forEach(
-            (button,index)=>{
+    .querySelectorAll(
+        ".music-btn"
+    )
+    .forEach(
+        (button,index)=>{
 
-                const active =
-                    index===musicIndex &&
-                    isPlaying;
+            const active =
+                index===musicIndex &&
+                isPlaying;
 
-                button.classList.toggle(
-                    "active",
-                    active
-                );
+            button.classList.toggle(
+                "active",
+                active
+            );
 
-                button.textContent=
-                    active
-                        ? `⏸ Chill ${index+1}`
-                        : `🎧 Chill ${index+1}`;
+            button.textContent =
+                active
+                ? `⏸ Chill ${index+1}`
+                : `🎧 Chill ${index+1}`;
+        }
+    );
 
-            }
-        );
-
-    playPauseButton.textContent=
+    playPauseButton.textContent =
         isPlaying
-            ? "⏸ Tạm dừng"
-            : "▶ Phát";
+        ? "⏸ Tạm dừng"
+        : "▶ Phát";
 
-    repeatButton.textContent=
-        repeatMusic
-            ? "🔁 Repeat: ON"
-            : "🔂 Repeat: OFF";
-
-    nowPlaying.textContent=
+    nowPlaying.textContent =
         isPlaying
-            ? `🎵 Đang phát: Chill ${musicIndex+1}`
-            : `⏸ Đã dừng: Chill ${musicIndex+1}`;
-
-    repeatStatus.textContent=
-        repeatMusic
-            ? "🔁 Hết bài sẽ phát lại chính bài này."
-            : "➡️ Hết bài sẽ chuyển sang bài tiếp theo.";
-
+        ? `🎵 Đang phát: Chill ${musicIndex+1}`
+        : `⏸ Đã dừng: Chill ${musicIndex+1}`;
 }
-
 
 function playMusic(index){
 
@@ -2592,37 +2763,29 @@ function playMusic(index){
 
     audioPlayer.pause();
 
-    audioPlayer.src=
+    audioPlayer.src =
         musicTracks[musicIndex];
-
-    audioPlayer.loop=
-        repeatMusic;
 
     audioPlayer.currentTime=0;
 
     audioPlayer.play()
-        .then(()=>{
+    .then(()=>{
 
-            isPlaying=true;
+        isPlaying=true;
+        updateMusicUI();
 
-            updateMusicUI();
+    })
+    .catch(()=>{
 
-        })
-        .catch(()=>{
+        isPlaying=false;
 
-            isPlaying=false;
+        updateMusicUI();
 
-            updateMusicUI();
-
-            alert(
-                `⚠️ Không thể phát Chill ${musicIndex+1}.\n\n`+
-                `Kiểm tra file: ${musicTracks[musicIndex]}`
-            );
-
-        });
-
+        alert(
+            `⚠️ Không thể phát Chill ${musicIndex+1}.\n\nKiểm tra file:\n${musicTracks[musicIndex]}`
+        );
+    });
 }
-
 
 playPauseButton.onclick=()=>{
 
@@ -2639,38 +2802,48 @@ playPauseButton.onclick=()=>{
         }else{
 
             audioPlayer.play()
-                .catch(()=>{});
-
+            .catch(()=>{});
         }
-
     }
-
 };
-
 
 nextButton.onclick=()=>{
 
-    musicIndex=
-        (musicIndex+1)%
-        musicTracks.length;
+    musicIndex =
+        (musicIndex+1)
+        %musicTracks.length;
 
     playMusic(musicIndex);
-
 };
 
+/*
+   ĐÂY LÀ PHẦN QUAN TRỌNG NHẤT.
 
-repeatButton.onclick=()=>{
+   Hết chill1:
+   repeat ON -> chill1 lại.
 
-    repeatMusic=
-        !repeatMusic;
+   Không chuyển chill2.
+*/
 
-    audioPlayer.loop=
-        repeatMusic;
+audioPlayer.addEventListener(
+    "ended",
+    ()=>{
 
-    updateMusicUI();
+        if(repeatMusic.checked){
 
-};
+            audioPlayer.currentTime=0;
 
+            audioPlayer.play()
+            .catch(()=>{});
+
+        }else{
+
+            isPlaying=false;
+
+            updateMusicUI();
+        }
+    }
+);
 
 audioPlayer.addEventListener(
     "pause",
@@ -2679,10 +2852,8 @@ audioPlayer.addEventListener(
         isPlaying=false;
 
         updateMusicUI();
-
     }
 );
-
 
 audioPlayer.addEventListener(
     "play",
@@ -2691,45 +2862,19 @@ audioPlayer.addEventListener(
         isPlaying=true;
 
         updateMusicUI();
-
     }
 );
-
-
-/*
-   Nếu Repeat OFF:
-   bài hết → chuyển bài.
-   Nếu Repeat ON:
-   audio.loop=true nên không chạy đoạn này.
-*/
-audioPlayer.addEventListener(
-    "ended",
-    ()=>{
-
-        if(!repeatMusic){
-
-            musicIndex=
-                (musicIndex+1)%
-                musicTracks.length;
-
-            playMusic(musicIndex);
-
-        }
-
-    }
-);
-
 
 /* =====================================================
    AI
-   KHÔNG CÒN GIỚI HẠN 20 LƯỢT Ở FRONTEND
+   BỎ GIỚI HẠN 20 LƯỢT Ở FRONTEND
 ===================================================== */
 
 function formatAI(text){
 
-    if(!text)return"";
+    if(!text)return "";
 
-    let html=
+    let html =
         String(text)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
@@ -2737,40 +2882,39 @@ function formatAI(text){
 
     const mathBlocks=[];
 
-    html=
+    html =
         html.replace(
             /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|(?<!\$)\$(?!\$)[\s\S]*?(?<!\$)\$(?!\$))/g,
             match=>{
 
-                const id=
+                const id =
                     `MATHBLOCK${mathBlocks.length}X`;
 
                 mathBlocks.push(match);
 
                 return id;
-
             }
         );
 
-    html=
+    html =
         html.replace(
             /`([^`]+)`/g,
             "<code>$1</code>"
         );
 
-    html=
+    html =
         html.replace(
             /\*\*(.*?)\*\*/g,
             "<strong>$1</strong>"
         );
 
-    html=
+    html =
         html.replace(
             /^### (.*?)$/gm,
             "<h3>$1</h3>"
         );
 
-    html=
+    html =
         html.replace(
             /\r?\n/g,
             "<br>"
@@ -2779,19 +2923,16 @@ function formatAI(text){
     mathBlocks.forEach(
         (formula,index)=>{
 
-            html=
+            html =
                 html.replace(
                     `MATHBLOCK${index}X`,
                     formula
                 );
-
         }
     );
 
     return html;
-
 }
-
 
 const aiInput =
     document.getElementById(
@@ -2808,6 +2949,10 @@ const aiBox =
         "aiBox"
     );
 
+/*
+   Không còn AI_DAILY_LIMIT.
+   Không còn aiQuotaData.
+*/
 
 async function askAI(){
 
@@ -2816,23 +2961,22 @@ async function askAI(){
 
     if(!question){
 
-        aiBox.textContent=
+        aiBox.textContent =
             "⚠️ Hãy nhập câu hỏi trước nhé!";
 
         return;
-
     }
 
     aiButton.disabled=true;
     aiInput.disabled=true;
     aiButton.textContent="⏳";
 
-    aiBox.textContent=
+    aiBox.textContent =
         "🤖 StudyForge AI đang suy nghĩ...";
 
     try{
 
-        const response=
+        const response =
             await fetch(
                 "/api/ask",
                 {
@@ -2846,7 +2990,6 @@ async function askAI(){
                     body:JSON.stringify({
                         message:question
                     })
-
                 }
             );
 
@@ -2854,7 +2997,7 @@ async function askAI(){
 
         try{
 
-            data=
+            data =
                 await response.json();
 
         }catch{
@@ -2862,7 +3005,6 @@ async function askAI(){
             throw new Error(
                 "API không trả về JSON hợp lệ."
             );
-
         }
 
         if(!response.ok){
@@ -2871,7 +3013,6 @@ async function askAI(){
                 data.error ||
                 "AI không trả lời được."
             );
-
         }
 
         if(!data.reply){
@@ -2879,22 +3020,20 @@ async function askAI(){
             throw new Error(
                 "API không trả về nội dung."
             );
-
         }
 
-        aiBox.innerHTML=
+        aiBox.innerHTML =
             "🤖 "+formatAI(data.reply);
 
         if(window.MathJax){
 
-            MathJax.typesetClear([
-                aiBox
-            ]);
+            MathJax.typesetClear(
+                [aiBox]
+            );
 
-            await MathJax.typesetPromise([
-                aiBox
-            ]);
-
+            await MathJax.typesetPromise(
+                [aiBox]
+            );
         }
 
     }catch(error){
@@ -2904,7 +3043,7 @@ async function askAI(){
             error
         );
 
-        aiBox.textContent=
+        aiBox.textContent =
             "❌ "+
             (
                 error.message ||
@@ -2917,123 +3056,675 @@ async function askAI(){
         aiInput.disabled=false;
         aiButton.textContent="Gửi";
         aiInput.focus();
-
     }
-
 }
 
+document.getElementById(
+    "aiQuota"
+).textContent =
+    "AI · Không giới hạn ở giao diện";
 
-aiButton.onclick=askAI;
+document.getElementById(
+    "aiButton"
+).onclick=askAI;
 
 aiInput.addEventListener(
     "keydown",
     event=>{
-
         if(event.key==="Enter"){
             askAI();
         }
-
     }
 );
 
+document
+.querySelectorAll(
+    ".example-btn"
+)
+.forEach(button=>{
+
+    button.onclick=()=>{
+
+        aiInput.value =
+            button.dataset.example;
+
+        aiInput.focus();
+    };
+});
+
+/* =====================================================
+   CASIO
+===================================================== */
+
+let calcExpression="";
+let calcAnswer=0;
+let calcMode="DEG";
+
+const calcExpressionEl =
+    document.getElementById(
+        "calcExpression"
+    );
+
+const calcResultEl =
+    document.getElementById(
+        "calcResult"
+    );
+
+const calcModeEl =
+    document.getElementById(
+        "calcMode"
+    );
+
+const calcAnsEl =
+    document.getElementById(
+        "calcAns"
+    );
+
+function updateCalculator(){
+
+    calcExpressionEl.textContent =
+        calcExpression || "0";
+
+    calcAnsEl.textContent =
+        formatNumber(calcAnswer);
+}
+
+function formatNumber(value){
+
+    if(
+        typeof value!=="number" ||
+        !Number.isFinite(value)
+    ){
+        return "Error";
+    }
+
+    if(
+        Math.abs(value)>1e12 ||
+        (
+            Math.abs(value)<1e-9 &&
+            value!==0
+        )
+    ){
+
+        return value.toExponential(8);
+    }
+
+    return Number(
+        value.toFixed(12)
+    ).toString();
+}
+
+function degToRad(x){
+
+    return x*Math.PI/180;
+}
+
+function trig(fn,x){
+
+    if(calcMode==="DEG"){
+        x=degToRad(x);
+    }
+
+    return Math[fn](x);
+}
+
+function factorial(n){
+
+    if(
+        !Number.isInteger(n) ||
+        n<0 ||
+        n>170
+    ){
+        throw new Error(
+            "Factorial không hợp lệ"
+        );
+    }
+
+    let result=1;
+
+    for(
+        let i=2;
+        i<=n;
+        i++
+    ){
+        result*=i;
+    }
+
+    return result;
+}
+
+function prepareExpression(expression){
+
+    let e=expression;
+
+    e =
+        e.replace(
+            /π/g,
+            "Math.PI"
+        );
+
+    e =
+        e.replace(
+            /\bAns\b/g,
+            `(${calcAnswer})`
+        );
+
+    e =
+        e.replace(
+            /\be\b/g,
+            "Math.E"
+        );
+
+    e =
+        e.replace(
+            /sqrt\(/g,
+            "Math.sqrt("
+        );
+
+    e =
+        e.replace(
+            /log\(/g,
+            "Math.log10("
+        );
+
+    e =
+        e.replace(
+            /ln\(/g,
+            "Math.log("
+        );
+
+    e =
+        e.replace(
+            /exp\(/g,
+            "Math.exp("
+        );
+
+    e =
+        e.replace(
+            /sin\(/g,
+            "TRIGSIN("
+        );
+
+    e =
+        e.replace(
+            /cos\(/g,
+            "TRIGCOS("
+        );
+
+    e =
+        e.replace(
+            /tan\(/g,
+            "TRIGTAN("
+        );
+
+    /*
+       Phần trăm:
+       50% -> 50/100
+    */
+
+    e =
+        e.replace(
+            /(\d+(?:\.\d+)?)%/g,
+            "($1/100)"
+        );
+
+    /*
+       x²
+    */
+
+    e =
+        e.replace(
+            /\^2/g,
+            "**2"
+        );
+
+    /*
+       xʸ
+    */
+
+    e =
+        e.replace(
+            /\^/g,
+            "**"
+        );
+
+    return e;
+}
+
+function evaluateCalculator(){
+
+    if(!calcExpression)return;
+
+    try{
+
+        let expression =
+            prepareExpression(
+                calcExpression
+            );
+
+        /*
+           Kiểm tra ký tự nguy hiểm.
+        */
+
+        if(
+            /[^0-9+\-*/().,\sA-Za-z_]/.test(
+                expression
+            )
+        ){
+            throw new Error(
+                "Biểu thức không hợp lệ"
+            );
+        }
+
+        const fn =
+            new Function(
+                "TRIGSIN",
+                "TRIGCOS",
+                "TRIGTAN",
+                `"use strict"; return (${expression})`
+            );
+
+        const result =
+            fn(
+                x=>trig("sin",x),
+                x=>trig("cos",x),
+                x=>trig("tan",x)
+            );
+
+        if(
+            typeof result!=="number" ||
+            !Number.isFinite(result)
+        ){
+            throw new Error(
+                "Math Error"
+            );
+        }
+
+        calcAnswer=result;
+
+        calcResultEl.textContent =
+            formatNumber(result);
+
+        calcAnsEl.textContent =
+            formatNumber(result);
+
+    }catch(error){
+
+        calcResultEl.textContent =
+            "Error";
+    }
+}
 
 document
-    .querySelectorAll(
-        ".example-btn"
-    )
-    .forEach(button=>{
+.querySelectorAll(
+    ".calc-btn"
+)
+.forEach(button=>{
 
-        button.onclick=()=>{
+    button.addEventListener(
+        "click",
+        ()=>{
 
-            aiInput.value=
-                button.dataset.example;
+            const value =
+                button.dataset.value;
 
-            aiInput.focus();
+            const action =
+                button.dataset.action;
 
-        };
+            if(action==="clear"){
 
-    });
+                calcExpression="";
+                calcResultEl.textContent="0";
+                updateCalculator();
 
+                return;
+            }
+
+            if(action==="delete"){
+
+                calcExpression =
+                    calcExpression.slice(
+                        0,-1
+                    );
+
+                calcResultEl.textContent="0";
+
+                updateCalculator();
+
+                return;
+            }
+
+            if(action==="equals"){
+
+                evaluateCalculator();
+
+                return;
+            }
+
+            if(action==="mode"){
+
+                calcMode =
+                    calcMode==="DEG"
+                    ? "RAD"
+                    : "DEG";
+
+                calcModeEl.textContent =
+                    calcMode;
+
+                return;
+            }
+
+            if(action==="negate"){
+
+                if(calcExpression){
+
+                    calcExpression =
+                        `-(${calcExpression})`;
+
+                }
+
+                updateCalculator();
+
+                return;
+            }
+
+            if(value!==undefined){
+
+                /*
+                   Không cho 10^ làm lỗi:
+                   thêm bình thường.
+                */
+
+                calcExpression += value;
+
+                calcResultEl.textContent="0";
+
+                updateCalculator();
+            }
+
+        }
+    );
+});
+
+/*
+   Bàn phím PC
+*/
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        const active =
+            document.activeElement;
+
+        if(
+            active &&
+            (
+                active.tagName==="INPUT" ||
+                active.tagName==="TEXTAREA"
+            )
+        ){
+            return;
+        }
+
+        const key=event.key;
+
+        if(
+            /[0-9]/.test(key) ||
+            "+-*/().^".includes(key)
+        ){
+
+            calcExpression+=key;
+
+            updateCalculator();
+
+            event.preventDefault();
+
+        }else if(key==="Enter"){
+
+            evaluateCalculator();
+
+        }else if(key==="Backspace"){
+
+            calcExpression =
+                calcExpression.slice(
+                    0,-1
+                );
+
+            updateCalculator();
+
+        }else if(key==="Escape"){
+
+            calcExpression="";
+            calcResultEl.textContent="0";
+
+            updateCalculator();
+        }
+    }
+);
+
+updateCalculator();
+
+/* =====================================================
+   TRANSLATOR
+===================================================== */
+
+const translateInput =
+    document.getElementById(
+        "translateInput"
+    );
+
+const translateResult =
+    document.getElementById(
+        "translateResult"
+    );
+
+const translateStatus =
+    document.getElementById(
+        "translateStatus"
+    );
+
+const translateButton =
+    document.getElementById(
+        "translateButton"
+    );
+
+async function translateEnglish(){
+
+    const text =
+        translateInput.value.trim();
+
+    if(!text){
+
+        translateResult.textContent =
+            "⚠️ Hãy nhập từ hoặc câu tiếng Anh.";
+
+        return;
+    }
+
+    translateButton.disabled=true;
+
+    translateResult.textContent =
+        "⏳ Đang dịch...";
+
+    translateStatus.textContent =
+        "Đang kết nối dịch vụ Google Translate...";
+
+    try{
+
+        const url =
+            "https://translate.googleapis.com/translate_a/single"+
+            "?client=gtx"+
+            "&sl=en"+
+            "&tl=vi"+
+            "&dt=t"+
+            "&q="+
+            encodeURIComponent(text);
+
+        const response =
+            await fetch(url);
+
+        if(!response.ok){
+
+            throw new Error(
+                "Không thể kết nối dịch vụ dịch."
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if(
+            !Array.isArray(data) ||
+            !Array.isArray(data[0])
+        ){
+
+            throw new Error(
+                "Không nhận được bản dịch."
+            );
+        }
+
+        const result =
+            data[0]
+            .map(item=>item[0])
+            .filter(Boolean)
+            .join("");
+
+        translateResult.textContent =
+            result ||
+            "Không có bản dịch.";
+
+        translateStatus.textContent =
+            "✅ Đã dịch Anh → Việt.";
+
+    }catch(error){
+
+        console.error(
+            "TRANSLATE ERROR:",
+            error
+        );
+
+        translateResult.textContent =
+            "❌ Không dịch được. Hãy kiểm tra kết nối mạng rồi thử lại.";
+
+        translateStatus.textContent =
+            "Lỗi kết nối dịch vụ.";
+
+    }finally{
+
+        translateButton.disabled=false;
+    }
+}
+
+translateButton.onclick=
+    translateEnglish;
+
+translateInput.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.key==="Enter" &&
+            event.ctrlKey
+        ){
+
+            translateEnglish();
+        }
+    }
+);
+
+document.getElementById(
+    "clearTranslate"
+).onclick=()=>{
+
+    translateInput.value="";
+
+    translateResult.textContent =
+        "Bản dịch sẽ xuất hiện ở đây...";
+
+    translateStatus.textContent =
+        "Sẵn sàng dịch.";
+
+    translateInput.focus();
+};
 
 /* =====================================================
    SUPABASE AUTH
 ===================================================== */
 
-const SUPABASE_URL=
+const SUPABASE_URL =
     "https://gucxknalotvyhjxqkbel.supabase.co";
 
-const SUPABASE_KEY=
+const SUPABASE_KEY =
     "sb_publishable_j-wwTzYkJ43oQstFb4XmPA_E2BKL-Re";
 
-const supabaseClient=
+const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
     );
 
-
-const loginButton=
+const loginButton =
     document.getElementById(
         "loginButton"
     );
 
-const authOverlay=
+const authOverlay =
     document.getElementById(
         "authOverlay"
     );
 
-const authTitle=
+const authTitle =
     document.getElementById(
         "authTitle"
     );
 
-const authEmail=
+const authEmail =
     document.getElementById(
         "authEmail"
     );
 
-const authPassword=
+const authPassword =
     document.getElementById(
         "authPassword"
     );
 
-const authSubmit=
+const authSubmit =
     document.getElementById(
         "authSubmit"
     );
 
-const switchAuth=
+const switchAuth =
     document.getElementById(
         "switchAuth"
     );
 
-const closeAuth=
+const closeAuth =
     document.getElementById(
         "closeAuth"
     );
 
-const authMessage=
+const authMessage =
     document.getElementById(
         "authMessage"
     );
 
-const userInfo=
+const userInfo =
     document.getElementById(
         "userInfo"
     );
 
-const userEmail=
+const userEmail =
     document.getElementById(
         "userEmail"
     );
 
-const logoutButton=
+const logoutButton =
     document.getElementById(
         "logoutButton"
     );
 
 let isRegisterMode=false;
-
 
 function openAuth(){
 
@@ -3045,9 +3736,7 @@ function openAuth(){
         ()=>authEmail.focus(),
         100
     );
-
 }
-
 
 function closeAuthModal(){
 
@@ -3056,16 +3745,14 @@ function closeAuthModal(){
     );
 
     authMessage.textContent="";
-
 }
-
 
 loginButton.onclick=async()=>{
 
     const {
         data,
         error
-    }=
+    } =
         await supabaseClient
         .auth
         .getSession();
@@ -3077,7 +3764,6 @@ loginButton.onclick=async()=>{
         openAuth();
 
         return;
-
     }
 
     if(data.session){
@@ -3087,34 +3773,25 @@ loginButton.onclick=async()=>{
         );
 
         return;
-
     }
 
     openAuth();
-
 };
-
 
 closeAuth.onclick=
     closeAuthModal;
-
 
 authOverlay.addEventListener(
     "click",
     event=>{
 
         if(
-            event.target===
-            authOverlay
+            event.target===authOverlay
         ){
-
             closeAuthModal();
-
         }
-
     }
 );
-
 
 switchAuth.onclick=()=>{
 
@@ -3145,36 +3822,31 @@ switchAuth.onclick=()=>{
 
         switchAuth.textContent=
             "Đăng ký";
-
     }
-
 };
-
 
 authSubmit.onclick=async()=>{
 
-    const email=
+    const email =
         authEmail.value.trim();
 
-    const password=
+    const password =
         authPassword.value;
 
-    if(!email||!password){
+    if(!email || !password){
 
         authMessage.textContent=
             "⚠️ Nhập đầy đủ email và mật khẩu.";
 
         return;
-
     }
 
     if(password.length<6){
 
         authMessage.textContent=
-            "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
+            "⚠️ Mật khẩu tối thiểu 6 ký tự.";
 
         return;
-
     }
 
     authSubmit.disabled=true;
@@ -3184,12 +3856,12 @@ authSubmit.onclick=async()=>{
         if(isRegisterMode){
 
             authSubmit.textContent=
-                "⏳ Đang tạo tài khoản...";
+                "⏳ Đang tạo...";
 
             const {
                 data,
                 error
-            }=
+            } =
                 await supabaseClient
                 .auth
                 .signUp({
@@ -3200,10 +3872,10 @@ authSubmit.onclick=async()=>{
                     options:{
                         data:{
                             name:
-                                email.split("@")[0]
+                                email
+                                .split("@")[0]
                         }
                     }
-
                 });
 
             if(error)throw error;
@@ -3226,7 +3898,6 @@ authSubmit.onclick=async()=>{
 
                 authMessage.textContent=
                     "⚠️ Tài khoản đã tạo. Hãy xác nhận email nếu Supabase yêu cầu.";
-
             }
 
         }else{
@@ -3237,14 +3908,13 @@ authSubmit.onclick=async()=>{
             const {
                 data,
                 error
-            }=
+            } =
                 await supabaseClient
                 .auth
                 .signInWithPassword({
 
                     email,
                     password
-
                 });
 
             if(error)throw error;
@@ -3260,7 +3930,6 @@ authSubmit.onclick=async()=>{
                 closeAuthModal,
                 500
             );
-
         }
 
     }catch(error){
@@ -3270,7 +3939,7 @@ authSubmit.onclick=async()=>{
             error
         );
 
-        let message=
+        let message =
             error.message ||
             "Có lỗi xảy ra.";
 
@@ -3282,9 +3951,8 @@ authSubmit.onclick=async()=>{
             )
         ){
 
-            message=
+            message =
                 "❌ Email hoặc mật khẩu không đúng.";
-
         }
 
         if(
@@ -3295,9 +3963,8 @@ authSubmit.onclick=async()=>{
             )
         ){
 
-            message=
+            message =
                 "❌ Email chưa được xác nhận.";
-
         }
 
         authMessage.textContent=
@@ -3309,13 +3976,10 @@ authSubmit.onclick=async()=>{
 
         authSubmit.textContent=
             isRegisterMode
-                ? "Đăng ký"
-                : "Đăng nhập";
-
+            ? "Đăng ký"
+            : "Đăng nhập";
     }
-
 };
-
 
 authPassword.addEventListener(
     "keydown",
@@ -3324,16 +3988,14 @@ authPassword.addEventListener(
         if(event.key==="Enter"){
             authSubmit.click();
         }
-
     }
 );
-
 
 logoutButton.onclick=async()=>{
 
     const {
         error
-    }=
+    } =
         await supabaseClient
         .auth
         .signOut();
@@ -3345,22 +4007,20 @@ logoutButton.onclick=async()=>{
         );
 
         return;
-
     }
 
     updateAuthUI(null);
-
 };
-
 
 function updateAuthUI(user){
 
     if(user){
 
-        const name=
+        const name =
             user.user_metadata?.name ||
             user.user_metadata?.full_name ||
-            user.email?.split("@")[0] ||
+            user.email
+            ?.split("@")[0] ||
             "Bạn";
 
         loginButton.textContent=
@@ -3380,18 +4040,15 @@ function updateAuthUI(user){
         userInfo.classList.remove(
             "show"
         );
-
     }
-
 }
-
 
 async function checkLogin(){
 
     const {
         data,
         error
-    }=
+    } =
         await supabaseClient
         .auth
         .getSession();
@@ -3401,303 +4058,35 @@ async function checkLogin(){
         console.error(error);
 
         return;
-
     }
 
     updateAuthUI(
-        data.session?.user ||
-        null
+        data.session?.user || null
     );
-
 }
 
+supabaseClient.auth.onAuthStateChange(
+    (event,session)=>{
 
-supabaseClient
-    .auth
-    .onAuthStateChange(
-        (event,session)=>{
-
-            updateAuthUI(
-                session?.user ||
-                null
-            );
-
-        }
-    );
-
-
-/* =====================================================
-   CASIO CALCULATOR
-===================================================== */
-
-const calcDisplay=
-    document.getElementById(
-        "calcDisplay"
-    );
-
-
-function calcInput(value){
-
-    calcDisplay.value += value;
-
-}
-
-
-function calcClear(){
-
-    calcDisplay.value="";
-
-}
-
-
-function calcDelete(){
-
-    calcDisplay.value=
-        calcDisplay.value.slice(
-            0,-1
+        updateAuthUI(
+            session?.user || null
         );
-
-}
-
-
-function calcResult(){
-
-    const expression=
-        calcDisplay.value;
-
-    if(!expression)return;
-
-    /*
-       Chỉ cho phép phép tính cơ bản.
-       Không cho nhập JavaScript.
-    */
-
-    if(
-        !/^[0-9+\-*/().\s]+$/
-        .test(expression)
-    ){
-
-        calcDisplay.value=
-            "ERROR";
-
-        return;
-
-    }
-
-    try{
-
-        const result=
-            Function(
-                `"use strict";
-                return (${expression})`
-            )();
-
-        if(
-            typeof result!=="number" ||
-            !Number.isFinite(result)
-        ){
-
-            throw new Error();
-
-        }
-
-        calcDisplay.value=
-            String(result);
-
-    }catch{
-
-        calcDisplay.value=
-            "ERROR";
-
-    }
-
-}
-
-
-document.addEventListener(
-    "keydown",
-    event=>{
-
-        /*
-           Không lấy phím nếu đang
-           nhập AI/Todo/Translate.
-        */
-
-        const active=
-            document.activeElement;
-
-        if(
-            active &&
-            (
-                active.id==="aiInput" ||
-                active.id==="todoInput" ||
-                active.id==="englishText" ||
-                active.tagName==="TEXTAREA" ||
-                active.tagName==="INPUT"
-            )
-        ){
-
-            return;
-
-        }
-
-        if(
-            /^[0-9+\-*/().]$/
-            .test(event.key)
-        ){
-
-            calcInput(event.key);
-
-        }
-
-        if(event.key==="Enter"){
-
-            calcResult();
-
-        }
-
-        if(event.key==="Backspace"){
-
-            calcDelete();
-
-        }
-
-        if(event.key==="Escape"){
-
-            calcClear();
-
-        }
-
     }
 );
-
-
-/* =====================================================
-   GOOGLE TRANSLATE
-===================================================== */
-
-const englishText=
-    document.getElementById(
-        "englishText"
-    );
-
-const vietnameseText=
-    document.getElementById(
-        "vietnameseText"
-    );
-
-const googleTranslateButton=
-    document.getElementById(
-        "googleTranslateButton"
-    );
-
-const copyEnglishButton=
-    document.getElementById(
-        "copyEnglishButton"
-    );
-
-const clearTranslateButton=
-    document.getElementById(
-        "clearTranslateButton"
-    );
-
-
-googleTranslateButton.onclick=()=>{
-
-    const text=
-        englishText.value.trim();
-
-    if(!text){
-
-        showToast(
-            "⚠️ Hãy nhập từ hoặc câu tiếng Anh."
-        );
-
-        englishText.focus();
-
-        return;
-
-    }
-
-    /*
-       Google Translate:
-       English → Vietnamese
-    */
-
-    const url=
-        "https://translate.google.com/"+
-        "?sl=en"+
-        "&tl=vi"+
-        "&text="+
-        encodeURIComponent(text)+
-        "&op=translate";
-
-    window.open(
-        url,
-        "_blank"
-    );
-
-};
-
-
-copyEnglishButton.onclick=async()=>{
-
-    const text=
-        englishText.value.trim();
-
-    if(!text){
-
-        showToast(
-            "⚠️ Chưa có nội dung để copy."
-        );
-
-        return;
-
-    }
-
-    try{
-
-        await navigator.clipboard.writeText(
-            text
-        );
-
-        showToast(
-            "📋 Đã copy tiếng Anh!"
-        );
-
-    }catch{
-
-        showToast(
-            "❌ Không thể copy tự động."
-        );
-
-    }
-
-};
-
-
-clearTranslateButton.onclick=()=>{
-
-    englishText.value="";
-    vietnameseText.value="";
-
-};
-
 
 /* =====================================================
    WELCOME
 ===================================================== */
 
-const welcomeOverlay=
+const welcomeOverlay =
     document.getElementById(
         "welcomeOverlay"
     );
 
-const enterWebButton=
+const enterWebButton =
     document.getElementById(
         "enterWebButton"
     );
-
 
 function showWelcome(){
 
@@ -3706,11 +4095,8 @@ function showWelcome(){
         welcomeOverlay.classList.add(
             "show"
         );
-
     }
-
 }
-
 
 enterWebButton.onclick=()=>{
 
@@ -3721,9 +4107,7 @@ enterWebButton.onclick=()=>{
     welcomeOverlay.classList.remove(
         "show"
     );
-
 };
-
 
 /* =====================================================
    START
@@ -3735,7 +4119,6 @@ if(!studyData.startDate){
         getToday();
 
     saveData();
-
 }
 
 createMusicButtons();
@@ -3747,6 +4130,8 @@ updateTimer();
 renderTasks();
 
 updateMusicUI();
+
+updateCalculator();
 
 checkLogin();
 
