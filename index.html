@@ -2,143 +2,822 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>StudyForge</title>
 
 <script>
 window.MathJax = {
-    tex: {
-        inlineMath: [['\\(', '\\)'], ['$', '$']],
-        displayMath: [['\\[', '\\]'], ['$$', '$$']],
-        processEscapes: true
+    tex:{
+        inlineMath:[['\\(','\\)'],['$','$']],
+        displayMath:[['\\[','\\]'],['$$','$$']],
+        processEscapes:true
     },
-    options: {
-        skipHtmlTags: ['script','noscript','style','textarea','pre','code']
+    options:{
+        skipHtmlTags:['script','noscript','style','textarea','pre','code']
     }
 };
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;max-width:100%;overflow-x:hidden}
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+}
+
 body{
-    font-family:Arial,sans-serif;background:#07111f;color:#fff;
-    min-height:100vh
+    font-family:Arial,sans-serif;
+    background:#07111f;
+    color:white;
+    min-height:100vh;
 }
-button,input{font-family:inherit}
-button{cursor:pointer}
-button:disabled{cursor:not-allowed;opacity:.55}
-.app{width:92%;max-width:1150px;margin:auto;padding:25px 0 90px}
-header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px}
-.logo{font-size:28px;font-weight:bold}.logo span{color:#6ea8ff}
-.login,.timer-settings button{
-    background:#12253a;color:#fff;border:1px solid #263c55;
-    padding:11px 16px;border-radius:12px
+
+button,input{
+    font-family:inherit;
 }
-.login:hover,.timer-settings button:hover{background:#1a3048}
-.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+
+button{
+    cursor:pointer;
+}
+
+button:disabled{
+    cursor:not-allowed;
+    opacity:.55;
+}
+
+.app{
+    width:92%;
+    max-width:1200px;
+    margin:auto;
+    padding:25px 0 90px;
+}
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#6ea8ff;
+}
+
+.login,
+.timer-settings button,
+.calc-btn,
+.translate-btn{
+    background:#12253a;
+    color:white;
+    border:1px solid #263c55;
+    padding:11px 16px;
+    border-radius:12px;
+}
+
+.login:hover,
+.timer-settings button:hover,
+.calc-btn:hover,
+.translate-btn:hover{
+    background:#1a3048;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:18px;
+}
+
 .card{
-    background:#0d1b2d;border:1px solid #1c3046;border-radius:20px;
-    padding:22px;min-width:0;width:100%
+    background:#0d1b2d;
+    border:1px solid #1c3046;
+    border-radius:20px;
+    padding:22px;
+    min-width:0;
+    width:100%;
 }
-.hero,.ai-card{grid-column:1/-1}
-.small{color:#91a4b9;font-size:13px;margin-bottom:8px}
-.day{font-size:38px;font-weight:bold}
-.progress{height:14px;background:#182b40;border-radius:20px;overflow:hidden;margin:15px 0 7px}
-.progress-bar{height:100%;width:0%;background:#6ea8ff;transition:width .35s}
-.exp-line{display:flex;justify-content:space-between;color:#91a4b9;font-size:12px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.stat{background:#10243a;padding:14px;border-radius:14px}.stat b{display:block;font-size:21px;margin-top:5px}
+
+.hero,
+.ai-card,
+.calculator-card,
+.translate-card{
+    grid-column:1/-1;
+}
+
+.small{
+    color:#91a4b9;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.day{
+    font-size:38px;
+    font-weight:bold;
+}
+
+.progress{
+    height:14px;
+    background:#182b40;
+    border-radius:20px;
+    overflow:hidden;
+    margin:15px 0 7px;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    background:#6ea8ff;
+    transition:width .35s;
+}
+
+.exp-line{
+    display:flex;
+    justify-content:space-between;
+    color:#91a4b9;
+    font-size:12px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:12px;
+}
+
+.stat{
+    background:#10243a;
+    padding:14px;
+    border-radius:14px;
+}
+
+.stat b{
+    display:block;
+    font-size:21px;
+    margin-top:5px;
+}
+
 .btn{
-    border:none;padding:12px 17px;border-radius:12px;background:#6ea8ff;
-    color:#06101d;font-weight:bold;margin-top:15px
+    border:none;
+    padding:12px 17px;
+    border-radius:12px;
+    background:#6ea8ff;
+    color:#06101d;
+    font-weight:bold;
+    margin-top:15px;
 }
-.btn:hover{opacity:.9}.btn.secondary{background:#1a3048;color:#fff}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.btn:hover{
+    opacity:.9;
+}
+
+.btn.secondary{
+    background:#1a3048;
+    color:white;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
 .motivation{
-    margin-top:15px;background:linear-gradient(135deg,#10243a,#132d49);
-    border:1px solid #29445f;border-radius:15px;padding:17px;line-height:1.6;min-height:75px
+    margin-top:15px;
+    background:linear-gradient(135deg,#10243a,#132d49);
+    border:1px solid #29445f;
+    border-radius:15px;
+    padding:17px;
+    line-height:1.6;
+    min-height:75px;
 }
-.motivation-title{color:#6ea8ff;font-size:12px;font-weight:bold;margin-bottom:5px}
-.quote-btn{margin-top:10px;padding:8px 12px;border:1px solid #31516f;background:#0d2034;color:#fff;border-radius:9px}
-.timer{text-align:center}.timer-number{font-size:55px;font-weight:bold;margin:20px 0}
-.timer-settings{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:5px}
-.timer-settings button.active{background:#6ea8ff;color:#06101d}
-.custom-time{width:90px;background:#081522;color:#fff;border:1px solid #263c55;padding:8px;border-radius:9px}
-input{background:#081522;color:#fff;border:1px solid #263c55;padding:12px;border-radius:11px;outline:none}
-input:focus{border-color:#6ea8ff}
-.todo-add{display:flex;gap:8px;margin-top:15px;width:100%}.todo-add input{flex:1;min-width:0}
-.task{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #1c3046}
-.task.done span{text-decoration:line-through;color:#7d8ea1}
-.delete-task{margin-left:auto;border:none;background:#301b25;color:#ff8e9d;border-radius:8px;padding:6px 9px}
-.days{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;max-height:250px;overflow-y:auto;margin-top:15px}
-.day-box{text-align:center;padding:8px 3px;background:#14283c;border-radius:8px;font-size:12px}
-.day-box.done{background:#49d17d;color:#06130b}.day-box.current{outline:2px solid #6ea8ff}
-.stats-big{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}
-.big-stat{background:#10243a;padding:15px;border-radius:13px}.big-stat strong{display:block;font-size:25px;margin-top:4px}
-.achievement-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:15px}
-.achievement{background:#10243a;border-radius:12px;padding:12px;opacity:.45}
-.achievement.unlocked{opacity:1;border:1px solid #49d17d}
-.achievement b{display:block;margin-bottom:4px}.achievement span{color:#b4c2d0;font-size:13px}
+
+.motivation-title{
+    color:#6ea8ff;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.quote-btn{
+    margin-top:10px;
+    padding:8px 12px;
+    border:1px solid #31516f;
+    background:#0d2034;
+    color:white;
+    border-radius:9px;
+}
+
+.timer{
+    text-align:center;
+}
+
+.timer-number{
+    font-size:55px;
+    font-weight:bold;
+    margin:20px 0;
+}
+
+.timer-settings{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:5px;
+}
+
+.timer-settings button.active{
+    background:#6ea8ff;
+    color:#06101d;
+}
+
+.custom-time{
+    width:90px;
+    background:#081522;
+    color:white;
+    border:1px solid #263c55;
+    padding:8px;
+    border-radius:9px;
+}
+
+input{
+    background:#081522;
+    color:white;
+    border:1px solid #263c55;
+    padding:12px;
+    border-radius:11px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#6ea8ff;
+}
+
+.todo-add{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+    width:100%;
+}
+
+.todo-add input{
+    flex:1;
+    min-width:0;
+}
+
+.task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 0;
+    border-bottom:1px solid #1c3046;
+}
+
+.task.done span{
+    text-decoration:line-through;
+    color:#7d8ea1;
+}
+
+.delete-task{
+    margin-left:auto;
+    border:none;
+    background:#301b25;
+    color:#ff8e9d;
+    border-radius:8px;
+    padding:6px 9px;
+}
+
+.days{
+    display:grid;
+    grid-template-columns:repeat(10,minmax(0,1fr));
+    gap:6px;
+    max-height:250px;
+    overflow-y:auto;
+    margin-top:15px;
+}
+
+.day-box{
+    text-align:center;
+    padding:8px 3px;
+    background:#14283c;
+    border-radius:8px;
+    font-size:12px;
+}
+
+.day-box.done{
+    background:#49d17d;
+    color:#06130b;
+}
+
+.day-box.current{
+    outline:2px solid #6ea8ff;
+}
+
+.stats-big{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+
+.big-stat{
+    background:#10243a;
+    padding:15px;
+    border-radius:13px;
+}
+
+.big-stat strong{
+    display:block;
+    font-size:25px;
+    margin-top:4px;
+}
+
+.achievement-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin-top:15px;
+}
+
+.achievement{
+    background:#10243a;
+    border-radius:12px;
+    padding:12px;
+    opacity:.45;
+}
+
+.achievement.unlocked{
+    opacity:1;
+    border:1px solid #49d17d;
+}
+
+.achievement b{
+    display:block;
+    margin-bottom:4px;
+}
+
+.achievement span{
+    color:#b4c2d0;
+    font-size:13px;
+}
+
+/* AI */
+
 .ai-box{
-    margin-top:15px;background:#081522;border:1px solid #172b40;border-radius:15px;
-    padding:18px;line-height:1.8;min-height:260px;max-height:470px;overflow-y:auto;
-    font-size:15px;word-wrap:break-word;overflow-wrap:anywhere
+    margin-top:15px;
+    background:#081522;
+    border:1px solid #172b40;
+    border-radius:15px;
+    padding:18px;
+    line-height:1.8;
+    min-height:260px;
+    max-height:470px;
+    overflow-y:auto;
+    font-size:15px;
+    word-wrap:break-word;
+    overflow-wrap:anywhere;
 }
-.ai-box h3{margin:14px 0 8px;color:#6ea8ff}
-.ai-box code{background:#14283c;padding:2px 5px;border-radius:5px}
-.ai-box strong{font-weight:700}
-.ai-box mjx-container{max-width:100%}
-.ai-box mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:7px 0}
-.ai-input-area{display:flex;gap:10px;margin-top:12px}.ai-input-area input{flex:1;min-width:0;height:48px}
-.ai-input-area .btn{margin-top:0;min-width:75px}.ai-hint{color:#91a4b9;font-size:12px;margin-top:9px}
-.example-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.example-btn{border:1px solid #263c55;background:#10243a;color:#fff;padding:8px 10px;border-radius:9px;font-size:12px}
-.music-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:15px}
-.music-btn{border:1px solid #263c55;background:#10243a;color:#fff;padding:11px;border-radius:10px;text-align:left}
-.music-btn.active{background:#183a5b;border-color:#6ea8ff}
-.music-controls{display:flex;gap:8px;flex-wrap:wrap}.now-playing{margin-top:13px;color:#91a4b9;font-size:13px}
-.auth-overlay,.welcome-overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;
-    justify-content:center;z-index:9999;padding:20px
+
+.ai-box h3{
+    margin:14px 0 8px;
+    color:#6ea8ff;
 }
-.auth-overlay.show,.welcome-overlay.show{display:flex}
-.auth-box,.welcome-box{
-    width:100%;max-width:430px;background:#0d1b2d;border:1px solid #263c55;
-    border-radius:22px;padding:25px;box-shadow:0 20px 70px rgba(0,0,0,.45)
+
+.ai-box code{
+    background:#14283c;
+    padding:2px 5px;
+    border-radius:5px;
 }
-.auth-box h2,.welcome-box h2{margin-bottom:8px}.auth-subtitle{color:#91a4b9;font-size:14px;margin-bottom:20px}
-.auth-box input{width:100%;margin-bottom:10px}.auth-buttons{display:flex;gap:8px}.auth-buttons button{flex:1}
-.auth-close{width:100%;margin-top:10px}.auth-message{min-height:22px;margin-top:12px;font-size:14px;color:#91a4b9;line-height:1.5}
+
+.ai-box strong{
+    font-weight:700;
+}
+
+.ai-box mjx-container{
+    max-width:100%;
+}
+
+.ai-box mjx-container[display="true"]{
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:7px 0;
+}
+
+.ai-input-area{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.ai-input-area input{
+    flex:1;
+    min-width:0;
+    height:48px;
+}
+
+.ai-input-area .btn{
+    margin-top:0;
+    min-width:75px;
+}
+
+.ai-hint{
+    color:#91a4b9;
+    font-size:12px;
+    margin-top:9px;
+}
+
+.example-buttons{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+.example-btn{
+    border:1px solid #263c55;
+    background:#10243a;
+    color:white;
+    padding:8px 10px;
+    border-radius:9px;
+    font-size:12px;
+}
+
+/* MUSIC */
+
+.music-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin-top:15px;
+}
+
+.music-btn{
+    border:1px solid #263c55;
+    background:#10243a;
+    color:white;
+    padding:11px;
+    border-radius:10px;
+    text-align:left;
+}
+
+.music-btn.active{
+    background:#183a5b;
+    border-color:#6ea8ff;
+}
+
+.music-controls{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.now-playing{
+    margin-top:13px;
+    color:#91a4b9;
+    font-size:13px;
+}
+
+.repeat-status{
+    margin-top:10px;
+    color:#6ea8ff;
+    font-size:13px;
+}
+
+/* CALCULATOR */
+
+.calculator{
+    max-width:420px;
+    margin:18px auto 0;
+    background:#081522;
+    border:1px solid #263c55;
+    border-radius:18px;
+    padding:15px;
+}
+
+.calc-display{
+    width:100%;
+    height:75px;
+    background:#06101a;
+    border:1px solid #263c55;
+    border-radius:12px;
+    color:white;
+    text-align:right;
+    padding:12px;
+    font-size:28px;
+    margin-bottom:12px;
+}
+
+.calc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.calc-btn{
+    min-height:55px;
+    font-size:17px;
+}
+
+.calc-btn.equal{
+    background:#6ea8ff;
+    color:#06101d;
+}
+
+.calc-btn.operator{
+    color:#6ea8ff;
+}
+
+/* TRANSLATOR */
+
+.translate-box{
+    max-width:800px;
+    margin:auto;
+}
+
+.translate-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:15px;
+}
+
+.translate-area{
+    width:100%;
+    min-height:160px;
+    resize:vertical;
+    background:#081522;
+    color:white;
+    border:1px solid #263c55;
+    border-radius:12px;
+    padding:14px;
+    font-family:Arial,sans-serif;
+    outline:none;
+}
+
+.translate-area:focus{
+    border-color:#6ea8ff;
+}
+
+.translate-label{
+    color:#91a4b9;
+    font-size:13px;
+    margin-bottom:7px;
+}
+
+.translate-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+/* AUTH */
+
+.auth-overlay,
+.welcome-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding:20px;
+}
+
+.auth-overlay.show,
+.welcome-overlay.show{
+    display:flex;
+}
+
+.auth-box,
+.welcome-box{
+    width:100%;
+    max-width:430px;
+    background:#0d1b2d;
+    border:1px solid #263c55;
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 20px 70px rgba(0,0,0,.45);
+}
+
+.auth-box h2,
+.welcome-box h2{
+    margin-bottom:8px;
+}
+
+.auth-subtitle{
+    color:#91a4b9;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+.auth-box input{
+    width:100%;
+    margin-bottom:10px;
+}
+
+.auth-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.auth-buttons button{
+    flex:1;
+}
+
+.auth-close{
+    width:100%;
+    margin-top:10px;
+}
+
+.auth-message{
+    min-height:22px;
+    margin-top:12px;
+    font-size:14px;
+    color:#91a4b9;
+    line-height:1.5;
+}
+
 .user-info{
-    display:none;position:fixed;top:75px;right:20px;background:#10243a;
-    border:1px solid #263c55;border-radius:14px;padding:14px;z-index:5000;min-width:220px
+    display:none;
+    position:fixed;
+    top:75px;
+    right:20px;
+    background:#10243a;
+    border:1px solid #263c55;
+    border-radius:14px;
+    padding:14px;
+    z-index:5000;
+    min-width:220px;
 }
-.user-info.show{display:block}.user-email{font-size:13px;color:#91a4b9;margin-bottom:8px;word-break:break-all}
+
+.user-info.show{
+    display:block;
+}
+
+.user-email{
+    font-size:13px;
+    color:#91a4b9;
+    margin-bottom:8px;
+    word-break:break-all;
+}
+
 .creator{
-    position:fixed;right:18px;bottom:15px;color:#91a4b9;font-size:13px;
-    background:rgba(13,27,45,.94);border:1px solid #1c3046;padding:8px 12px;border-radius:10px;z-index:4000
+    position:fixed;
+    right:18px;
+    bottom:15px;
+    color:#91a4b9;
+    font-size:13px;
+    background:rgba(13,27,45,.94);
+    border:1px solid #1c3046;
+    padding:8px 12px;
+    border-radius:10px;
+    z-index:4000;
 }
-.welcome-box{text-align:center}.welcome-icon{font-size:48px;margin-bottom:8px}
-.welcome-box p{color:#b8c5d2;line-height:1.6;margin:12px 0}.welcome-info{
-    text-align:left;background:#10243a;border-radius:13px;padding:14px;margin:12px 0
-}.welcome-info div{padding:5px 0}
+
+.welcome-box{
+    text-align:center;
+}
+
+.welcome-icon{
+    font-size:48px;
+    margin-bottom:8px;
+}
+
+.welcome-box p{
+    color:#b8c5d2;
+    line-height:1.6;
+    margin:12px 0;
+}
+
+.welcome-info{
+    text-align:left;
+    background:#10243a;
+    border-radius:13px;
+    padding:14px;
+    margin:12px 0;
+}
+
+.welcome-info div{
+    padding:5px 0;
+}
+
 .toast{
-    position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;
-    background:#10243a;border:1px solid #31516f;color:#fff;padding:12px 16px;border-radius:12px;
-    z-index:11000;transition:.25s;pointer-events:none;max-width:90vw;text-align:center
+    position:fixed;
+    left:50%;
+    bottom:25px;
+    transform:translate(-50%,20px);
+    opacity:0;
+    background:#10243a;
+    border:1px solid #31516f;
+    color:white;
+    padding:12px 16px;
+    border-radius:12px;
+    z-index:11000;
+    transition:.25s;
+    pointer-events:none;
+    max-width:90vw;
+    text-align:center;
 }
-.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+/* MOBILE */
+
 @media(max-width:800px){
-    .app{width:100%;padding:15px 10px 85px}.grid{grid-template-columns:1fr}
-    .hero,.ai-card{grid-column:auto}.stats{grid-template-columns:1fr}.day{font-size:30px}
-    .timer-number{font-size:48px}.days{grid-template-columns:repeat(7,minmax(0,1fr))}
-    .achievement-list,.music-list{grid-template-columns:1fr}.ai-box{min-height:300px;max-height:450px;font-size:14px}
-    .ai-input-area{flex-direction:column}.ai-input-area .btn{width:100%}
-    header{align-items:flex-start}.logo{font-size:22px}.login{padding:9px 12px;font-size:12px}
-    .creator{right:8px;bottom:8px;font-size:11px;max-width:calc(100vw - 16px)}
+
+    .app{
+        width:100%;
+        padding:15px 10px 85px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero,
+    .ai-card,
+    .calculator-card,
+    .translate-card{
+        grid-column:auto;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .day{
+        font-size:30px;
+    }
+
+    .timer-number{
+        font-size:48px;
+    }
+
+    .days{
+        grid-template-columns:repeat(7,minmax(0,1fr));
+    }
+
+    .achievement-list,
+    .music-list{
+        grid-template-columns:1fr;
+    }
+
+    .ai-box{
+        min-height:300px;
+        max-height:450px;
+        font-size:14px;
+    }
+
+    .ai-input-area{
+        flex-direction:column;
+    }
+
+    .ai-input-area .btn{
+        width:100%;
+    }
+
+    header{
+        align-items:flex-start;
+    }
+
+    .logo{
+        font-size:22px;
+    }
+
+    .login{
+        padding:9px 12px;
+        font-size:12px;
+    }
+
+    .creator{
+        right:8px;
+        bottom:8px;
+        font-size:11px;
+        max-width:calc(100vw - 16px);
+    }
+
+    .translate-row{
+        grid-template-columns:1fr;
+    }
 }
 </style>
 </head>
@@ -146,6 +825,7 @@ input:focus{border-color:#6ea8ff}
 <body>
 
 <div class="app">
+
 <header>
     <div class="logo">⚒️ Study<span>Forge</span></div>
     <button class="login" id="loginButton">👤 Đăng nhập</button>
@@ -153,610 +833,1596 @@ input:focus{border-color:#6ea8ff}
 
 <div class="grid">
 
-<section class="card hero">
-    <div class="small">HÀNH TRÌNH HỌC TẬP</div>
-    <div class="day" id="dayText">Ngày 1 / 300</div>
+<!-- ================= HERO ================= -->
 
-    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="exp-line"><span id="expText">0 / 100 EXP</span><span id="levelText">Level 1</span></div>
+<section class="card hero">
+
+    <div class="small">HÀNH TRÌNH HỌC TẬP</div>
+
+    <div class="day" id="dayText">
+        Ngày 1 / 300
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="exp-line">
+        <span id="expText">0 / 100 EXP</span>
+        <span id="levelText">Level 1</span>
+    </div>
 
     <div class="stats">
-        <div class="stat">🔥 Streak<b id="streakValue">0 ngày</b></div>
-        <div class="stat">⏱️ Thời gian học<b id="studyTimeValue">0 phút</b></div>
-        <div class="stat">⚡ Level<b id="levelValue">1</b></div>
+
+        <div class="stat">
+            🔥 Streak
+            <b id="streakValue">0 ngày</b>
+        </div>
+
+        <div class="stat">
+            ⏱️ Thời gian học
+            <b id="studyTimeValue">0 phút</b>
+        </div>
+
+        <div class="stat">
+            ⚡ Level
+            <b id="levelValue">1</b>
+        </div>
+
     </div>
 
     <div class="actions">
-        <button class="btn" id="completeButton">✅ Hoàn thành hôm nay</button>
-        <button class="btn secondary" id="goalButton">🎯 Đổi mục tiêu</button>
-        <button class="btn secondary" id="startDateButton">📅 Ngày bắt đầu</button>
+
+        <button class="btn" id="completeButton">
+            ✅ Hoàn thành hôm nay
+        </button>
+
+        <button class="btn secondary" id="goalButton">
+            🎯 Đổi mục tiêu
+        </button>
+
+        <button class="btn secondary" id="startDateButton">
+            📅 Ngày bắt đầu
+        </button>
+
     </div>
 
     <div class="motivation">
-        <div class="motivation-title">💡 CHÂM NGÔN HÔM NAY</div>
-        <div id="motivationText">Mỗi ngày tiến một chút, bạn sẽ đi rất xa.</div>
-        <button class="quote-btn" id="randomQuoteButton">🎲 Random châm ngôn</button>
+
+        <div class="motivation-title">
+            💡 CHÂM NGÔN HÔM NAY
+        </div>
+
+        <div id="motivationText">
+            Mỗi ngày tiến một chút, bạn sẽ đi rất xa.
+        </div>
+
+        <button class="quote-btn" id="randomQuoteButton">
+            🎲 Random châm ngôn
+        </button>
+
     </div>
+
 </section>
 
+
+<!-- ================= POMODORO ================= -->
+
 <section class="card timer">
+
     <div class="small">FOCUS</div>
+
     <h2>🎯 Pomodoro</h2>
-    <div class="timer-number">25:00</div>
+
+    <div class="timer-number">
+        25:00
+    </div>
 
     <div class="timer-settings">
+
         <button data-minutes="5">5p</button>
         <button data-minutes="15">15p</button>
         <button data-minutes="25" class="active">25p</button>
         <button data-minutes="45">45p</button>
         <button data-minutes="60">60p</button>
-        <input id="customTime" class="custom-time" type="number" min="1" max="180" placeholder="Tự chọn">
+
+        <input
+            id="customTime"
+            class="custom-time"
+            type="number"
+            min="1"
+            max="180"
+            placeholder="Tự chọn"
+        >
+
     </div>
 
-    <button class="btn" id="startFocusButton">▶ Bắt đầu</button>
-    <button class="btn secondary" id="resetFocusButton">↺ Reset</button>
+    <button class="btn" id="startFocusButton">
+        ▶ Bắt đầu
+    </button>
+
+    <button class="btn secondary" id="resetFocusButton">
+        ↺ Reset
+    </button>
+
 </section>
 
+
+<!-- ================= TODO ================= -->
+
 <section class="card">
+
     <div class="small">TODO</div>
+
     <h2>📋 Nhiệm vụ hôm nay</h2>
-    <p class="small" style="margin-top:8px">Hoàn thành nhiệm vụ để nhận EXP và lên Level.</p>
+
+    <p class="small" style="margin-top:8px">
+        Hoàn thành nhiệm vụ để nhận EXP và lên Level.
+    </p>
+
     <div class="todo-add">
-        <input id="todoInput" type="text" placeholder="Ví dụ: Làm 10 bài toán...">
-        <button class="btn" id="todoButton">+</button>
+
+        <input
+            id="todoInput"
+            type="text"
+            placeholder="Ví dụ: Làm 10 bài toán..."
+        >
+
+        <button class="btn" id="todoButton">
+            +
+        </button>
+
     </div>
+
     <div id="taskList"></div>
+
 </section>
 
+
+<!-- ================= JOURNEY ================= -->
+
 <section class="card">
+
     <div class="small">JOURNEY</div>
+
     <h2>📅 Hành trình 1 → 1000 ngày</h2>
+
     <div class="days"></div>
-    <p class="small" style="margin-top:15px">Mục tiêu hiện tại: <b id="goalDisplay">300 ngày</b></p>
+
+    <p class="small" style="margin-top:15px">
+        Mục tiêu hiện tại:
+        <b id="goalDisplay">300 ngày</b>
+    </p>
+
 </section>
 
+
+<!-- ================= STATISTICS ================= -->
+
 <section class="card">
+
     <div class="small">STATISTICS</div>
+
     <h2>📊 Thống kê</h2>
+
     <div class="stats-big">
-        <div class="big-stat">📚 Ngày đã học<strong id="completedCount">0</strong></div>
-        <div class="big-stat">⏱️ Tổng thời gian<strong id="totalHours">0h</strong></div>
-        <div class="big-stat">🍅 Pomodoro<strong id="pomodoroCount">0</strong></div>
-        <div class="big-stat">🏆 Thành tựu<strong id="achievementCount">0</strong></div>
+
+        <div class="big-stat">
+            📚 Ngày đã học
+            <strong id="completedCount">0</strong>
+        </div>
+
+        <div class="big-stat">
+            ⏱️ Tổng thời gian
+            <strong id="totalHours">0h</strong>
+        </div>
+
+        <div class="big-stat">
+            🍅 Pomodoro
+            <strong id="pomodoroCount">0</strong>
+        </div>
+
+        <div class="big-stat">
+            🏆 Thành tựu
+            <strong id="achievementCount">0</strong>
+        </div>
+
     </div>
+
 </section>
 
+
+<!-- ================= ACHIEVEMENTS ================= -->
+
 <section class="card">
+
     <div class="small">ACHIEVEMENTS</div>
+
     <h2>🏆 Thành tựu</h2>
-    <div class="achievement-list" id="achievementList"></div>
+
+    <div
+        class="achievement-list"
+        id="achievementList">
+    </div>
+
 </section>
+
+
+<!-- ================= AI ================= -->
 
 <section class="card ai-card">
-    <div class="small">AI STUDY ASSISTANT</div>
-    <h2>🤖 StudyForge AI</h2>
-    <p class="small" style="margin-top:8px"><span id="aiQuota">FREE · Còn 20/20 lượt hôm nay</span></p>
+
+    <div class="small">
+        AI STUDY ASSISTANT
+    </div>
+
+    <h2>
+        🤖 StudyForge AI
+    </h2>
+
+    <p class="small" style="margin-top:8px">
+        🚀 AI không giới hạn ở giao diện StudyForge
+    </p>
 
     <div class="ai-box" id="aiBox">
-        👋 Chào bạn! StudyForge AI sẽ giúp bạn học tập, giải bài và tạo quiz.
-        <br><br>Hãy nhập câu hỏi bên dưới nhé!
+
+        👋 Chào bạn!
+
+        <br><br>
+
+        StudyForge AI sẽ giúp bạn học tập,
+        giải bài và tạo quiz.
+
+        <br><br>
+
+        Hãy nhập câu hỏi bên dưới nhé!
+
     </div>
 
     <div class="example-buttons">
-        <button class="example-btn" data-example="Giải phương trình 2x + 5 = 17 bằng cách trình bày từng bước.">📐 Ví dụ toán</button>
-        <button class="example-btn" data-example="Phân tích đa thức x^2 - 5x + 6 thành nhân tử và giải thích từng bước.">🧮 Phân tích đa thức</button>
-        <button class="example-btn" data-example="Tạo cho tôi 5 câu trắc nghiệm Toán lớp 9 về phương trình bậc hai.">📝 Tạo quiz</button>
+
+        <button
+            class="example-btn"
+            data-example="Giải phương trình 2x + 5 = 17 bằng cách trình bày từng bước."
+        >
+            📐 Ví dụ toán
+        </button>
+
+        <button
+            class="example-btn"
+            data-example="Phân tích đa thức x^2 - 5x + 6 thành nhân tử và giải thích từng bước."
+        >
+            🧮 Phân tích đa thức
+        </button>
+
+        <button
+            class="example-btn"
+            data-example="Tạo cho tôi 5 câu trắc nghiệm Toán lớp 9 về phương trình bậc hai."
+        >
+            📝 Tạo quiz
+        </button>
+
     </div>
 
     <div class="ai-input-area">
-        <input id="aiInput" type="text" placeholder="Hỏi bài, nhờ giải toán, tạo quiz...">
-        <button class="btn" id="aiButton">Gửi</button>
+
+        <input
+            id="aiInput"
+            type="text"
+            placeholder="Hỏi bài, nhờ giải toán, tạo quiz..."
+        >
+
+        <button class="btn" id="aiButton">
+            Gửi
+        </button>
+
     </div>
-    <div class="ai-hint">💡 AI hỗ trợ giải bài, giải thích kiến thức và tạo câu hỏi ôn tập.</div>
+
+    <div class="ai-hint">
+        💡 AI hỗ trợ giải bài, giải thích kiến thức và tạo câu hỏi ôn tập.
+    </div>
+
 </section>
+
+
+<!-- ================= MUSIC ================= -->
 
 <section class="card">
+
     <div class="small">MUSIC</div>
+
     <h2>🎧 Study Music</h2>
-    <div class="music-list" id="musicList"></div>
-    <div class="music-controls">
-        <button class="btn" id="playPauseButton">▶ Phát</button>
-        <button class="btn secondary" id="nextButton">⏭ Tiếp</button>
+
+    <div
+        class="music-list"
+        id="musicList">
     </div>
-    <div class="now-playing" id="nowPlaying">Chưa phát bài nào</div>
+
+    <div class="music-controls">
+
+        <button class="btn" id="playPauseButton">
+            ▶ Phát
+        </button>
+
+        <button class="btn secondary" id="nextButton">
+            ⏭ Tiếp
+        </button>
+
+        <button class="btn secondary" id="repeatButton">
+            🔁 Repeat: ON
+        </button>
+
+    </div>
+
+    <div
+        class="now-playing"
+        id="nowPlaying">
+        Chưa phát bài nào
+    </div>
+
+    <div
+        class="repeat-status"
+        id="repeatStatus">
+        🔁 Hết bài sẽ phát lại chính bài này.
+    </div>
+
+</section>
+
+
+<!-- ================= CALCULATOR ================= -->
+
+<section class="card calculator-card">
+
+    <div class="small">
+        CALCULATOR
+    </div>
+
+    <h2>
+        🧮 Máy tính Casio
+    </h2>
+
+    <p class="small" style="margin-top:8px">
+        Máy tính nhanh cho học tập.
+    </p>
+
+    <div class="calculator">
+
+        <input
+            id="calcDisplay"
+            class="calc-display"
+            type="text"
+            value=""
+            readonly
+        >
+
+        <div class="calc-grid">
+
+            <button class="calc-btn" onclick="calcClear()">AC</button>
+            <button class="calc-btn" onclick="calcDelete()">DEL</button>
+            <button class="calc-btn operator" onclick="calcInput('(')">(</button>
+            <button class="calc-btn operator" onclick="calcInput(')')">)</button>
+
+            <button class="calc-btn" onclick="calcInput('7')">7</button>
+            <button class="calc-btn" onclick="calcInput('8')">8</button>
+            <button class="calc-btn" onclick="calcInput('9')">9</button>
+            <button class="calc-btn operator" onclick="calcInput('/')">÷</button>
+
+            <button class="calc-btn" onclick="calcInput('4')">4</button>
+            <button class="calc-btn" onclick="calcInput('5')">5</button>
+            <button class="calc-btn" onclick="calcInput('6')">6</button>
+            <button class="calc-btn operator" onclick="calcInput('*')">×</button>
+
+            <button class="calc-btn" onclick="calcInput('1')">1</button>
+            <button class="calc-btn" onclick="calcInput('2')">2</button>
+            <button class="calc-btn" onclick="calcInput('3')">3</button>
+            <button class="calc-btn operator" onclick="calcInput('-')">−</button>
+
+            <button class="calc-btn" onclick="calcInput('0')">0</button>
+            <button class="calc-btn" onclick="calcInput('.')">.</button>
+            <button class="calc-btn equal" onclick="calcResult()">=</button>
+            <button class="calc-btn operator" onclick="calcInput('+')">+</button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= GOOGLE TRANSLATE ================= -->
+
+<section class="card translate-card">
+
+    <div class="small">
+        TRANSLATOR
+    </div>
+
+    <h2>
+        🌐 Google Dịch — English → Tiếng Việt
+    </h2>
+
+    <p class="small" style="margin-top:8px">
+        Nhập từ hoặc câu tiếng Anh rồi mở Google Dịch.
+    </p>
+
+    <div class="translate-box">
+
+        <div class="translate-row">
+
+            <div>
+
+                <div class="translate-label">
+                    🇬🇧 Tiếng Anh
+                </div>
+
+                <textarea
+                    id="englishText"
+                    class="translate-area"
+                    placeholder="Ví dụ: I have finished my homework."
+                ></textarea>
+
+            </div>
+
+            <div>
+
+                <div class="translate-label">
+                    🇻🇳 Tiếng Việt
+                </div>
+
+                <textarea
+                    id="vietnameseText"
+                    class="translate-area"
+                    placeholder="Bản dịch sẽ hiển thị tại Google Dịch."
+                    readonly
+                ></textarea>
+
+            </div>
+
+        </div>
+
+        <div class="translate-actions">
+
+            <button
+                class="btn"
+                id="googleTranslateButton">
+                🌐 Dịch bằng Google
+            </button>
+
+            <button
+                class="translate-btn"
+                id="copyEnglishButton">
+                📋 Copy tiếng Anh
+            </button>
+
+            <button
+                class="translate-btn"
+                id="clearTranslateButton">
+                🗑️ Xóa
+            </button>
+
+        </div>
+
+        <p class="small" style="margin-top:12px">
+            💡 Google Dịch sẽ mở với ngôn ngữ Anh → Việt.
+        </p>
+
+    </div>
+
 </section>
 
 </div>
 </div>
 
+
+<!-- ================= AUTH ================= -->
+
 <div class="auth-overlay" id="authOverlay">
+
     <div class="auth-box">
-        <h2 id="authTitle">👤 Đăng nhập</h2>
-        <p class="auth-subtitle">Đăng nhập hoặc tạo tài khoản StudyForge.</p>
-        <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
-        <input type="password" id="authPassword" placeholder="Mật khẩu tối thiểu 6 ký tự" autocomplete="current-password">
+
+        <h2 id="authTitle">
+            👤 Đăng nhập
+        </h2>
+
+        <p class="auth-subtitle">
+            Đăng nhập hoặc tạo tài khoản StudyForge.
+        </p>
+
+        <input
+            type="email"
+            id="authEmail"
+            placeholder="Email"
+            autocomplete="email"
+        >
+
+        <input
+            type="password"
+            id="authPassword"
+            placeholder="Mật khẩu tối thiểu 6 ký tự"
+            autocomplete="current-password"
+        >
+
         <div class="auth-buttons">
-            <button class="btn" id="authSubmit">Đăng nhập</button>
-            <button class="btn secondary" id="switchAuth">Đăng ký</button>
+
+            <button class="btn" id="authSubmit">
+                Đăng nhập
+            </button>
+
+            <button class="btn secondary" id="switchAuth">
+                Đăng ký
+            </button>
+
         </div>
-        <div class="auth-message" id="authMessage"></div>
-        <button class="btn secondary auth-close" id="closeAuth">Đóng</button>
+
+        <div
+            class="auth-message"
+            id="authMessage">
+        </div>
+
+        <button
+            class="btn secondary auth-close"
+            id="closeAuth">
+            Đóng
+        </button>
+
     </div>
+
 </div>
+
 
 <div class="user-info" id="userInfo">
-    <div class="user-email" id="userEmail"></div>
-    <button class="btn secondary" id="logoutButton">🚪 Đăng xuất</button>
+
+    <div
+        class="user-email"
+        id="userEmail">
+    </div>
+
+    <button
+        class="btn secondary"
+        id="logoutButton">
+        🚪 Đăng xuất
+    </button>
+
 </div>
+
+
+<!-- ================= WELCOME ================= -->
 
 <div class="welcome-overlay" id="welcomeOverlay">
+
     <div class="welcome-box">
-        <div class="welcome-icon">⚒️</div>
-        <h2>Chào mừng đến StudyForge!</h2>
-        <p>Học tập → nhận EXP → lên Level → mở khóa thành tựu.</p>
-        <div class="welcome-info">
-            <div>📚 Hoàn thành nhiệm vụ: <b>+10 EXP</b></div>
-            <div>🍅 Pomodoro hoàn thành: <b>+25 EXP</b></div>
-            <div>🔥 Hoàn thành ngày: <b>+50 EXP</b></div>
-            <div>⏱️ 180 phút học: <b>+180 EXP</b></div>
-            <div>⭐ Mỗi Level cần: <b>100 EXP</b></div>
+
+        <div class="welcome-icon">
+            ⚒️
         </div>
-        <button class="btn" id="enterWebButton">🚀 Bắt đầu học</button>
+
+        <h2>
+            Chào mừng đến StudyForge!
+        </h2>
+
+        <p>
+            Học tập → nhận EXP → lên Level → mở khóa thành tựu.
+        </p>
+
+        <div class="welcome-info">
+
+            <div>
+                📚 Hoàn thành nhiệm vụ:
+                <b>+10 EXP</b>
+            </div>
+
+            <div>
+                🍅 Pomodoro:
+                <b>+25 EXP</b>
+            </div>
+
+            <div>
+                🔥 Hoàn thành ngày:
+                <b>+50 EXP</b>
+            </div>
+
+            <div>
+                ⏱️ Focus:
+                <b>+phút học</b>
+            </div>
+
+            <div>
+                ⭐ Mỗi Level:
+                <b>100 EXP</b>
+            </div>
+
+        </div>
+
+        <button
+            class="btn"
+            id="enterWebButton">
+            🚀 Bắt đầu học
+        </button>
+
     </div>
+
 </div>
 
-<div class="creator">Người tạo: <b>Hoàng Ngọc Đạt</b></div>
-<div class="toast" id="toast"></div>
+
+<div class="creator">
+    Người tạo: <b>Hoàng Ngọc Đạt</b>
+</div>
+
+<div
+    class="toast"
+    id="toast">
+</div>
+
 
 <script>
+
 /* =====================================================
-   STORAGE / DATA
+   STORAGE
 ===================================================== */
+
 const STORAGE_KEY = "studyforge_data";
+
 let studyData;
 
-try {
-    studyData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-} catch {
+try{
+    studyData =
+        JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+}catch{
     studyData = {};
 }
 
-studyData.goal = Number.isInteger(studyData.goal) ? studyData.goal : 300;
-studyData.currentDay = Number.isInteger(studyData.currentDay) ? studyData.currentDay : 1;
-studyData.completedDays = Array.isArray(studyData.completedDays) ? studyData.completedDays : [];
-studyData.streak = Number.isInteger(studyData.streak) ? studyData.streak : 0;
-studyData.tasks = Array.isArray(studyData.tasks) ? studyData.tasks : [];
-studyData.studyMinutes = Number.isFinite(studyData.studyMinutes) ? studyData.studyMinutes : 0;
-studyData.pomodoros = Number.isInteger(studyData.pomodoros) ? studyData.pomodoros : 0;
-studyData.startDate = studyData.startDate || null;
-studyData.lastCompletedDate = studyData.lastCompletedDate || null;
-studyData.exp = Number.isInteger(studyData.exp) ? studyData.exp : 0;
-studyData.completedTaskIds = Array.isArray(studyData.completedTaskIds) ? studyData.completedTaskIds : [];
-studyData.welcomeShown = Boolean(studyData.welcomeShown);
+studyData.goal =
+    Number.isInteger(studyData.goal)
+        ? studyData.goal
+        : 300;
 
-function saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(studyData));
+studyData.currentDay =
+    Number.isInteger(studyData.currentDay)
+        ? studyData.currentDay
+        : 1;
+
+studyData.completedDays =
+    Array.isArray(studyData.completedDays)
+        ? studyData.completedDays
+        : [];
+
+studyData.streak =
+    Number.isInteger(studyData.streak)
+        ? studyData.streak
+        : 0;
+
+studyData.tasks =
+    Array.isArray(studyData.tasks)
+        ? studyData.tasks
+        : [];
+
+studyData.studyMinutes =
+    Number.isFinite(studyData.studyMinutes)
+        ? studyData.studyMinutes
+        : 0;
+
+studyData.pomodoros =
+    Number.isInteger(studyData.pomodoros)
+        ? studyData.pomodoros
+        : 0;
+
+studyData.startDate =
+    studyData.startDate || null;
+
+studyData.lastCompletedDate =
+    studyData.lastCompletedDate || null;
+
+studyData.exp =
+    Number.isInteger(studyData.exp)
+        ? studyData.exp
+        : 0;
+
+studyData.welcomeShown =
+    Boolean(studyData.welcomeShown);
+
+
+function saveData(){
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(studyData)
+    );
 }
 
-function showToast(message) {
-    const toast = document.getElementById("toast");
+
+function showToast(message){
+
+    const toast =
+        document.getElementById("toast");
+
     toast.textContent = message;
+
     toast.classList.add("show");
+
     clearTimeout(showToast.timer);
-    showToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
+
+    showToast.timer =
+        setTimeout(
+            () => toast.classList.remove("show"),
+            2600
+        );
 }
+
 
 /* =====================================================
    DATE
 ===================================================== */
-function getToday() {
-    return new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Ho_Chi_Minh"
-    }).format(new Date());
+
+function getToday(){
+
+    return new Intl.DateTimeFormat(
+        "en-CA",
+        {
+            timeZone:"Asia/Ho_Chi_Minh"
+        }
+    ).format(new Date());
+
 }
 
-function dateDiff(a, b) {
-    const x = new Date(a + "T00:00:00");
-    const y = new Date(b + "T00:00:00");
-    return Math.round((y - x) / 86400000);
+
+function dateDiff(a,b){
+
+    const x =
+        new Date(a+"T00:00:00");
+
+    const y =
+        new Date(b+"T00:00:00");
+
+    return Math.round(
+        (y-x)/86400000
+    );
+
 }
+
 
 /* =====================================================
-   EXP / LEVEL
+   EXP
 ===================================================== */
-function getLevel() {
-    return Math.floor(studyData.exp / 100) + 1;
+
+function getLevel(){
+
+    return Math.floor(
+        studyData.exp/100
+    )+1;
+
 }
 
-function getLevelExp() {
-    return studyData.exp % 100;
+
+function getLevelExp(){
+
+    return studyData.exp%100;
+
 }
 
-function addExp(amount, reason) {
-    const oldLevel = getLevel();
-    studyData.exp += Math.max(0, Number(amount) || 0);
-    const newLevel = getLevel();
+
+function addExp(amount,reason){
+
+    const oldLevel =
+        getLevel();
+
+    studyData.exp +=
+        Math.max(
+            0,
+            Number(amount)||0
+        );
+
+    const newLevel =
+        getLevel();
+
     saveData();
+
     updateJourney();
 
-    if (newLevel > oldLevel) {
-        showToast(`🎉 LEVEL UP! Bạn đã lên Level ${newLevel}! +${amount} EXP`);
-        setTimeout(() => alert(`🎉 LEVEL UP!\n\nBạn đã lên Level ${newLevel}!`), 250);
-    } else if (reason) {
-        showToast(`✨ +${amount} EXP · ${reason}`);
+    if(newLevel>oldLevel){
+
+        showToast(
+            `🎉 LEVEL UP! Level ${newLevel}!`
+        );
+
+    }else if(reason){
+
+        showToast(
+            `✨ +${amount} EXP · ${reason}`
+        );
+
     }
+
 }
+
 
 /* =====================================================
    MOTIVATION
 ===================================================== */
-const motivations = [
-    "Mỗi ngày tiến một chút, bạn sẽ đi rất xa. 🚀",
-    "Không cần hoàn hảo, chỉ cần không bỏ cuộc. 🔥",
-    "Học hôm nay để ngày mai giỏi hơn chính mình hôm qua. 📚",
-    "30 phút tập trung tốt hơn 3 giờ mất tập trung. 🎯",
-    "Bạn không cần học thật nhiều, hãy học thật đều. ⚡",
-    "Khó không có nghĩa là không thể. 💪",
-    "Mỗi bài tập hoàn thành là một bước tiến. 🏆",
-    "Tương lai của bạn được xây từ những việc bạn làm hôm nay. 🌟",
-    "Đừng chờ có động lực. Hãy bắt đầu rồi động lực sẽ đến. 🚀",
-    "Một ngày nữa, một bước nữa. 🔥",
-    "Kiên trì hôm nay, tự hào ngày mai. 🏆",
-    "Bạn đã bắt đầu rồi, vậy hãy đi tiếp. 💙",
-    "Tập trung vào tiến bộ, không phải sự hoàn hảo.",
-    "Học một chút mỗi ngày sẽ tạo nên khác biệt rất lớn.",
-    "Đi chậm vẫn tốt hơn là đứng yên.",
-    "Não cũng cần luyện tập giống như cơ bắp. 🧠",
-    "Mỗi lần bạn ngồi xuống học là một lần bạn mạnh hơn.",
-    "Đừng bỏ cuộc chỉ vì hôm nay khó.",
-    "Bạn có thể làm được. Bắt đầu từ câu đầu tiên.",
-    "🔥 StudyForge: Forge your future!"
+
+const motivations=[
+
+"Mỗi ngày tiến một chút, bạn sẽ đi rất xa. 🚀",
+"Không cần hoàn hảo, chỉ cần không bỏ cuộc. 🔥",
+"Học hôm nay để ngày mai giỏi hơn chính mình hôm qua. 📚",
+"30 phút tập trung tốt hơn 3 giờ mất tập trung. 🎯",
+"Bạn không cần học thật nhiều, hãy học thật đều. ⚡",
+"Khó không có nghĩa là không thể. 💪",
+"Mỗi bài tập hoàn thành là một bước tiến. 🏆",
+"Tương lai được xây từ những việc bạn làm hôm nay. 🌟",
+"Đừng chờ có động lực. Hãy bắt đầu. 🚀",
+"Một ngày nữa, một bước nữa. 🔥",
+"Kiên trì hôm nay, tự hào ngày mai. 🏆",
+"Bạn đã bắt đầu rồi, hãy đi tiếp. 💙",
+"Tập trung vào tiến bộ, không phải hoàn hảo.",
+"Học một chút mỗi ngày sẽ tạo nên khác biệt.",
+"Đi chậm vẫn tốt hơn đứng yên.",
+"Não cũng cần luyện tập giống như cơ bắp. 🧠",
+"Mỗi lần bạn học là một lần bạn mạnh hơn.",
+"Đừng bỏ cuộc chỉ vì hôm nay khó.",
+"Bạn có thể làm được. Bắt đầu từ câu đầu tiên.",
+"🔥 StudyForge: Forge your future!"
+
 ];
 
-function randomQuote() {
-    const quote = motivations[Math.floor(Math.random() * motivations.length)];
-    document.getElementById("motivationText").textContent = quote;
+
+function randomQuote(){
+
+    const quote =
+        motivations[
+            Math.floor(
+                Math.random()*
+                motivations.length
+            )
+        ];
+
+    document.getElementById(
+        "motivationText"
+    ).textContent = quote;
+
 }
 
-document.getElementById("randomQuoteButton").onclick = randomQuote;
+document.getElementById(
+    "randomQuoteButton"
+).onclick = randomQuote;
+
 
 /* =====================================================
    JOURNEY
 ===================================================== */
-function updateJourney() {
-    document.getElementById("dayText").textContent =
+
+function updateJourney(){
+
+    document.getElementById(
+        "dayText"
+    ).textContent =
         `Ngày ${studyData.currentDay} / ${studyData.goal}`;
 
-    const progress = Math.min(100, ((studyData.currentDay - 1) / studyData.goal) * 100);
-    document.getElementById("progressBar").style.width = progress + "%";
+    const progress =
+        Math.min(
+            100,
+            ((studyData.currentDay-1)/
+            studyData.goal)*100
+        );
 
-    const level = getLevel();
-    const levelExp = getLevelExp();
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        progress+"%";
 
-    document.getElementById("expText").textContent = `${levelExp} / 100 EXP`;
-    document.getElementById("levelText").textContent = `Level ${level}`;
-    document.getElementById("levelValue").textContent = level;
-    document.getElementById("streakValue").textContent = studyData.streak + " ngày";
-    document.getElementById("studyTimeValue").textContent = studyData.studyMinutes + " phút";
-    document.getElementById("goalDisplay").textContent = studyData.goal + " ngày";
-    document.getElementById("completedCount").textContent = studyData.completedDays.length;
-    document.getElementById("totalHours").textContent = (studyData.studyMinutes / 60).toFixed(1) + "h";
-    document.getElementById("pomodoroCount").textContent = studyData.pomodoros;
+    const level =
+        getLevel();
+
+    document.getElementById(
+        "expText"
+    ).textContent =
+        `${getLevelExp()} / 100 EXP`;
+
+    document.getElementById(
+        "levelText"
+    ).textContent =
+        `Level ${level}`;
+
+    document.getElementById(
+        "levelValue"
+    ).textContent =
+        level;
+
+    document.getElementById(
+        "streakValue"
+    ).textContent =
+        studyData.streak+" ngày";
+
+    document.getElementById(
+        "studyTimeValue"
+    ).textContent =
+        studyData.studyMinutes+" phút";
+
+    document.getElementById(
+        "goalDisplay"
+    ).textContent =
+        studyData.goal+" ngày";
+
+    document.getElementById(
+        "completedCount"
+    ).textContent =
+        studyData.completedDays.length;
+
+    document.getElementById(
+        "totalHours"
+    ).textContent =
+        (studyData.studyMinutes/60)
+        .toFixed(1)+"h";
+
+    document.getElementById(
+        "pomodoroCount"
+    ).textContent =
+        studyData.pomodoros;
 
     renderDays();
     renderAchievements();
+
 }
 
-function renderDays() {
-    const container = document.querySelector(".days");
-    container.innerHTML = "";
 
-    for (let i = 1; i <= 1000; i++) {
-        const box = document.createElement("div");
-        box.className = "day-box";
-        box.textContent = i;
+function renderDays(){
 
-        if (studyData.completedDays.includes(i)) box.classList.add("done");
-        if (i === studyData.currentDay) box.classList.add("current");
+    const container =
+        document.querySelector(".days");
+
+    container.innerHTML="";
+
+    for(let i=1;i<=1000;i++){
+
+        const box =
+            document.createElement("div");
+
+        box.className="day-box";
+
+        box.textContent=i;
+
+        if(
+            studyData.completedDays
+            .includes(i)
+        ){
+            box.classList.add("done");
+        }
+
+        if(
+            i===studyData.currentDay
+        ){
+            box.classList.add("current");
+        }
 
         container.appendChild(box);
+
     }
+
 }
 
-function completeToday() {
-    const today = getToday();
 
-    if (studyData.lastCompletedDate === today) {
-        alert("✅ Hôm nay bạn đã hoàn thành rồi!");
+function completeToday(){
+
+    const today =
+        getToday();
+
+    if(
+        studyData.lastCompletedDate===
+        today
+    ){
+
+        alert(
+            "✅ Hôm nay bạn đã hoàn thành rồi!"
+        );
+
         return;
+
     }
 
-    const day = studyData.currentDay;
+    const day =
+        studyData.currentDay;
 
-    if (!studyData.completedDays.includes(day)) {
-        studyData.completedDays.push(day);
+    if(
+        !studyData.completedDays
+        .includes(day)
+    ){
+
+        studyData.completedDays
+            .push(day);
+
     }
 
-    if (studyData.lastCompletedDate) {
-        const difference = dateDiff(studyData.lastCompletedDate, today);
-        studyData.streak = difference === 1 ? studyData.streak + 1 : 1;
-    } else {
-        studyData.streak = 1;
+    if(studyData.lastCompletedDate){
+
+        const difference =
+            dateDiff(
+                studyData.lastCompletedDate,
+                today
+            );
+
+        studyData.streak =
+            difference===1
+                ? studyData.streak+1
+                : 1;
+
+    }else{
+
+        studyData.streak=1;
+
     }
 
-    studyData.lastCompletedDate = today;
+    studyData.lastCompletedDate =
+        today;
 
-    if (studyData.currentDay < studyData.goal) {
+    if(
+        studyData.currentDay<
+        studyData.goal
+    ){
+
         studyData.currentDay++;
+
     }
 
     saveData();
+
     updateJourney();
-    addExp(50, "Hoàn thành ngày học");
 
-    if (day === studyData.goal) {
-        alert(`🎉 CHÚC MỪNG!\n\nBạn đã hoàn thành mục tiêu ${studyData.goal} ngày!`);
-    }
-}
-
-document.getElementById("completeButton").onclick = completeToday;
-
-function changeGoal() {
-    const answer = prompt("🎯 Nhập mục tiêu từ 1 đến 1000 ngày:", studyData.goal);
-    if (answer === null) return;
-
-    const goal = Number(answer);
-
-    if (!Number.isInteger(goal) || goal < 1 || goal > 1000) {
-        alert("⚠️ Hãy nhập số từ 1 đến 1000.");
-        return;
-    }
-
-    studyData.goal = goal;
-    if (studyData.currentDay > goal) studyData.currentDay = goal;
-
-    saveData();
-    updateJourney();
-}
-
-document.getElementById("goalButton").onclick = changeGoal;
-
-function changeStartDate() {
-    const answer = prompt(
-        "📅 Nhập ngày bắt đầu theo dạng YYYY-MM-DD:",
-        studyData.startDate || getToday()
+    addExp(
+        50,
+        "Hoàn thành ngày học"
     );
 
-    if (answer === null) return;
-
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(answer)) {
-        alert("⚠️ Hãy nhập đúng dạng YYYY-MM-DD.");
-        return;
-    }
-
-    studyData.startDate = answer;
-    saveData();
-    showToast("✅ Đã cập nhật ngày bắt đầu!");
 }
 
-document.getElementById("startDateButton").onclick = changeStartDate;
+document.getElementById(
+    "completeButton"
+).onclick=completeToday;
+
+
+function changeGoal(){
+
+    const answer =
+        prompt(
+            "🎯 Nhập mục tiêu từ 1 đến 1000:",
+            studyData.goal
+        );
+
+    if(answer===null)return;
+
+    const goal =
+        Number(answer);
+
+    if(
+        !Number.isInteger(goal) ||
+        goal<1 ||
+        goal>1000
+    ){
+
+        alert(
+            "⚠️ Hãy nhập số từ 1 đến 1000."
+        );
+
+        return;
+
+    }
+
+    studyData.goal=goal;
+
+    if(
+        studyData.currentDay>goal
+    ){
+
+        studyData.currentDay=goal;
+
+    }
+
+    saveData();
+
+    updateJourney();
+
+}
+
+document.getElementById(
+    "goalButton"
+).onclick=changeGoal;
+
+
+function changeStartDate(){
+
+    const answer =
+        prompt(
+            "📅 Nhập ngày bắt đầu YYYY-MM-DD:",
+            studyData.startDate||getToday()
+        );
+
+    if(answer===null)return;
+
+    if(
+        !/^\d{4}-\d{2}-\d{2}$/.test(answer)
+    ){
+
+        alert(
+            "⚠️ Hãy nhập đúng dạng YYYY-MM-DD."
+        );
+
+        return;
+
+    }
+
+    studyData.startDate=answer;
+
+    saveData();
+
+    showToast(
+        "✅ Đã cập nhật ngày bắt đầu!"
+    );
+
+}
+
+document.getElementById(
+    "startDateButton"
+).onclick=changeStartDate;
+
 
 /* =====================================================
    POMODORO
 ===================================================== */
-let focusMinutes = 25;
-let focusSeconds = 1500;
-let focusRunning = false;
-let focusInterval = null;
 
-const timerDisplay = document.querySelector(".timer-number");
-const startButton = document.getElementById("startFocusButton");
-const resetButton = document.getElementById("resetFocusButton");
-const customTime = document.getElementById("customTime");
+let focusMinutes=25;
+let focusSeconds=1500;
+let focusRunning=false;
+let focusInterval=null;
 
-function updateTimer() {
-    const minutes = Math.floor(focusSeconds / 60).toString().padStart(2, "0");
-    const seconds = (focusSeconds % 60).toString().padStart(2, "0");
-    timerDisplay.textContent = `${minutes}:${seconds}`;
+const timerDisplay =
+    document.querySelector(".timer-number");
+
+const startButton =
+    document.getElementById(
+        "startFocusButton"
+    );
+
+const resetButton =
+    document.getElementById(
+        "resetFocusButton"
+    );
+
+const customTime =
+    document.getElementById(
+        "customTime"
+    );
+
+
+function updateTimer(){
+
+    const minutes =
+        Math.floor(
+            focusSeconds/60
+        ).toString().padStart(2,"0");
+
+    const seconds =
+        (focusSeconds%60)
+        .toString()
+        .padStart(2,"0");
+
+    timerDisplay.textContent =
+        `${minutes}:${seconds}`;
+
 }
 
-function setFocusTime(minutes) {
-    if (focusRunning) return;
 
-    focusMinutes = minutes;
-    focusSeconds = minutes * 60;
+function setFocusTime(minutes){
 
-    document.querySelectorAll(".timer-settings button").forEach(button => {
-        button.classList.toggle("active", Number(button.dataset.minutes) === minutes);
-    });
+    if(focusRunning)return;
+
+    focusMinutes=minutes;
+    focusSeconds=minutes*60;
+
+    document
+        .querySelectorAll(
+            ".timer-settings button"
+        )
+        .forEach(button=>{
+
+            button.classList.toggle(
+                "active",
+                Number(
+                    button.dataset.minutes
+                )===minutes
+            );
+
+        });
 
     updateTimer();
+
 }
 
-document.querySelectorAll(".timer-settings button").forEach(button => {
-    button.onclick = () => setFocusTime(Number(button.dataset.minutes));
-});
 
-customTime.addEventListener("change", () => {
-    const value = Number(customTime.value);
-    if (Number.isInteger(value) && value >= 1 && value <= 180) {
-        setFocusTime(value);
-    } else if (customTime.value) {
-        alert("⚠️ Thời gian phải từ 1 đến 180 phút.");
-        customTime.value = "";
+document
+    .querySelectorAll(
+        ".timer-settings button"
+    )
+    .forEach(button=>{
+
+        button.onclick=()=>{
+            setFocusTime(
+                Number(
+                    button.dataset.minutes
+                )
+            );
+        };
+
+    });
+
+
+customTime.addEventListener(
+    "change",
+    ()=>{
+
+        const value =
+            Number(customTime.value);
+
+        if(
+            Number.isInteger(value) &&
+            value>=1 &&
+            value<=180
+        ){
+
+            setFocusTime(value);
+
+        }else if(customTime.value){
+
+            alert(
+                "⚠️ Thời gian phải từ 1 đến 180 phút."
+            );
+
+            customTime.value="";
+
+        }
+
     }
-});
+);
 
-function startFocus() {
-    if (focusRunning) {
-        clearInterval(focusInterval);
-        focusRunning = false;
-        startButton.textContent = "▶ Tiếp tục";
+
+function startFocus(){
+
+    if(focusRunning){
+
+        clearInterval(
+            focusInterval
+        );
+
+        focusRunning=false;
+
+        startButton.textContent=
+            "▶ Tiếp tục";
+
         return;
+
     }
 
-    focusRunning = true;
-    startButton.textContent = "⏸ Tạm dừng";
+    focusRunning=true;
 
-    focusInterval = setInterval(() => {
-        focusSeconds--;
-        updateTimer();
+    startButton.textContent=
+        "⏸ Tạm dừng";
 
-        if (focusSeconds <= 0) {
-            clearInterval(focusInterval);
-            focusRunning = false;
+    focusInterval =
+        setInterval(()=>{
 
-            studyData.studyMinutes += focusMinutes;
-            studyData.pomodoros++;
+            focusSeconds--;
 
-            saveData();
-            updateJourney();
-            addExp(focusMinutes, `Hoàn thành ${focusMinutes} phút Focus`);
-
-            focusSeconds = focusMinutes * 60;
-            startButton.textContent = "▶ Bắt đầu";
             updateTimer();
 
-            alert(`🎉 Hoàn thành ${focusMinutes} phút Focus!\n\n+${focusMinutes} EXP`);
-        }
-    }, 1000);
-}
+            if(focusSeconds<=0){
 
-function resetFocus() {
-    clearInterval(focusInterval);
-    focusRunning = false;
-    focusSeconds = focusMinutes * 60;
-    startButton.textContent = "▶ Bắt đầu";
-    updateTimer();
-}
+                clearInterval(
+                    focusInterval
+                );
 
-startButton.onclick = startFocus;
-resetButton.onclick = resetFocus;
+                focusRunning=false;
 
-/* =====================================================
-   TODO + EXP
-===================================================== */
-const todoInput = document.getElementById("todoInput");
-const todoButton = document.getElementById("todoButton");
-const taskList = document.getElementById("taskList");
+                studyData.studyMinutes +=
+                    focusMinutes;
 
-function renderTasks() {
-    taskList.innerHTML = "";
+                studyData.pomodoros++;
 
-    studyData.tasks.forEach((task, index) => {
-        const row = document.createElement("div");
-        row.className = "task" + (task.done ? " done" : "");
+                saveData();
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = task.done;
+                updateJourney();
 
-        const span = document.createElement("span");
-        span.textContent = task.text;
+                addExp(
+                    focusMinutes,
+                    `Hoàn thành ${focusMinutes} phút Focus`
+                );
 
-        const deleteButton = document.createElement("button");
-        deleteButton.className = "delete-task";
-        deleteButton.textContent = "✕";
+                focusSeconds =
+                    focusMinutes*60;
 
-        checkbox.onchange = () => {
-            const wasDone = studyData.tasks[index].done;
-            studyData.tasks[index].done = checkbox.checked;
+                startButton.textContent=
+                    "▶ Bắt đầu";
 
-            if (!wasDone && checkbox.checked) {
-                addExp(10, "Hoàn thành nhiệm vụ");
+                updateTimer();
+
+                alert(
+                    `🎉 Hoàn thành ${focusMinutes} phút Focus!`
+                );
+
             }
 
-            saveData();
-            renderTasks();
-        };
+        },1000);
 
-        deleteButton.onclick = () => {
-            studyData.tasks.splice(index, 1);
-            saveData();
-            renderTasks();
-        };
-
-        row.append(checkbox, span, deleteButton);
-        taskList.appendChild(row);
-    });
 }
 
-function addTask() {
-    const text = todoInput.value.trim();
-    if (!text) return;
+
+function resetFocus(){
+
+    clearInterval(
+        focusInterval
+    );
+
+    focusRunning=false;
+
+    focusSeconds=
+        focusMinutes*60;
+
+    startButton.textContent=
+        "▶ Bắt đầu";
+
+    updateTimer();
+
+}
+
+
+startButton.onclick=startFocus;
+resetButton.onclick=resetFocus;
+
+
+/* =====================================================
+   TODO
+===================================================== */
+
+const todoInput =
+    document.getElementById(
+        "todoInput"
+    );
+
+const todoButton =
+    document.getElementById(
+        "todoButton"
+    );
+
+const taskList =
+    document.getElementById(
+        "taskList"
+    );
+
+
+function renderTasks(){
+
+    taskList.innerHTML="";
+
+    studyData.tasks.forEach(
+        (task,index)=>{
+
+            const row =
+                document.createElement("div");
+
+            row.className=
+                "task"+
+                (task.done?" done":"");
+
+            const checkbox =
+                document.createElement("input");
+
+            checkbox.type="checkbox";
+            checkbox.checked=task.done;
+
+            const span =
+                document.createElement("span");
+
+            span.textContent=task.text;
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.className=
+                "delete-task";
+
+            deleteButton.textContent="✕";
+
+            checkbox.onchange=()=>{
+
+                const wasDone =
+                    studyData.tasks[index].done;
+
+                studyData.tasks[index].done =
+                    checkbox.checked;
+
+                if(
+                    !wasDone &&
+                    checkbox.checked
+                ){
+
+                    addExp(
+                        10,
+                        "Hoàn thành nhiệm vụ"
+                    );
+
+                }
+
+                saveData();
+                renderTasks();
+
+            };
+
+            deleteButton.onclick=()=>{
+
+                studyData.tasks
+                    .splice(index,1);
+
+                saveData();
+                renderTasks();
+
+            };
+
+            row.append(
+                checkbox,
+                span,
+                deleteButton
+            );
+
+            taskList.appendChild(row);
+
+        }
+    );
+
+}
+
+
+function addTask(){
+
+    const text =
+        todoInput.value.trim();
+
+    if(!text)return;
 
     studyData.tasks.push({
-        text,
-        done: false,
-        createdAt: Date.now()
+
+        text:text,
+        done:false,
+        createdAt:Date.now()
+
     });
 
-    todoInput.value = "";
+    todoInput.value="";
+
     saveData();
+
     renderTasks();
-    showToast("📋 Đã thêm nhiệm vụ · Hoàn thành = +10 EXP");
+
+    showToast(
+        "📋 Đã thêm nhiệm vụ · Hoàn thành = +10 EXP"
+    );
+
 }
 
-todoButton.onclick = addTask;
 
-todoInput.addEventListener("keydown", event => {
-    if (event.key === "Enter") addTask();
-});
+todoButton.onclick=addTask;
+
+todoInput.addEventListener(
+    "keydown",
+    event=>{
+        if(event.key==="Enter"){
+            addTask();
+        }
+    }
+);
+
 
 /* =====================================================
    ACHIEVEMENTS
 ===================================================== */
-const achievements = [
-    ["🌱 Tân binh", "Hoàn thành ngày đầu tiên", () => studyData.completedDays.length >= 1],
-    ["🔥 3 ngày", "Streak đạt 3 ngày", () => studyData.streak >= 3],
-    ["🔥 7 ngày", "Streak đạt 7 ngày", () => studyData.streak >= 7],
-    ["🔥 14 ngày", "Streak đạt 14 ngày", () => studyData.streak >= 14],
-    ["🔥 30 ngày", "Streak đạt 30 ngày", () => studyData.streak >= 30],
-    ["🏆 30 ngày học", "Hoàn thành 30 ngày", () => studyData.completedDays.length >= 30],
-    ["💎 100 ngày học", "Hoàn thành 100 ngày", () => studyData.completedDays.length >= 100],
-    ["🚀 300 ngày học", "Hoàn thành 300 ngày", () => studyData.completedDays.length >= 300],
-    ["🌌 500 ngày học", "Hoàn thành 500 ngày", () => studyData.completedDays.length >= 500],
-    ["👑 1000 ngày học", "Hoàn thành 1000 ngày", () => studyData.completedDays.length >= 1000],
-    ["📚 100 phút", "Học đủ 100 phút", () => studyData.studyMinutes >= 100],
-    ["📚 500 phút", "Học đủ 500 phút", () => studyData.studyMinutes >= 500],
-    ["🧠 1000 phút", "Học đủ 1000 phút", () => studyData.studyMinutes >= 1000],
-    ["🧠 3000 phút", "Học đủ 3000 phút", () => studyData.studyMinutes >= 3000],
-    ["⏱️ 10 giờ", "Học đủ 10 giờ", () => studyData.studyMinutes >= 600],
-    ["⏱️ 50 giờ", "Học đủ 50 giờ", () => studyData.studyMinutes >= 3000],
-    ["🍅 5 Pomodoro", "Hoàn thành 5 Pomodoro", () => studyData.pomodoros >= 5],
-    ["🍅 10 Pomodoro", "Hoàn thành 10 Pomodoro", () => studyData.pomodoros >= 10],
-    ["🍅 50 Pomodoro", "Hoàn thành 50 Pomodoro", () => studyData.pomodoros >= 50],
-    ["🍅 100 Pomodoro", "Hoàn thành 100 Pomodoro", () => studyData.pomodoros >= 100],
-    ["⭐ Level 5", "Đạt Level 5", () => getLevel() >= 5],
-    ["⭐ Level 10", "Đạt Level 10", () => getLevel() >= 10],
-    ["⭐ Level 25", "Đạt Level 25", () => getLevel() >= 25],
-    ["⚒️ StudyForge", "Hoàn thành mục tiêu hiện tại", () => studyData.completedDays.length >= studyData.goal]
+
+const achievements=[
+
+["🌱 Tân binh","Hoàn thành ngày đầu tiên",()=>studyData.completedDays.length>=1],
+
+["🔥 3 ngày","Streak đạt 3 ngày",()=>studyData.streak>=3],
+
+["🔥 7 ngày","Streak đạt 7 ngày",()=>studyData.streak>=7],
+
+["🔥 14 ngày","Streak đạt 14 ngày",()=>studyData.streak>=14],
+
+["🔥 30 ngày","Streak đạt 30 ngày",()=>studyData.streak>=30],
+
+["🏆 30 ngày học","Hoàn thành 30 ngày",()=>studyData.completedDays.length>=30],
+
+["💎 100 ngày học","Hoàn thành 100 ngày",()=>studyData.completedDays.length>=100],
+
+["🚀 300 ngày học","Hoàn thành 300 ngày",()=>studyData.completedDays.length>=300],
+
+["🌌 500 ngày học","Hoàn thành 500 ngày",()=>studyData.completedDays.length>=500],
+
+["👑 1000 ngày học","Hoàn thành 1000 ngày",()=>studyData.completedDays.length>=1000],
+
+["📚 100 phút","Học đủ 100 phút",()=>studyData.studyMinutes>=100],
+
+["📚 500 phút","Học đủ 500 phút",()=>studyData.studyMinutes>=500],
+
+["🧠 1000 phút","Học đủ 1000 phút",()=>studyData.studyMinutes>=1000],
+
+["🧠 3000 phút","Học đủ 3000 phút",()=>studyData.studyMinutes>=3000],
+
+["⏱️ 10 giờ","Học đủ 10 giờ",()=>studyData.studyMinutes>=600],
+
+["⏱️ 50 giờ","Học đủ 50 giờ",()=>studyData.studyMinutes>=3000],
+
+["🍅 5 Pomodoro","Hoàn thành 5 Pomodoro",()=>studyData.pomodoros>=5],
+
+["🍅 10 Pomodoro","Hoàn thành 10 Pomodoro",()=>studyData.pomodoros>=10],
+
+["🍅 50 Pomodoro","Hoàn thành 50 Pomodoro",()=>studyData.pomodoros>=50],
+
+["🍅 100 Pomodoro","Hoàn thành 100 Pomodoro",()=>studyData.pomodoros>=100],
+
+["⭐ Level 5","Đạt Level 5",()=>getLevel()>=5],
+
+["⭐ Level 10","Đạt Level 10",()=>getLevel()>=10],
+
+["⭐ Level 25","Đạt Level 25",()=>getLevel()>=25],
+
+["⚒️ StudyForge","Hoàn thành mục tiêu hiện tại",()=>studyData.completedDays.length>=studyData.goal]
+
 ];
 
-function renderAchievements() {
-    const container = document.getElementById("achievementList");
-    container.innerHTML = "";
-    let unlocked = 0;
 
-    achievements.forEach(([name, desc, check]) => {
-        const ok = check();
-        if (ok) unlocked++;
+function renderAchievements(){
 
-        const div = document.createElement("div");
-        div.className = "achievement" + (ok ? " unlocked" : "");
-        div.innerHTML = `<b>${name}</b><span>${ok ? "✅ " : "🔒 "}${desc}</span>`;
-        container.appendChild(div);
-    });
+    const container =
+        document.getElementById(
+            "achievementList"
+        );
 
-    document.getElementById("achievementCount").textContent = unlocked;
+    container.innerHTML="";
+
+    let unlocked=0;
+
+    achievements.forEach(
+        ([name,desc,check])=>{
+
+            const ok=check();
+
+            if(ok)unlocked++;
+
+            const div =
+                document.createElement("div");
+
+            div.className=
+                "achievement"+
+                (ok?" unlocked":"");
+
+            div.innerHTML=
+                `<b>${name}</b>
+                 <span>
+                 ${ok?"✅ ":"🔒 "}${desc}
+                 </span>`;
+
+            container.appendChild(div);
+
+        }
+    );
+
+    document.getElementById(
+        "achievementCount"
+    ).textContent=unlocked;
+
 }
+
 
 /* =====================================================
    MUSIC
+   LẶP LẠI CHÍNH BÀI ĐANG PHÁT
 ===================================================== */
 
-// Danh sách nhạc được sắp xếp theo số trong tên file
-const musicTracks = [
+const musicTracks=[
+
     "music/chill1.mp3",
     "music/chill2.mp3",
     "music/chill3.mp3",
@@ -767,490 +2433,1328 @@ const musicTracks = [
     "music/chill8.mp3",
     "music/chill9.mp3",
     "music/chill10.mp3"
+
 ];
 
-let musicIndex = 0;
-let isPlaying = false;
 
-const audioPlayer = new Audio();
-audioPlayer.preload = "auto";
+let musicIndex=0;
+let isPlaying=false;
 
-const musicList = document.getElementById("musicList");
-const playPauseButton = document.getElementById("playPauseButton");
-const nextButton = document.getElementById("nextButton");
-const nowPlaying = document.getElementById("nowPlaying");
+/*
+   true = hết bài sẽ lặp lại chính bài đó
+*/
+let repeatMusic=true;
 
-function createMusicButtons() {
-    musicList.innerHTML = "";
+const audioPlayer =
+    new Audio();
 
-    musicTracks.forEach((track, index) => {
-        const button = document.createElement("button");
-        button.className = "music-btn";
-        button.textContent = `🎧 Chill ${index + 1}`;
+audioPlayer.preload="auto";
 
-        button.onclick = () => {
-            if (musicIndex === index && isPlaying) {
-                audioPlayer.pause();
-            } else {
-                playMusic(index);
-            }
-        };
+/*
+   Quan trọng:
+   loop=true khiến chill1 hết
+   sẽ quay lại chill1.
+*/
+audioPlayer.loop=true;
 
-        musicList.appendChild(button);
-    });
-}
 
-function updateMusicUI() {
-    document.querySelectorAll(".music-btn").forEach((button, index) => {
-        const active = index === musicIndex && isPlaying;
+const musicList =
+    document.getElementById(
+        "musicList"
+    );
 
-        button.classList.toggle("active", active);
+const playPauseButton =
+    document.getElementById(
+        "playPauseButton"
+    );
 
-        button.textContent = active
-            ? `⏸ Chill ${index + 1}`
-            : `🎧 Chill ${index + 1}`;
-    });
+const nextButton =
+    document.getElementById(
+        "nextButton"
+    );
 
-    playPauseButton.textContent =
-        isPlaying ? "⏸ Tạm dừng" : "▶ Phát";
+const repeatButton =
+    document.getElementById(
+        "repeatButton"
+    );
 
-    nowPlaying.textContent = isPlaying
-        ? `🎵 Đang phát: Chill ${musicIndex + 1}`
-        : `⏸ Đã dừng: Chill ${musicIndex + 1}`;
-}
+const nowPlaying =
+    document.getElementById(
+        "nowPlaying"
+    );
 
-function playMusic(index) {
-    if (index < 0 || index >= musicTracks.length) return;
+const repeatStatus =
+    document.getElementById(
+        "repeatStatus"
+    );
 
-    musicIndex = index;
 
-    audioPlayer.pause();
-    audioPlayer.src = musicTracks[musicIndex];
-    audioPlayer.currentTime = 0;
+function createMusicButtons(){
 
-    audioPlayer.play().catch(() => {
-        isPlaying = false;
-        updateMusicUI();
+    musicList.innerHTML="";
 
-        alert(
-            `⚠️ Không thể phát Chill ${musicIndex + 1}.\n\n` +
-            `Kiểm tra file: ${musicTracks[musicIndex]}`
-        );
-    });
-}
+    musicTracks.forEach(
+        (track,index)=>{
 
-playPauseButton.onclick = () => {
-    if (isPlaying) {
-        audioPlayer.pause();
-    } else {
-        if (!audioPlayer.src) {
-            playMusic(musicIndex);
-        } else {
-            audioPlayer.play().catch(() => {});
-        }
-    }
-};
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-nextButton.onclick = () => {
-    musicIndex = (musicIndex + 1) % musicTracks.length;
-    playMusic(musicIndex);
-};
+            button.className=
+                "music-btn";
 
-audioPlayer.addEventListener("ended", () => {
-    musicIndex = (musicIndex + 1) % musicTracks.length;
-    playMusic(musicIndex);
-});
+            button.textContent=
+                `🎧 Chill ${index+1}`;
 
-audioPlayer.addEventListener("pause", () => {
-    isPlaying = false;
-    updateMusicUI();
-});
+            button.onclick=()=>{
 
-audioPlayer.addEventListener("play", () => {
-    isPlaying = true;
-    updateMusicUI();
-});
-/* =====================================================
-   AI
-===================================================== */
-function formatAI(text) {
-    if (!text) return "";
+                if(
+                    musicIndex===index &&
+                    isPlaying
+                ){
 
-    let html = String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+                    audioPlayer.pause();
 
-    const mathBlocks = [];
+                }else{
 
-    html = html.replace(
-        /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|(?<!\$)\$(?!\$)[\s\S]*?(?<!\$)\$(?!\$))/g,
-        match => {
-            const id = `MATHBLOCK${mathBlocks.length}X`;
-            mathBlocks.push(match);
-            return id;
+                    playMusic(index);
+
+                }
+
+            };
+
+            musicList.appendChild(button);
+
         }
     );
 
-    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
-    html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-    html = html.replace(/^### (.*?)$/gm, "<h3>$1</h3>");
-    html = html.replace(/\r?\n/g, "<br>");
-
-    mathBlocks.forEach((formula, index) => {
-        html = html.replace(`MATHBLOCK${index}X`, formula);
-    });
-
-    return html;
 }
 
-const aiInput = document.getElementById("aiInput");
-const aiButton = document.getElementById("aiButton");
-const aiBox = document.getElementById("aiBox");
-const aiQuota = document.getElementById("aiQuota");
-const AI_DAILY_LIMIT = 20;
 
-function getTodayKey() {
-    return new Intl.DateTimeFormat("en-CA", {
-        timeZone:"Asia/Ho_Chi_Minh"
-    }).format(new Date());
+function updateMusicUI(){
+
+    document
+        .querySelectorAll(
+            ".music-btn"
+        )
+        .forEach(
+            (button,index)=>{
+
+                const active =
+                    index===musicIndex &&
+                    isPlaying;
+
+                button.classList.toggle(
+                    "active",
+                    active
+                );
+
+                button.textContent=
+                    active
+                        ? `⏸ Chill ${index+1}`
+                        : `🎧 Chill ${index+1}`;
+
+            }
+        );
+
+    playPauseButton.textContent=
+        isPlaying
+            ? "⏸ Tạm dừng"
+            : "▶ Phát";
+
+    repeatButton.textContent=
+        repeatMusic
+            ? "🔁 Repeat: ON"
+            : "🔂 Repeat: OFF";
+
+    nowPlaying.textContent=
+        isPlaying
+            ? `🎵 Đang phát: Chill ${musicIndex+1}`
+            : `⏸ Đã dừng: Chill ${musicIndex+1}`;
+
+    repeatStatus.textContent=
+        repeatMusic
+            ? "🔁 Hết bài sẽ phát lại chính bài này."
+            : "➡️ Hết bài sẽ chuyển sang bài tiếp theo.";
+
 }
 
-let aiQuotaData;
 
-try {
-    aiQuotaData = JSON.parse(localStorage.getItem("studyforge_ai_quota"));
-} catch {
-    aiQuotaData = null;
-}
+function playMusic(index){
 
-if (!aiQuotaData || aiQuotaData.date !== getTodayKey()) {
-    aiQuotaData = {date:getTodayKey(), used:0};
-    localStorage.setItem("studyforge_ai_quota", JSON.stringify(aiQuotaData));
-}
+    if(
+        index<0 ||
+        index>=musicTracks.length
+    )return;
 
-function updateAIQuota() {
-    const remaining = Math.max(0, AI_DAILY_LIMIT - aiQuotaData.used);
-    aiQuota.textContent = remaining === 0
-        ? "FREE · Đã hết lượt hôm nay"
-        : `FREE · Còn ${remaining}/${AI_DAILY_LIMIT} lượt hôm nay`;
-}
+    musicIndex=index;
 
-function useAILimit() {
-    if (aiQuotaData.used >= AI_DAILY_LIMIT) return false;
+    audioPlayer.pause();
 
-    aiQuotaData.used++;
-    localStorage.setItem("studyforge_ai_quota", JSON.stringify(aiQuotaData));
-    updateAIQuota();
-    return true;
-}
+    audioPlayer.src=
+        musicTracks[musicIndex];
 
-async function askAI() {
-    const question = aiInput.value.trim();
+    audioPlayer.loop=
+        repeatMusic;
 
-    if (!question) {
-        aiBox.textContent = "⚠️ Hãy nhập câu hỏi trước nhé!";
-        return;
-    }
+    audioPlayer.currentTime=0;
 
-    if (aiQuotaData.used >= AI_DAILY_LIMIT) {
-        aiBox.textContent = "⛔ Bạn đã dùng hết 20 lượt AI hôm nay.";
-        return;
-    }
+    audioPlayer.play()
+        .then(()=>{
 
-    aiButton.disabled = true;
-    aiInput.disabled = true;
-    aiButton.textContent = "⏳";
-    aiBox.textContent = "🤖 StudyForge AI đang suy nghĩ...";
+            isPlaying=true;
 
-    try {
-        const response = await fetch("/api/ask", {
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({message:question})
+            updateMusicUI();
+
+        })
+        .catch(()=>{
+
+            isPlaying=false;
+
+            updateMusicUI();
+
+            alert(
+                `⚠️ Không thể phát Chill ${musicIndex+1}.\n\n`+
+                `Kiểm tra file: ${musicTracks[musicIndex]}`
+            );
+
         });
 
-        let data;
-        try {
-            data = await response.json();
-        } catch {
-            throw new Error("API không trả về dữ liệu JSON hợp lệ.");
-        }
-
-        if (!response.ok) {
-            throw new Error(data.error || "AI không trả lời được.");
-        }
-
-        if (!data.reply) {
-            throw new Error("API không trả về nội dung trả lời.");
-        }
-
-        // Chỉ trừ lượt khi API thực sự trả lời thành công.
-        if (!useAILimit()) return;
-
-        aiBox.innerHTML = "🤖 " + formatAI(data.reply);
-
-        if (window.MathJax) {
-            MathJax.typesetClear([aiBox]);
-            await MathJax.typesetPromise([aiBox]);
-        }
-
-    } catch (error) {
-        console.error("AI ERROR:", error);
-        aiBox.textContent = "❌ " + (error.message || "Có lỗi kết nối AI.");
-    } finally {
-        aiButton.disabled = false;
-        aiInput.disabled = false;
-        aiButton.textContent = "Gửi";
-        aiInput.focus();
-    }
 }
 
-aiButton.onclick = askAI;
 
-aiInput.addEventListener("keydown", event => {
-    if (event.key === "Enter") askAI();
-});
+playPauseButton.onclick=()=>{
 
-document.querySelectorAll(".example-btn").forEach(button => {
-    button.onclick = () => {
-        aiInput.value = button.dataset.example;
+    if(isPlaying){
+
+        audioPlayer.pause();
+
+    }else{
+
+        if(!audioPlayer.src){
+
+            playMusic(musicIndex);
+
+        }else{
+
+            audioPlayer.play()
+                .catch(()=>{});
+
+        }
+
+    }
+
+};
+
+
+nextButton.onclick=()=>{
+
+    musicIndex=
+        (musicIndex+1)%
+        musicTracks.length;
+
+    playMusic(musicIndex);
+
+};
+
+
+repeatButton.onclick=()=>{
+
+    repeatMusic=
+        !repeatMusic;
+
+    audioPlayer.loop=
+        repeatMusic;
+
+    updateMusicUI();
+
+};
+
+
+audioPlayer.addEventListener(
+    "pause",
+    ()=>{
+
+        isPlaying=false;
+
+        updateMusicUI();
+
+    }
+);
+
+
+audioPlayer.addEventListener(
+    "play",
+    ()=>{
+
+        isPlaying=true;
+
+        updateMusicUI();
+
+    }
+);
+
+
+/*
+   Nếu Repeat OFF:
+   bài hết → chuyển bài.
+   Nếu Repeat ON:
+   audio.loop=true nên không chạy đoạn này.
+*/
+audioPlayer.addEventListener(
+    "ended",
+    ()=>{
+
+        if(!repeatMusic){
+
+            musicIndex=
+                (musicIndex+1)%
+                musicTracks.length;
+
+            playMusic(musicIndex);
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   AI
+   KHÔNG CÒN GIỚI HẠN 20 LƯỢT Ở FRONTEND
+===================================================== */
+
+function formatAI(text){
+
+    if(!text)return"";
+
+    let html=
+        String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+
+    const mathBlocks=[];
+
+    html=
+        html.replace(
+            /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|(?<!\$)\$(?!\$)[\s\S]*?(?<!\$)\$(?!\$))/g,
+            match=>{
+
+                const id=
+                    `MATHBLOCK${mathBlocks.length}X`;
+
+                mathBlocks.push(match);
+
+                return id;
+
+            }
+        );
+
+    html=
+        html.replace(
+            /`([^`]+)`/g,
+            "<code>$1</code>"
+        );
+
+    html=
+        html.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
+
+    html=
+        html.replace(
+            /^### (.*?)$/gm,
+            "<h3>$1</h3>"
+        );
+
+    html=
+        html.replace(
+            /\r?\n/g,
+            "<br>"
+        );
+
+    mathBlocks.forEach(
+        (formula,index)=>{
+
+            html=
+                html.replace(
+                    `MATHBLOCK${index}X`,
+                    formula
+                );
+
+        }
+    );
+
+    return html;
+
+}
+
+
+const aiInput =
+    document.getElementById(
+        "aiInput"
+    );
+
+const aiButton =
+    document.getElementById(
+        "aiButton"
+    );
+
+const aiBox =
+    document.getElementById(
+        "aiBox"
+    );
+
+
+async function askAI(){
+
+    const question =
+        aiInput.value.trim();
+
+    if(!question){
+
+        aiBox.textContent=
+            "⚠️ Hãy nhập câu hỏi trước nhé!";
+
+        return;
+
+    }
+
+    aiButton.disabled=true;
+    aiInput.disabled=true;
+    aiButton.textContent="⏳";
+
+    aiBox.textContent=
+        "🤖 StudyForge AI đang suy nghĩ...";
+
+    try{
+
+        const response=
+            await fetch(
+                "/api/ask",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+                        message:question
+                    })
+
+                }
+            );
+
+        let data;
+
+        try{
+
+            data=
+                await response.json();
+
+        }catch{
+
+            throw new Error(
+                "API không trả về JSON hợp lệ."
+            );
+
+        }
+
+        if(!response.ok){
+
+            throw new Error(
+                data.error ||
+                "AI không trả lời được."
+            );
+
+        }
+
+        if(!data.reply){
+
+            throw new Error(
+                "API không trả về nội dung."
+            );
+
+        }
+
+        aiBox.innerHTML=
+            "🤖 "+formatAI(data.reply);
+
+        if(window.MathJax){
+
+            MathJax.typesetClear([
+                aiBox
+            ]);
+
+            await MathJax.typesetPromise([
+                aiBox
+            ]);
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "AI ERROR:",
+            error
+        );
+
+        aiBox.textContent=
+            "❌ "+
+            (
+                error.message ||
+                "Có lỗi kết nối AI."
+            );
+
+    }finally{
+
+        aiButton.disabled=false;
+        aiInput.disabled=false;
+        aiButton.textContent="Gửi";
         aiInput.focus();
-    };
-});
+
+    }
+
+}
+
+
+aiButton.onclick=askAI;
+
+aiInput.addEventListener(
+    "keydown",
+    event=>{
+
+        if(event.key==="Enter"){
+            askAI();
+        }
+
+    }
+);
+
+
+document
+    .querySelectorAll(
+        ".example-btn"
+    )
+    .forEach(button=>{
+
+        button.onclick=()=>{
+
+            aiInput.value=
+                button.dataset.example;
+
+            aiInput.focus();
+
+        };
+
+    });
+
 
 /* =====================================================
    SUPABASE AUTH
 ===================================================== */
-const SUPABASE_URL = "https://gucxknalotvyhjxqkbel.supabase.co";
-const SUPABASE_KEY = "sb_publishable_j-wwTzYkJ43oQstFb4XmPA_E2BKL-Re";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+const SUPABASE_URL=
+    "https://gucxknalotvyhjxqkbel.supabase.co";
 
-const loginButton = document.getElementById("loginButton");
-const authOverlay = document.getElementById("authOverlay");
-const authTitle = document.getElementById("authTitle");
-const authEmail = document.getElementById("authEmail");
-const authPassword = document.getElementById("authPassword");
-const authSubmit = document.getElementById("authSubmit");
-const switchAuth = document.getElementById("switchAuth");
-const closeAuth = document.getElementById("closeAuth");
-const authMessage = document.getElementById("authMessage");
-const userInfo = document.getElementById("userInfo");
-const userEmail = document.getElementById("userEmail");
-const logoutButton = document.getElementById("logoutButton");
+const SUPABASE_KEY=
+    "sb_publishable_j-wwTzYkJ43oQstFb4XmPA_E2BKL-Re";
 
-let isRegisterMode = false;
+const supabaseClient=
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
-function openAuth() {
+
+const loginButton=
+    document.getElementById(
+        "loginButton"
+    );
+
+const authOverlay=
+    document.getElementById(
+        "authOverlay"
+    );
+
+const authTitle=
+    document.getElementById(
+        "authTitle"
+    );
+
+const authEmail=
+    document.getElementById(
+        "authEmail"
+    );
+
+const authPassword=
+    document.getElementById(
+        "authPassword"
+    );
+
+const authSubmit=
+    document.getElementById(
+        "authSubmit"
+    );
+
+const switchAuth=
+    document.getElementById(
+        "switchAuth"
+    );
+
+const closeAuth=
+    document.getElementById(
+        "closeAuth"
+    );
+
+const authMessage=
+    document.getElementById(
+        "authMessage"
+    );
+
+const userInfo=
+    document.getElementById(
+        "userInfo"
+    );
+
+const userEmail=
+    document.getElementById(
+        "userEmail"
+    );
+
+const logoutButton=
+    document.getElementById(
+        "logoutButton"
+    );
+
+let isRegisterMode=false;
+
+
+function openAuth(){
+
     authOverlay.classList.add("show");
-    authMessage.textContent = "";
-    setTimeout(() => authEmail.focus(), 100);
+
+    authMessage.textContent="";
+
+    setTimeout(
+        ()=>authEmail.focus(),
+        100
+    );
+
 }
 
-function closeAuthModal() {
-    authOverlay.classList.remove("show");
-    authMessage.textContent = "";
+
+function closeAuthModal(){
+
+    authOverlay.classList.remove(
+        "show"
+    );
+
+    authMessage.textContent="";
+
 }
 
-loginButton.onclick = async () => {
-    const {data, error} = await supabaseClient.auth.getSession();
 
-    if (error) {
+loginButton.onclick=async()=>{
+
+    const {
+        data,
+        error
+    }=
+        await supabaseClient
+        .auth
+        .getSession();
+
+    if(error){
+
         console.error(error);
+
         openAuth();
+
         return;
+
     }
 
-    if (data.session) {
-        userInfo.classList.toggle("show");
+    if(data.session){
+
+        userInfo.classList.toggle(
+            "show"
+        );
+
         return;
+
     }
 
     openAuth();
+
 };
 
-closeAuth.onclick = closeAuthModal;
 
-authOverlay.addEventListener("click", event => {
-    if (event.target === authOverlay) closeAuthModal();
-});
+closeAuth.onclick=
+    closeAuthModal;
 
-switchAuth.onclick = () => {
-    isRegisterMode = !isRegisterMode;
-    authMessage.textContent = "";
-    authPassword.value = "";
 
-    if (isRegisterMode) {
-        authTitle.textContent = "📝 Đăng ký tài khoản";
-        authSubmit.textContent = "Đăng ký";
-        switchAuth.textContent = "Đăng nhập";
-    } else {
-        authTitle.textContent = "👤 Đăng nhập";
-        authSubmit.textContent = "Đăng nhập";
-        switchAuth.textContent = "Đăng ký";
+authOverlay.addEventListener(
+    "click",
+    event=>{
+
+        if(
+            event.target===
+            authOverlay
+        ){
+
+            closeAuthModal();
+
+        }
+
     }
+);
+
+
+switchAuth.onclick=()=>{
+
+    isRegisterMode=
+        !isRegisterMode;
+
+    authMessage.textContent="";
+    authPassword.value="";
+
+    if(isRegisterMode){
+
+        authTitle.textContent=
+            "📝 Đăng ký tài khoản";
+
+        authSubmit.textContent=
+            "Đăng ký";
+
+        switchAuth.textContent=
+            "Đăng nhập";
+
+    }else{
+
+        authTitle.textContent=
+            "👤 Đăng nhập";
+
+        authSubmit.textContent=
+            "Đăng nhập";
+
+        switchAuth.textContent=
+            "Đăng ký";
+
+    }
+
 };
 
-authSubmit.onclick = async () => {
-    const email = authEmail.value.trim();
-    const password = authPassword.value;
 
-    if (!email || !password) {
-        authMessage.textContent = "⚠️ Nhập đầy đủ email và mật khẩu.";
+authSubmit.onclick=async()=>{
+
+    const email=
+        authEmail.value.trim();
+
+    const password=
+        authPassword.value;
+
+    if(!email||!password){
+
+        authMessage.textContent=
+            "⚠️ Nhập đầy đủ email và mật khẩu.";
+
         return;
+
     }
 
-    if (password.length < 6) {
-        authMessage.textContent = "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
+    if(password.length<6){
+
+        authMessage.textContent=
+            "⚠️ Mật khẩu phải có ít nhất 6 ký tự.";
+
         return;
+
     }
 
-    authSubmit.disabled = true;
-    authMessage.textContent = "";
+    authSubmit.disabled=true;
 
-    try {
-        if (isRegisterMode) {
-            authSubmit.textContent = "⏳ Đang tạo tài khoản...";
+    try{
 
-            const {data, error} = await supabaseClient.auth.signUp({
-                email,
-                password,
-                options:{
-                    data:{name:email.split("@")[0]}
-                }
-            });
+        if(isRegisterMode){
 
-            if (error) throw error;
+            authSubmit.textContent=
+                "⏳ Đang tạo tài khoản...";
 
-            if (data.session) {
-                authMessage.textContent = "✅ Đăng ký thành công!";
-                updateAuthUI(data.user);
-                setTimeout(closeAuthModal, 700);
-            } else {
-                authMessage.textContent =
-                    "⚠️ Tài khoản đã tạo. Nếu Supabase bật xác nhận email, hãy xác nhận email trước khi đăng nhập.";
+            const {
+                data,
+                error
+            }=
+                await supabaseClient
+                .auth
+                .signUp({
+
+                    email,
+                    password,
+
+                    options:{
+                        data:{
+                            name:
+                                email.split("@")[0]
+                        }
+                    }
+
+                });
+
+            if(error)throw error;
+
+            if(data.session){
+
+                authMessage.textContent=
+                    "✅ Đăng ký thành công!";
+
+                updateAuthUI(
+                    data.user
+                );
+
+                setTimeout(
+                    closeAuthModal,
+                    700
+                );
+
+            }else{
+
+                authMessage.textContent=
+                    "⚠️ Tài khoản đã tạo. Hãy xác nhận email nếu Supabase yêu cầu.";
+
             }
 
-        } else {
-            authSubmit.textContent = "⏳ Đang đăng nhập...";
+        }else{
 
-            const {data, error} = await supabaseClient.auth.signInWithPassword({
-                email,
-                password
-            });
+            authSubmit.textContent=
+                "⏳ Đang đăng nhập...";
 
-            if (error) throw error;
+            const {
+                data,
+                error
+            }=
+                await supabaseClient
+                .auth
+                .signInWithPassword({
 
-            authMessage.textContent = "✅ Đăng nhập thành công!";
-            updateAuthUI(data.user);
-            setTimeout(closeAuthModal, 500);
+                    email,
+                    password
+
+                });
+
+            if(error)throw error;
+
+            authMessage.textContent=
+                "✅ Đăng nhập thành công!";
+
+            updateAuthUI(
+                data.user
+            );
+
+            setTimeout(
+                closeAuthModal,
+                500
+            );
+
         }
 
-    } catch (error) {
-        console.error("AUTH ERROR:", error);
+    }catch(error){
 
-        let message = error.message || "Có lỗi xảy ra.";
+        console.error(
+            "AUTH ERROR:",
+            error
+        );
 
-        if (message.toLowerCase().includes("invalid login credentials")) {
-            message = "❌ Email hoặc mật khẩu không đúng.";
+        let message=
+            error.message ||
+            "Có lỗi xảy ra.";
+
+        if(
+            message
+            .toLowerCase()
+            .includes(
+                "invalid login credentials"
+            )
+        ){
+
+            message=
+                "❌ Email hoặc mật khẩu không đúng.";
+
         }
 
-        if (message.toLowerCase().includes("email not confirmed")) {
-            message = "❌ Email chưa được xác nhận.";
+        if(
+            message
+            .toLowerCase()
+            .includes(
+                "email not confirmed"
+            )
+        ){
+
+            message=
+                "❌ Email chưa được xác nhận.";
+
         }
 
-        authMessage.textContent = message;
+        authMessage.textContent=
+            message;
 
-    } finally {
-        authSubmit.disabled = false;
-        authSubmit.textContent = isRegisterMode ? "Đăng ký" : "Đăng nhập";
+    }finally{
+
+        authSubmit.disabled=false;
+
+        authSubmit.textContent=
+            isRegisterMode
+                ? "Đăng ký"
+                : "Đăng nhập";
+
     }
+
 };
 
-authPassword.addEventListener("keydown", event => {
-    if (event.key === "Enter") authSubmit.click();
-});
 
-logoutButton.onclick = async () => {
-    const {error} = await supabaseClient.auth.signOut();
+authPassword.addEventListener(
+    "keydown",
+    event=>{
 
-    if (error) {
-        alert("❌ Không thể đăng xuất.");
+        if(event.key==="Enter"){
+            authSubmit.click();
+        }
+
+    }
+);
+
+
+logoutButton.onclick=async()=>{
+
+    const {
+        error
+    }=
+        await supabaseClient
+        .auth
+        .signOut();
+
+    if(error){
+
+        alert(
+            "❌ Không thể đăng xuất."
+        );
+
         return;
+
     }
 
     updateAuthUI(null);
+
 };
 
-function updateAuthUI(user) {
-    if (user) {
-        const name =
+
+function updateAuthUI(user){
+
+    if(user){
+
+        const name=
             user.user_metadata?.name ||
             user.user_metadata?.full_name ||
             user.email?.split("@")[0] ||
             "Bạn";
 
-        loginButton.textContent = `👤 ${name}`;
-        userEmail.textContent = user.email || "Tài khoản";
-    } else {
-        loginButton.textContent = "👤 Đăng nhập";
-        userEmail.textContent = "";
-        userInfo.classList.remove("show");
+        loginButton.textContent=
+            `👤 ${name}`;
+
+        userEmail.textContent=
+            user.email ||
+            "Tài khoản";
+
+    }else{
+
+        loginButton.textContent=
+            "👤 Đăng nhập";
+
+        userEmail.textContent="";
+
+        userInfo.classList.remove(
+            "show"
+        );
+
     }
+
 }
 
-async function checkLogin() {
-    const {data, error} = await supabaseClient.auth.getSession();
-    if (error) {
+
+async function checkLogin(){
+
+    const {
+        data,
+        error
+    }=
+        await supabaseClient
+        .auth
+        .getSession();
+
+    if(error){
+
         console.error(error);
+
         return;
+
     }
-    updateAuthUI(data.session?.user || null);
+
+    updateAuthUI(
+        data.session?.user ||
+        null
+    );
+
 }
 
-supabaseClient.auth.onAuthStateChange((event, session) => {
-    updateAuthUI(session?.user || null);
-});
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        (event,session)=>{
+
+            updateAuthUI(
+                session?.user ||
+                null
+            );
+
+        }
+    );
+
 
 /* =====================================================
-   WELCOME BEFORE WEB
+   CASIO CALCULATOR
 ===================================================== */
-const welcomeOverlay = document.getElementById("welcomeOverlay");
-const enterWebButton = document.getElementById("enterWebButton");
 
-function showWelcome() {
-    if (!studyData.welcomeShown) {
-        welcomeOverlay.classList.add("show");
-    }
+const calcDisplay=
+    document.getElementById(
+        "calcDisplay"
+    );
+
+
+function calcInput(value){
+
+    calcDisplay.value += value;
+
 }
 
-enterWebButton.onclick = () => {
-    studyData.welcomeShown = true;
-    saveData();
-    welcomeOverlay.classList.remove("show");
+
+function calcClear(){
+
+    calcDisplay.value="";
+
+}
+
+
+function calcDelete(){
+
+    calcDisplay.value=
+        calcDisplay.value.slice(
+            0,-1
+        );
+
+}
+
+
+function calcResult(){
+
+    const expression=
+        calcDisplay.value;
+
+    if(!expression)return;
+
+    /*
+       Chỉ cho phép phép tính cơ bản.
+       Không cho nhập JavaScript.
+    */
+
+    if(
+        !/^[0-9+\-*/().\s]+$/
+        .test(expression)
+    ){
+
+        calcDisplay.value=
+            "ERROR";
+
+        return;
+
+    }
+
+    try{
+
+        const result=
+            Function(
+                `"use strict";
+                return (${expression})`
+            )();
+
+        if(
+            typeof result!=="number" ||
+            !Number.isFinite(result)
+        ){
+
+            throw new Error();
+
+        }
+
+        calcDisplay.value=
+            String(result);
+
+    }catch{
+
+        calcDisplay.value=
+            "ERROR";
+
+    }
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        /*
+           Không lấy phím nếu đang
+           nhập AI/Todo/Translate.
+        */
+
+        const active=
+            document.activeElement;
+
+        if(
+            active &&
+            (
+                active.id==="aiInput" ||
+                active.id==="todoInput" ||
+                active.id==="englishText" ||
+                active.tagName==="TEXTAREA" ||
+                active.tagName==="INPUT"
+            )
+        ){
+
+            return;
+
+        }
+
+        if(
+            /^[0-9+\-*/().]$/
+            .test(event.key)
+        ){
+
+            calcInput(event.key);
+
+        }
+
+        if(event.key==="Enter"){
+
+            calcResult();
+
+        }
+
+        if(event.key==="Backspace"){
+
+            calcDelete();
+
+        }
+
+        if(event.key==="Escape"){
+
+            calcClear();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   GOOGLE TRANSLATE
+===================================================== */
+
+const englishText=
+    document.getElementById(
+        "englishText"
+    );
+
+const vietnameseText=
+    document.getElementById(
+        "vietnameseText"
+    );
+
+const googleTranslateButton=
+    document.getElementById(
+        "googleTranslateButton"
+    );
+
+const copyEnglishButton=
+    document.getElementById(
+        "copyEnglishButton"
+    );
+
+const clearTranslateButton=
+    document.getElementById(
+        "clearTranslateButton"
+    );
+
+
+googleTranslateButton.onclick=()=>{
+
+    const text=
+        englishText.value.trim();
+
+    if(!text){
+
+        showToast(
+            "⚠️ Hãy nhập từ hoặc câu tiếng Anh."
+        );
+
+        englishText.focus();
+
+        return;
+
+    }
+
+    /*
+       Google Translate:
+       English → Vietnamese
+    */
+
+    const url=
+        "https://translate.google.com/"+
+        "?sl=en"+
+        "&tl=vi"+
+        "&text="+
+        encodeURIComponent(text)+
+        "&op=translate";
+
+    window.open(
+        url,
+        "_blank"
+    );
+
 };
+
+
+copyEnglishButton.onclick=async()=>{
+
+    const text=
+        englishText.value.trim();
+
+    if(!text){
+
+        showToast(
+            "⚠️ Chưa có nội dung để copy."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        await navigator.clipboard.writeText(
+            text
+        );
+
+        showToast(
+            "📋 Đã copy tiếng Anh!"
+        );
+
+    }catch{
+
+        showToast(
+            "❌ Không thể copy tự động."
+        );
+
+    }
+
+};
+
+
+clearTranslateButton.onclick=()=>{
+
+    englishText.value="";
+    vietnameseText.value="";
+
+};
+
+
+/* =====================================================
+   WELCOME
+===================================================== */
+
+const welcomeOverlay=
+    document.getElementById(
+        "welcomeOverlay"
+    );
+
+const enterWebButton=
+    document.getElementById(
+        "enterWebButton"
+    );
+
+
+function showWelcome(){
+
+    if(!studyData.welcomeShown){
+
+        welcomeOverlay.classList.add(
+            "show"
+        );
+
+    }
+
+}
+
+
+enterWebButton.onclick=()=>{
+
+    studyData.welcomeShown=true;
+
+    saveData();
+
+    welcomeOverlay.classList.remove(
+        "show"
+    );
+
+};
+
 
 /* =====================================================
    START
 ===================================================== */
-if (!studyData.startDate) {
-    studyData.startDate = getToday();
+
+if(!studyData.startDate){
+
+    studyData.startDate=
+        getToday();
+
     saveData();
+
 }
 
 createMusicButtons();
+
 updateJourney();
+
 updateTimer();
+
 renderTasks();
+
 updateMusicUI();
-updateAIQuota();
+
 checkLogin();
+
 randomQuote();
+
 showWelcome();
+
 </script>
+
 </body>
 </html>
